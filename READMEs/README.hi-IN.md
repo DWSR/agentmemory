@@ -1546,7 +1546,7 @@ npm test                  # 1,674 tests
 npm run test:integration  # API tests (running services की आवश्यकता है)
 ```
 
-**आवश्यकताएँ:** Node.js >= 20, [iii-engine](https://iii.dev/docs) या Docker
+**आवश्यकताएँ:** Node.js >= 26, [iii-engine](https://iii.dev/docs) या Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 

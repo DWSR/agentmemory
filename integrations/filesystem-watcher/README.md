@@ -33,7 +33,7 @@ Every file change inside the watched roots becomes a `post_tool_use` observation
 
 Session id and project are required by the observe endpoint — set them via env, or the watcher generates a per-process `fs-watcher-<ts>-<rand>` session id and uses the first root's directory name as the project.
 
-Requires Node.js **>=20 LTS**. Recursive `fs.watch` needs Node 19.1.0+ on Linux; Node 20 is the minimum supported LTS line.
+Requires Node.js **>=26 LTS**. Recursive `fs.watch` needs Node 19.1.0+ on Linux; Node 26 is the minimum supported LTS line.
 
 ## Configuration
 

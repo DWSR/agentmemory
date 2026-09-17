@@ -77,8 +77,8 @@
 
 Requirements:
 
-- Node.js 20 or newer with npm and npx (`node -v`, `npm -v`, and `npx -v`).
-- macOS/Linux automatic iii-engine installation also needs `curl`, a POSIX `sh`, and `tar`. Minimal images such as `node:20-slim` may not include them.
+- Node.js 26 LTS or newer with npm and npx (`node -v`, `npm -v`, and `npx -v`).
+- macOS/Linux automatic iii-engine installation also needs `curl`, a POSIX `sh`, and `tar`. Minimal images such as `node:26-slim` may not include them.
 - Native Windows requires the pinned iii-engine v0.11.2 `iii.exe` to be installed manually. WSL2 or Docker Desktop are the other supported paths.
 
 Canonical fresh-install command:
@@ -1647,7 +1647,7 @@ npm test                  # 1,674 tests
 npm run test:integration  # API tests (requires running services)
 ```
 
-**Prerequisites:** Node.js >= 20 with npm/npx; [iii-engine](https://iii.dev/docs) v0.11.2 or Docker. The macOS/Linux automatic engine install also requires `curl`, a POSIX `sh`, and `tar`; native Windows uses the manual pinned `iii.exe`, WSL2, or Docker Desktop.
+**Prerequisites:** Node.js >= 26 with npm/npx; [iii-engine](https://iii.dev/docs) v0.11.2 or Docker. The macOS/Linux automatic engine install also requires `curl`, a POSIX `sh`, and `tar`; native Windows uses the manual pinned `iii.exe`, WSL2, or Docker Desktop.
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-license.svg"><img src="assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 

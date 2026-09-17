@@ -1564,7 +1564,7 @@ npm test                  # 1,674 tests
 npm run test:integration  # API tests (requires running services)
 ```
 
-**Voraussetzungen:** Node.js >= 20, [iii-engine](https://iii.dev/docs) oder Docker
+**Voraussetzungen:** Node.js >= 26, [iii-engine](https://iii.dev/docs) oder Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="Lizenz" height="32" /></picture></h2>
 

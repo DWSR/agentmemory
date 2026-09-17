@@ -1566,7 +1566,7 @@ npm test                  # 1,674 tests
 npm run test:integration  # API testleri (çalışan servisler gerektirir)
 ```
 
-**Ön koşullar:** Node.js >= 20, [iii-engine](https://iii.dev/docs) veya Docker
+**Ön koşullar:** Node.js >= 26, [iii-engine](https://iii.dev/docs) veya Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 
