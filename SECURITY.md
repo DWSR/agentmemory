@@ -66,7 +66,7 @@ If you ship agentmemory inside a hardened pipeline that requires reproducible in
 2. `npm shrinkwrap` to produce a versioned `npm-shrinkwrap.json` that travels with your deployment.
 3. Audit `node_modules/` once at that point and republish internally.
 
-CI runs `npm install --package-lock-only --legacy-peer-deps --no-audit --no-fund` then `npm ci` against that generated lockfile, so every test job builds against a fully resolved tree. The lockfile is regenerated on each CI run rather than checked in, which keeps the published tarball aligned with whatever SemVer-compatible patch level was current at release time.
+CI runs `bun install --frozen-lockfile` against the committed `bun.lock`, so every test job builds against the same resolved dependency tree. npm remains the publishing transport for the released packages.
 
 Supply-chain monitoring we already do:
 

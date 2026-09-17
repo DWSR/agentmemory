@@ -7,7 +7,7 @@ agentmemory is a persistent memory system for AI coding agents, built on iii-eng
 - **Engine**: iii-sdk (WebSocket to iii-engine on port 49134)
 - **State**: File-based SQLite via iii-engine's StateModule (`./data/state_store.db`)
 - **Build**: TypeScript → ESM via tsdown, output to `dist/`
-- **Test**: vitest (`npm test` excludes integration tests)
+- **Test**: vitest (`npm test` excludes integration tests; dependencies use Bun)
 
 ## Consistency Rules
 

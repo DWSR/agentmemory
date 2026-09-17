@@ -57,8 +57,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@v23
-      # Lockfiles are gitignored, so install dependencies fresh for each job.
-      - run: nix develop --command npm install --legacy-peer-deps --no-audit --no-fund
+      - run: nix develop --command bun install --frozen-lockfile
       - run: nix develop --command npm run build
       - run: nix develop --command npm run skills:check
       - run: nix develop --command npm test
