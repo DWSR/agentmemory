@@ -1563,7 +1563,7 @@ npm test                  # 1,619 測試
 npm run test:integration  # API 測試(需要服務執行中)
 ```
 
-**先決條件:** Node.js >= 20、[iii-engine](https://iii.dev/docs) 或 Docker
+**先決條件:** Node.js >= 26、[iii-engine](https://iii.dev/docs) 或 Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 

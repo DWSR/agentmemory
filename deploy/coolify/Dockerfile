@@ -2,7 +2,7 @@ ARG III_VERSION=0.11.2
 
 FROM iiidev/iii:${III_VERSION} AS iii-image
 
-FROM node:22-slim
+FROM node:26-slim
 
 ARG AGENTMEMORY_VERSION=0.9.29
 ARG III_VERSION=0.11.2

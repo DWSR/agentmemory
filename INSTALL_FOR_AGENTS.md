@@ -12,8 +12,8 @@ Default keyless mode needs no API key or cloud account and disables vector embed
 
 ## Prerequisites
 
-- Node.js >= 20 with npm and npx. Check with `node -v`, `npm -v`, and `npx -v`.
-- macOS/Linux automatic iii installation also requires `curl`, a POSIX `sh`, and `tar`. Check with `command -v curl sh tar`. Minimal images such as `node:20-slim` may not include them.
+- Node.js >= 26 with npm and npx. Check with `node -v`, `npm -v`, and `npx -v`.
+- macOS/Linux automatic iii installation also requires `curl`, a POSIX `sh`, and `tar`. Check with `command -v curl sh tar`. Minimal images such as `node:26-slim` may not include them.
 - Windows: WSL2 follows the Linux path above. Native Windows requires a manually downloaded, pinned iii-engine v0.11.2 `iii.exe`, or Docker Desktop; the CLI does not auto-extract the Windows ZIP. Native automated `connect` supports only `copilot-cli`. Other Windows agents need manual MCP configuration; WSL `connect` applies only to agents installed in that same WSL environment.
 - Ports 3111 (REST), 3112 (streams), 3113 (viewer), and 49134 (engine) free. If any are taken, stop whatever is using them before starting (see Troubleshooting).
 
@@ -32,7 +32,7 @@ npx -v
 command -v curl sh tar
 ```
 
-Expect: Node prints v20 or newer, npm succeeds, and macOS/Linux prints a path for each automatic-installer dependency.
+Expect: Node prints v26 or newer, npm succeeds, and macOS/Linux prints a path for each automatic-installer dependency.
 
 For native Windows, install the engine before continuing:
 

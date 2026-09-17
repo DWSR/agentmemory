@@ -26,7 +26,7 @@ Two options:
 1. Import the repo on vercel.com and set **Root Directory** to `website/`. That's it.
 2. Or `npx vercel` from the `website/` directory.
 
-No env vars required. Node 20 LTS or newer.
+No env vars required. Node 26 LTS or newer.
 
 ## Structure
 
