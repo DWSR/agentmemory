@@ -155,4 +155,11 @@ describe("fresh native engine startup", () => {
     expect(source).toContain("engineVersion: IIPINNED_VERSION");
     expect(source).toContain("recreateOwnedDockerEngine");
   });
+
+  it("migrates stale Docker state before accepting a persisted engine", () => {
+    expect(source).toContain("migrateOwnedDockerEngine");
+    expect(source).toContain("state.engineVersion !== IIPINNED_VERSION");
+    expect(source).toContain("Migrating the owned Docker engine");
+    expect(source).toContain("readEngineState()");
+  });
 });

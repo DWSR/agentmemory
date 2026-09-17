@@ -1,12 +1,12 @@
-ARG III_VERSION=0.11.5
+ARG III_VERSION=0.11.6
 
 FROM iiidev/iii:${III_VERSION} AS iii-image
 
 FROM oven/bun:1.3.13-slim
 
 ARG AGENTMEMORY_VERSION=0.9.29
-ARG III_VERSION=0.11.5
-ARG III_SDK_VERSION=0.11.5
+ARG III_VERSION=0.11.6
+ARG III_SDK_VERSION=0.11.6
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends openssl ca-certificates tini gosu curl \
@@ -15,11 +15,8 @@ RUN apt-get update \
 COPY --from=iii-image /app/iii /usr/local/bin/iii
 
 # Install agentmemory into a dedicated prefix so the local package.json's
-# `overrides` field pins iii-sdk down to match the engine (agentmemory's
-# caret range `^0.11.5` otherwise resolves to 0.11.6, the version that
-# requires the new sandbox-everything worker model the agentmemory CLI
-# is not refactored for yet). Global Bun installs ignore overrides, hence
-# the local prefix.
+# `overrides` field pins iii-sdk down to match the engine. Global Bun
+# installs ignore overrides, hence the local prefix.
 WORKDIR /opt/agentmemory
 RUN printf '{"name":"agentmemory-deploy","version":"1.0.0","private":true,"overrides":{"iii-sdk":"%s"}}\n' "${III_SDK_VERSION}" > package.json \
   && bun add --no-save --production "@agentmemory/agentmemory@${AGENTMEMORY_VERSION}" \

@@ -112,18 +112,11 @@ if (args.includes("--version") || args.includes("-V")) {
   process.exit(0);
 }
 
-// Pinned iii-engine version. The unpinned `install.iii.dev/iii/main/install.sh`
-// script tracks `latest`, which made every fresh agentmemory install pull
-// engine 0.11.6 — and 0.11.6 introduces a new sandbox-everything-via-
-// `iii worker add` worker model that agentmemory hasn't been refactored
-// for yet (the CLI still registers its worker directly through the SDK). The
-// architectural mismatch surfaces as EPIPE reconnect loops and empty
-// search results after save. Pin to v0.11.5 — the last engine that runs
-// agentmemory's current worker model cleanly — until the refactor lands.
-// Override env var AGENTMEMORY_III_VERSION lets users on the sandbox
-// model already point at a newer engine without us cutting a release.
+// Pinned iii-engine version. Keep the engine and iii-sdk pins aligned so
+// fresh installs and managed Docker deployments speak the same protocol.
+// Override env var AGENTMEMORY_III_VERSION for an explicitly managed runtime.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.11.5";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.11.6";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -150,7 +143,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.11.5`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.11.6`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -523,9 +516,9 @@ function whichBinary(name: string): string | null {
 // Private install location agentmemory manages itself. Sits under the
 // agentmemory state dir (~/.agentmemory/bin) so the pinned engine stays
 // isolated from a user-managed iii on PATH or in ~/.local/bin. A
-// fresh box with iii 0.16.1 already on PATH refused to boot because the
-// hard-pin enforcer told users to overwrite their global install with
-// v0.11.5. Private install resolves the conflict without touching their
+// fresh box with another iii release already on PATH refused to boot because
+// the hard-pin enforcer told users to overwrite their global install. Private
+// install resolves the conflict without touching their
 // existing iii.
 function agentmemoryBinDir(): string {
   if (IS_WINDOWS) {
@@ -578,8 +571,7 @@ function iiiBinVersion(binPath: string): string | null {
 // Resolve a compatible iii binary for the pinned engine version.
 //
 // Soft-warn lets the worker boot against a mismatched engine and crash at
-// runtime (state::list-not-found on v0.13.0+, sandbox-everything trap on
-// v0.11.6+). Hard-pin without a fallback leaves the user stuck — they
+// runtime. Hard-pin without a fallback leaves the user stuck — they
 // either downgrade their global iii (breaking other consumers) or set
 // AGENTMEMORY_III_VERSION and hope it works.
 //
@@ -1802,8 +1794,26 @@ async function waitForEngine(timeoutMs: number): Promise<boolean> {
 }
 
 async function reconcilePersistedDockerEngine(): Promise<boolean> {
-  const state = readEngineState();
+  let state = readEngineState();
   if (state?.kind !== "docker") return false;
+
+  if (state.engineVersion && state.engineVersion !== IIPINNED_VERSION) {
+    p.log.info(
+      `Migrating the owned Docker engine from v${state.engineVersion} to v${IIPINNED_VERSION} before startup...`,
+    );
+    if (!(await migrateOwnedDockerEngine(state))) {
+      p.log.error(
+        `The owned Docker engine could not be migrated to v${IIPINNED_VERSION}; data and lifecycle state were preserved where possible.`,
+      );
+      process.exit(1);
+    }
+    state = readEngineState();
+    if (state?.kind !== "docker") {
+      p.log.error("Docker engine migration completed without recoverable lifecycle state.");
+      process.exit(1);
+    }
+  }
+
   const inspection = inspectOwnedDockerEngine(state);
   if (inspection.status === "unavailable") {
     p.log.error(
@@ -1968,8 +1978,8 @@ function printReadyHint(consoleState: IiiConsoleState): void {
 async function main() {
   await assertRuntimePortOwnership();
   // Booting a second instance next to a live daemon registers a duplicate
-  // worker on the running engine, and on iii 0.11.5 the second instance's
-  // shutdown tears down the daemon's HTTP trigger routing (every
+  // worker on the running engine, and older iii releases could let the second
+  // instance's shutdown tear down the daemon's HTTP trigger routing (every
   // /agentmemory/* route 404s until a full engine restart). Refuse instead.
   // A different --instance resolves to a different port, so multi-instance
   // setups are unaffected.
@@ -3218,6 +3228,24 @@ function recreateOwnedDockerEngine(
   return true;
 }
 
+async function migrateOwnedDockerEngine(
+  state: DockerEngineState,
+): Promise<boolean> {
+  const dockerBin = whichBinary("docker");
+  if (!dockerBin) {
+    p.log.error("Docker is required to migrate the owned engine to the pinned version.");
+    return false;
+  }
+
+  await stopDockerEngine(state, getRestPort(), true);
+  if (!runCommand(dockerBin, ["pull", `iiidev/iii:${IIPINNED_VERSION}`], {
+    label: `Pulling iii Docker image v${IIPINNED_VERSION} (pinned)`,
+  })) {
+    return false;
+  }
+  return recreateOwnedDockerEngine(state, dockerBin);
+}
+
 async function runUpgrade() {
   p.intro("agentmemory upgrade");
 
@@ -3241,8 +3269,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (bun install)",
       });
       requireSuccess(installOk, "bun install");
-      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.11.5"], {
-        label: "Pinning iii-sdk@0.11.5",
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.11.6"], {
+        label: "Pinning iii-sdk@0.11.6",
         optional: true,
       });
     } else {
