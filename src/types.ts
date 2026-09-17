@@ -221,7 +221,14 @@ export interface FunctionMetrics {
 
 export interface HealthSnapshot {
   connectionState: string;
-  workers: Array<{ id: string; name: string; status: string }>;
+  workers: Array<{
+    id: string;
+    name: string;
+    status: string;
+    internal?: boolean;
+    runtime?: string;
+    isolation?: string;
+  }>;
   memory: {
     heapUsed: number;
     heapTotal: number;

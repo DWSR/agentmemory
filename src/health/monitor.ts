@@ -40,9 +40,46 @@ export function registerHealthMonitor(
     try {
       const result = await sdk.trigger<
         unknown,
-        { workers?: HealthSnapshot["workers"] }
+        {
+          workers?: Array<{
+            id?: unknown;
+            name?: unknown;
+            status?: unknown;
+            internal?: unknown;
+            runtime?: unknown;
+            isolation?: unknown;
+          }>;
+        }
       >({ function_id: "engine::workers::list", payload: {} });
-      if (result?.workers) workers = result.workers;
+      if (Array.isArray(result?.workers)) {
+        workers = result.workers
+          .filter((worker) => worker.internal !== true)
+          .flatMap((worker) => {
+            const id = typeof worker.id === "string" ? worker.id : "";
+            const name =
+              typeof worker.name === "string" && worker.name.length > 0
+                ? worker.name
+                : id;
+            if (!id || !name) return [];
+            return [
+              {
+                id,
+                name,
+                status:
+                  typeof worker.status === "string" ? worker.status : "unknown",
+                ...(typeof worker.internal === "boolean"
+                  ? { internal: worker.internal }
+                  : {}),
+                ...(typeof worker.runtime === "string"
+                  ? { runtime: worker.runtime }
+                  : {}),
+                ...(typeof worker.isolation === "string"
+                  ? { isolation: worker.isolation }
+                  : {}),
+              },
+            ];
+          });
+      }
     } catch {}
 
     const KV_PROBE_TIMEOUT = 5000;
