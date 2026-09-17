@@ -81,6 +81,14 @@ Requirements:
 - macOS/Linux automatic iii-engine installation also needs `curl`, a POSIX `sh`, and `tar`. Minimal images such as `node:26-slim` may not include them.
 - Native Windows requires the pinned iii-engine v0.11.5 `iii.exe` to be installed manually. WSL2 or Docker Desktop are the other supported paths.
 
+### Nix
+
+The flake exports `packages.<system>.default` for nix-darwin and Home Manager:
+
+```nix
+home.packages = [ inputs.agentmemory.packages.${pkgs.system}.default ];
+```
+
 Canonical fresh-install command:
 
 ```bash
