@@ -2,7 +2,7 @@
 # agentmemory first-boot entrypoint.
 #
 # Runs as root so it can:
-#   1. Overwrite the npm-bundled iii-config.yaml (which binds 127.0.0.1
+#   1. Overwrite the Bun-bundled iii-config.yaml (which binds 127.0.0.1
 #      and uses relative ./data paths) with a deploy-tuned version that
 #      binds 0.0.0.0 and uses absolute /data paths.
 #   2. chown the platform-mounted /data volume to the runtime user
@@ -11,13 +11,13 @@
 #      /data/.hmac (chmod 600) so the secret survives restarts.
 #
 # Then it execs the agentmemory CLI under gosu as the unprivileged
-# `node` user.
+# `bun` user.
 
 set -eu
 
 DATA_DIR="${AGENTMEMORY_DATA_DIR:-/data}"
 HMAC_FILE="${AGENTMEMORY_HMAC_FILE:-/data/.hmac}"
-RUN_AS="node:node"
+RUN_AS="bun:bun"
 III_CONFIG="/opt/agentmemory/node_modules/@agentmemory/agentmemory/dist/iii-config.yaml"
 
 mkdir -p "$DATA_DIR"

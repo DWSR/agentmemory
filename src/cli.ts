@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import {
   spawn,
@@ -234,13 +234,13 @@ Environment:
                                (default 30). Long values overcount, short values undercount.
 
 Quick start:
-  npx @agentmemory/agentmemory          # start with local iii-engine or Docker
-  npx @agentmemory/agentmemory demo     # see semantic recall in 30 seconds
-  npx @agentmemory/agentmemory doctor   # diagnose config + feature flags
-  npx @agentmemory/agentmemory status   # health + memory count + flags
-  npx @agentmemory/agentmemory upgrade  # upgrade agentmemory + iii runtime
-  npx @agentmemory/agentmemory mcp      # standalone MCP server (no engine)
-  npx @agentmemory/mcp                  # same as above (shim package)
+  bunx --bun @agentmemory/agentmemory          # start with local iii-engine or Docker
+  bunx --bun @agentmemory/agentmemory demo     # see semantic recall in 30 seconds
+  bunx --bun @agentmemory/agentmemory doctor   # diagnose config + feature flags
+  bunx --bun @agentmemory/agentmemory status   # health + memory count + flags
+  bunx --bun @agentmemory/agentmemory upgrade  # upgrade agentmemory + iii runtime
+  bunx --bun @agentmemory/agentmemory mcp      # standalone MCP server (no engine)
+  bunx --bun @agentmemory/mcp                  # same as above (shim package)
 `);
   process.exit(0);
 }
@@ -1176,12 +1176,12 @@ function configureDockerHostUser(): void {
   }
 }
 
-function isInvokedViaNpx(): boolean {
-  if (process.env["npm_lifecycle_event"] === "npx") return true;
+function isInvokedViaBunx(): boolean {
+  if (process.env["npm_lifecycle_event"] === "bunx") return true;
   const argv1 = process.argv[1] ?? "";
-  if (argv1.includes("_npx")) return true;
-  const ua = process.env["npm_config_user_agent"] ?? "";
-  if (ua.startsWith("npm/") || ua.includes(" npm/")) return true;
+  if (argv1.includes("_bunx")) return true;
+  const ua = process.env["npm_config_user_agent"] ?? process.env["BUN_USER_AGENT"] ?? "";
+  if (ua.startsWith("bun/") || ua.includes(" bun/")) return true;
   return false;
 }
 
@@ -1190,7 +1190,7 @@ function isInvokedViaNpx(): boolean {
 // in a new shell would then 404 with `command not found`. We now
 // ask once, persist the answer in preferences, and never ask again.
 async function maybeOfferGlobalInstall(): Promise<void> {
-  if (!isInvokedViaNpx()) return;
+  if (!isInvokedViaBunx()) return;
   if (!process.stdin.isTTY) return;
   if (process.env["CI"]) return;
   const prefs = readPrefs();
@@ -1208,33 +1208,33 @@ async function maybeOfferGlobalInstall(): Promise<void> {
   if (answer === false) {
     writePrefs({ skipGlobalInstall: true });
     p.log.info(
-      "Skipped. Re-run via `npx @agentmemory/agentmemory` or install later with: npm install -g @agentmemory/agentmemory",
+      "Skipped. Re-run via `bunx --bun @agentmemory/agentmemory` or install later with: bun add --global @agentmemory/agentmemory",
     );
     return;
   }
 
-  const npmBin = whichBinary("npm");
-  if (!npmBin) {
+  const bunBin = whichBinary("bun");
+  if (!bunBin) {
     p.log.warn(
-      "npm not found on PATH. Install manually: npm install -g @agentmemory/agentmemory",
+      "bun not found on PATH. Install manually: bun add --global @agentmemory/agentmemory",
     );
     return;
   }
   const ok = runCommand(
-    npmBin,
-    ["install", "-g", `@agentmemory/agentmemory@${VERSION}`],
+    bunBin,
+    ["add", "--global", `@agentmemory/agentmemory@${VERSION}`],
     { label: `Installing @agentmemory/agentmemory@${VERSION} globally` },
   );
   if (ok) {
     p.log.success(
       "Installed globally. `agentmemory stop` etc. will now work in new shells.",
     );
-    // Persist so we never re-prompt even if the user happens to npx
+    // Persist so we never re-prompt even if the user happens to bunx
     // again from a CI-less TTY.
     writePrefs({ skipGlobalInstall: true });
   } else {
     p.log.warn(
-      "Global install failed. Try manually: npm install -g @agentmemory/agentmemory",
+      "Global install failed. Try manually: bun add --global @agentmemory/agentmemory",
     );
   }
 }
@@ -1855,12 +1855,12 @@ function installInstructions(): string[] {
       `     1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv${IIPINNED_VERSION}`,
       `     2. Download iii-x86_64-pc-windows-msvc.zip (or iii-aarch64-pc-windows-msvc.zip on ARM)`,
       "     3. Extract iii.exe to %USERPROFILE%\\.local\\bin\\iii.exe (or add to PATH)",
-      "     4. Re-run: npx @agentmemory/agentmemory",
+      "     4. Re-run: bunx --bun @agentmemory/agentmemory",
       "",
       `  B) Docker: docker pull iiidev/iii:${IIPINNED_VERSION}`,
-      "     Re-run with AGENTMEMORY_USE_DOCKER=1 npx @agentmemory/agentmemory",
+      "     Re-run with AGENTMEMORY_USE_DOCKER=1 bunx --bun @agentmemory/agentmemory",
       "",
-      "Or skip the engine entirely (standalone MCP):  npx @agentmemory/agentmemory mcp",
+      "Or skip the engine entirely (standalone MCP):  bunx --bun @agentmemory/agentmemory mcp",
       "",
       "Docs: https://iii.dev/docs",
     ];
@@ -1872,12 +1872,12 @@ function installInstructions(): string[] {
     `agentmemory needs iii-engine v${IIPINNED_VERSION}. Pick one:`,
     "",
     linuxInstall,
-    "     Then re-run: npx @agentmemory/agentmemory",
+    "     Then re-run: bunx --bun @agentmemory/agentmemory",
     "",
     `  B) Docker: docker pull iiidev/iii:${IIPINNED_VERSION}`,
-    "     Re-run with AGENTMEMORY_USE_DOCKER=1 npx @agentmemory/agentmemory",
+    "     Re-run with AGENTMEMORY_USE_DOCKER=1 bunx --bun @agentmemory/agentmemory",
     "",
-    "Or skip the engine entirely (standalone MCP):  npx @agentmemory/agentmemory mcp",
+    "Or skip the engine entirely (standalone MCP):  bunx --bun @agentmemory/agentmemory mcp",
     "",
     "Docs: https://iii.dev/docs",
   ];
@@ -1952,12 +1952,12 @@ function printReadyHint(consoleState: IiiConsoleState): void {
   p.note(lines.join("\n"), `agentmemory v${c.accent(VERSION)}`);
 
   // Pick a runnable form for the suggested next-step. Users invoked
-  // via `npx` don't have the bare `agentmemory` command on PATH yet
-  // (unless they accepted the global-install prompt and the npm bin
-  // dir was already on PATH in this shell), so we suggest the npx
+  // via `bunx` don't have the bare `agentmemory` command on PATH yet
+  // (unless they accepted the global-install prompt and the Bun bin
+  // dir was already on PATH in this shell), so we suggest the bunx
   // form for them; everyone else gets the global form.
-  const demoCommand = isInvokedViaNpx()
-    ? "npx @agentmemory/agentmemory demo"
+  const demoCommand = isInvokedViaBunx()
+    ? "bunx --bun @agentmemory/agentmemory demo"
     : "agentmemory demo";
   process.stdout.write(`\n${c.dim("Try:")} ${c.cmd(demoCommand)}\n`);
 }
@@ -2062,7 +2062,7 @@ async function main() {
     // never sees this; only someone running their own iii does, and for them
     // "stop it, then run normally" is the fix. We do not suggest a different
     // engine version: agentmemory only supports v${IIPINNED_VERSION}.
-    const base = isInvokedViaNpx() ? "npx @agentmemory/agentmemory" : "agentmemory";
+    const base = isInvokedViaBunx() ? "bunx --bun @agentmemory/agentmemory" : "agentmemory";
     p.log.error(
       `Another iii-engine (${detectedLabel}) is running on port ${getEnginePort()}, and agentmemory needs its own pinned v${IIPINNED_VERSION}.`,
     );
@@ -2096,7 +2096,7 @@ async function main() {
     if (startupFailure?.kind === "no-docker-compose") {
       lines.unshift(
         "Docker is installed but docker-compose.yml is missing from this",
-        "install. Re-install with: npm install -g @agentmemory/agentmemory",
+        "install. Re-install with: bun add --global @agentmemory/agentmemory",
         "",
       );
     }
@@ -2191,7 +2191,7 @@ async function runStatus() {
   const up = await isEngineRunning();
   if (!up) {
     p.log.error(`Not running — no response at ${base}`);
-    p.log.info("Start with: npx @agentmemory/agentmemory");
+    p.log.info("Start with: bunx --bun @agentmemory/agentmemory");
     process.exit(1);
   }
 
@@ -2502,7 +2502,7 @@ async function passiveServerChecks(): Promise<DoctorCheck[]> {
     ok: serverUp,
     hint: serverUp
       ? undefined
-      : `Start with: npx @agentmemory/agentmemory (tried ${base})`,
+      : `Start with: bunx --bun @agentmemory/agentmemory (tried ${base})`,
   });
   if (!serverUp) return checks;
 
@@ -2767,7 +2767,7 @@ function buildDemoSessions(): DemoSession[] {
         },
         {
           toolName: "Bash",
-          toolInput: { command: "npm test" },
+          toolInput: { command: "bun test" },
           toolOutput: "All 12 auth tests passing.",
         },
       ],
@@ -2930,7 +2930,7 @@ async function runInit() {
   const template = findEnvExample();
   if (!template) {
     p.log.error(
-      "Could not locate .env.example in the package. Re-install with: npm i -g @agentmemory/agentmemory",
+      "Could not locate .env.example in the package. Re-install with: bun add --global @agentmemory/agentmemory",
     );
     process.exit(1);
   }
@@ -2967,8 +2967,8 @@ async function runInit() {
       "",
       "Common next steps:",
       "  1. Pick an LLM provider key (ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY / etc.)",
-      "  2. Run `npx @agentmemory/agentmemory doctor` to verify the daemon sees them",
-      "  3. Run `npx @agentmemory/agentmemory` to start the worker",
+      "  2. Run `bunx --bun @agentmemory/agentmemory doctor` to verify the daemon sees them",
+      "  3. Run `bunx --bun @agentmemory/agentmemory` to start the worker",
     ].join("\n"),
     "Next steps",
   );
@@ -3037,8 +3037,8 @@ async function runDemo() {
     p.log.error(
       `agentmemory worker not reachable on port ${port} (livez probe failed). Something may be on the port but it isn't serving /agentmemory/*.`,
     );
-    p.log.info("Start it with: npx @agentmemory/agentmemory");
-    p.log.info("Or run a one-command demo with: npx @agentmemory/agentmemory demo --serve");
+    p.log.info("Start it with: bunx --bun @agentmemory/agentmemory");
+    p.log.info("Or run a one-command demo with: bunx --bun @agentmemory/agentmemory demo --serve");
     process.exit(1);
   }
 
@@ -3156,10 +3156,8 @@ async function runUpgrade() {
 
   const cwd = process.cwd();
   const hasPackageJson = existsSync(join(cwd, "package.json"));
-  const hasPnpmLock = existsSync(join(cwd, "pnpm-lock.yaml"));
 
-  const pnpmBin = whichBinary("pnpm");
-  const npmBin = whichBinary("npm");
+  const bunBin = whichBinary("bun");
   const dockerBin = whichBinary("docker");
 
   p.log.info(`Working directory: ${cwd}`);
@@ -3171,27 +3169,17 @@ async function runUpgrade() {
   };
 
   if (hasPackageJson) {
-    const usePnpm = !!pnpmBin && hasPnpmLock;
-    if (usePnpm && pnpmBin) {
-      const installOk = runCommand(pnpmBin, ["install"], {
-        label: "Refreshing dependencies (pnpm install)",
+    if (bunBin) {
+      const installOk = runCommand(bunBin, ["install"], {
+        label: "Refreshing dependencies (bun install)",
       });
-      requireSuccess(installOk, "pnpm install");
-      runCommand(pnpmBin, ["up", "iii-sdk@0.11.5"], {
-        label: "Pinning iii-sdk@0.11.5",
-        optional: true,
-      });
-    } else if (npmBin) {
-      const installOk = runCommand(npmBin, ["install"], {
-        label: "Refreshing dependencies (npm install)",
-      });
-      requireSuccess(installOk, "npm install");
-      runCommand(npmBin, ["install", "iii-sdk@0.11.5"], {
+      requireSuccess(installOk, "bun install");
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.11.5"], {
         label: "Pinning iii-sdk@0.11.5",
         optional: true,
       });
     } else {
-      p.log.warn("No package manager found (pnpm/npm). Skipping JS dependency upgrade.");
+      p.log.warn("bun not found. Skipping JavaScript dependency upgrade.");
     }
   } else {
     p.log.warn("No package.json in current directory. Skipping JS dependency upgrade.");
@@ -3226,7 +3214,7 @@ async function runUpgrade() {
       "",
       "Recommended next steps:",
       "  1) agentmemory status",
-      "  2) npm/pnpm test",
+      "  2) bun test",
       "  3) restart agentmemory process",
     ].join("\n"),
     "agentmemory upgrade",
@@ -3496,7 +3484,7 @@ async function stopDockerEngine(
     process.exit(1);
   }
   if (!suppressOutro) {
-    p.outro("Stopped. Memories persisted to disk; restart anytime with: npx @agentmemory/agentmemory");
+    p.outro("Stopped. Memories persisted to disk; restart anytime with: bunx --bun @agentmemory/agentmemory");
   }
 }
 
@@ -3581,7 +3569,7 @@ async function runStop(): Promise<void> {
   for (const pid of portPids) candidates.add(pid);
 
   // stop must also reap the agentmemory worker process
-  // (`node dist/index.mjs`). If only the engine is killed, the worker can
+  // (`bun dist/index.mjs`). If only the engine is killed, the worker can
   // survive (detached spawn / signal not propagated) and reconnect to the
   // next engine as a duplicate registration. workerPid was read above so
   // the engine-down branch could also reap orphans.
@@ -3640,7 +3628,7 @@ async function runStop(): Promise<void> {
     p.log.error("One or more processes survived SIGKILL. Investigate with `ps`.");
     process.exit(1);
   }
-  p.outro("Stopped. Memories persisted to disk; restart anytime with: npx @agentmemory/agentmemory");
+  p.outro("Stopped. Memories persisted to disk; restart anytime with: bunx --bun @agentmemory/agentmemory");
 }
 
 async function runMcp(): Promise<void> {
@@ -3714,7 +3702,7 @@ async function runImportJsonl(): Promise<void> {
   }
   if (!probeOk) {
     p.log.error(
-      `agentmemory livez probe failed on port ${port}: ${probeDetail}. Start it with \`npx @agentmemory/agentmemory\` in another terminal, then re-run this command.`,
+      `agentmemory livez probe failed on port ${port}: ${probeDetail}. Start it with \`bunx --bun @agentmemory/agentmemory\` in another terminal, then re-run this command.`,
     );
     process.exit(1);
   }
@@ -3996,7 +3984,7 @@ async function runRemove(): Promise<void> {
   }
 
   p.outro(
-    "Done. agentmemory cleanly removed. The npm package itself: npm uninstall -g @agentmemory/agentmemory",
+    "Done. agentmemory cleanly removed. The Bun package itself: bun remove --global @agentmemory/agentmemory",
   );
 }
 

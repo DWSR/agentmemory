@@ -26,10 +26,10 @@ If it's a feature: describe the user problem before the implementation. "I could
    - `feat/<short-name>` for features
    - `fix/<issue-number>-<short-name>` for bug fixes
    - `docs/<topic>`, `refactor/<topic>`, `chore/<topic>` for the rest
-2. Enter the Nix development environment with `nix develop`. With direnv and nix-direnv installed, run `direnv allow` once for automatic loading. Otherwise, install Node >=26 yourself.
-3. Run `bun install --frozen-lockfile` to install dependencies. Bun manages the dependency tree; Node 26 runs the project scripts.
-4. `npm run build` — TypeScript must compile clean.
-5. `npm test` — the full test suite must pass. The one integration test under `test/integration.test.ts` needs a live server on `:3111` and is fine to skip locally.
+2. Enter the Nix development environment with `nix develop`. With direnv and nix-direnv installed, run `direnv allow` once for automatic loading. Otherwise, install Bun >=1.3.13 yourself.
+3. Run `bun install --frozen-lockfile` to install dependencies.
+4. `bun run build` — TypeScript must compile clean.
+5. `bun run test` — the full test suite must pass. The one integration test under `test/integration.test.ts` needs a live server on `:3111` and is fine to skip locally.
 6. Commit with sign-off. Rebase over tiny fixup commits so the history stays readable.
 
 ## Pull request flow
@@ -73,7 +73,7 @@ PRs with commits lacking sign-off will not merge.
 | `src/health/` | Liveness + readiness + alert thresholds. |
 | `src/state/` | KV schema, keyed mutex, access log. |
 | `integrations/` | First-party plugins: `hermes/`, `openclaw/`, `pi/`, `filesystem-watcher/`. |
-| `plugin/` | Agent plugin bundle: Claude Code plugin, hook manifests for Codex/Copilot/Droid, the OpenCode capture plugin, and the skills. Hook manifests and skill REFERENCE files are partly generated; run `npm run skills:gen` after touching registered endpoints or env vars. |
+| `plugin/` | Agent plugin bundle: Claude Code plugin, hook manifests for Codex/Copilot/Droid, the OpenCode capture plugin, and the skills. Hook manifests and skill REFERENCE files are partly generated; run `bun run skills:gen` after touching registered endpoints or env vars. |
 | `website/` | Marketing site (Next.js 16). |
 | `test/` | Vitest test suite. |
 
@@ -105,7 +105,7 @@ Maintainers cut releases. Every bump touches these files in lockstep (the consis
 7. `src/types.ts` (`ExportData.version` union)
 8. `src/functions/export-import.ts` (`supportedVersions` Set)
 
-No lockfiles are committed. `test/export-import.test.ts` asserts against the `VERSION` constant, so it needs no per-release edit. Run `npm run skills:gen` if the endpoint or env surface changed.
+No lockfiles are committed. `test/export-import.test.ts` asserts against the `VERSION` constant, so it needs no per-release edit. Run `bun run skills:gen` if the endpoint or env surface changed.
 
 Then: CHANGELOG section, PR, merge, tag, GitHub release. The `Publish to npm` workflow picks up the release trigger and publishes `@agentmemory/agentmemory`, `@agentmemory/mcp`, and `@agentmemory/fs-watcher` to npm with provenance (`@agentmemory/fs-watcher` versions independently from `integrations/filesystem-watcher/package.json`).
 

@@ -32,7 +32,7 @@ export class LocalEmbeddingProvider implements EmbeddingProvider {
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
         throw new Error(
-          "Install @huggingface/transformers for local embeddings: npm install @huggingface/transformers",
+          "Install @huggingface/transformers for local embeddings: bun add @huggingface/transformers",
         );
       }
       throw err;

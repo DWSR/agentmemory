@@ -78,7 +78,7 @@
 一条命令:
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 首次运行是交互式设置:选择要接入的代理(Claude Code、Cursor、Codex、Gemini CLI、OpenCode 等),选择一个 LLM 提供者或保持无密钥,它会生成配置、在 `:3111` 启动记忆服务器,并提议全局安装,让之后裸 `agentmemory` 命令在任何地方都能用。
@@ -87,7 +87,7 @@ npx @agentmemory/agentmemory
 
 ```bash
 agentmemory demo --serve                 # 注入示例会话并观察召回找到它们
-npx skills add rohitg00/agentmemory -y   # 17 个原生 skills,让代理知道何时使用记忆
+bunx --bun skills add rohitg00/agentmemory -y   # 17 个原生 skills,让代理知道何时使用记忆
 ```
 
 想让编码代理包办全程?交给它一条指令:
@@ -107,9 +107,9 @@ npx skills add rohitg00/agentmemory -y   # 17 个原生 skills,让代理知道�
 <summary><strong>全局安装 / EACCES</strong></summary>
 
 ```bash
-npm install -g @agentmemory/agentmemory
+bun add --global @agentmemory/agentmemory
 # 如果在 macOS/Linux 的系统 Node 上遇到 EACCES:
-sudo npm install -g @agentmemory/agentmemory
+sudo bun add --global @agentmemory/agentmemory
 ```
 
 </details>
@@ -117,14 +117,14 @@ sudo npm install -g @agentmemory/agentmemory
 <details>
 <summary><strong>npx 运行的是旧版本</strong></summary>
 
-npx 会按版本缓存。用 `npx -y @agentmemory/agentmemory@latest` 强制拉取最新版,或一次性清除缓存 `rm -rf ~/.npm/_npx`(macOS/Linux;Windows 上删除 `%LOCALAPPDATA%\npm-cache\_npx`)。
+npx 会按版本缓存。用 `bunx --bun @agentmemory/agentmemory@latest` 强制拉取最新版,或一次性清除缓存 `rm -rf ~/.npm/_npx`(macOS/Linux;Windows 上删除 `%LOCALAPPDATA%\npm-cache\_npx`)。
 
 </details>
 
 <details>
 <summary><strong>已在运行自己的 iii 引擎</strong></summary>
 
-agentmemory 固定 iii-engine v0.11.5,不会挂接到其他版本(worker 无法使用其他引擎的协议)。停止另一个引擎,然后运行 `npx -y @agentmemory/agentmemory@latest`。它会在 `~/.agentmemory/bin` 安装并运行固定的 v0.11.5,不动你自己的 `iii`。
+agentmemory 固定 iii-engine v0.11.5,不会挂接到其他版本(worker 无法使用其他引擎的协议)。停止另一个引擎,然后运行 `bunx --bun @agentmemory/agentmemory@latest`。它会在 `~/.agentmemory/bin` 安装并运行固定的 v0.11.5,不动你自己的 `iii`。
 
 </details>
 
@@ -232,7 +232,7 @@ agentmemory 兼容任何支持 hooks、MCP 或 REST API 的代理。所有代理
 **改变了什么:** 会话 1 你设置了 JWT 鉴权。会话 2 你要求限流。代理已经知道你的鉴权使用 `src/middleware/auth.ts` 中的 jose 中间件,测试覆盖了 token 校验,你选择 jose 而非 jsonwebtoken 是为了 Edge 兼容性,无需重新解释,也无需复制粘贴。
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 > **v0.9.0 新功能** — 落地页 [agent-memory.dev](https://agent-memory.dev) 上线,文件系统连接器(`@agentmemory/fs-watcher`),独立 MCP 现在代理至正在运行的服务器,使 hooks 和查看器保持一致,审计策略在所有删除路径上得到统一,健康状态在小型 Node 进程上不再误报 `memory_critical`。完整变更见 [CHANGELOG.md](../CHANGELOG.md#090--2026-04-18)。
@@ -469,10 +469,10 @@ npx @agentmemory/agentmemory
 
 ```bash
 # 终端 1:启动服务器
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # 终端 2:注入示例数据并查看召回
-npx @agentmemory/agentmemory demo
+bunx --bun @agentmemory/agentmemory demo
 ```
 
 `demo` 会注入 3 个真实会话(JWT 鉴权、N+1 查询修复、限流)并对它们执行语义搜索。你将看到搜索「数据库性能优化」时找到「N+1 查询修复」,这是关键词匹配做不到的。
@@ -499,10 +499,10 @@ agentmemory 记录的每个会话都可回放。打开查看器,选择 **Replay*
 
 ```bash
 # 导入默认 ~/.claude/projects 下的全部内容
-npx @agentmemory/agentmemory import-jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl
 
 # 或导入单个文件
-npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
 ```
 
 导入的会话与原生会话一起出现在 Replay 选择器中。底层每个条目都通过 `mem::replay::load`、`mem::replay::sessions`、`mem::replay::import-jsonl` 这些 iii 函数路由,没有侧通道服务器。每份导入的记录都会被索引用于搜索,标记来源渠道 `import`,并被挖掘出会话结晶(crystal)和经验教训(lessons)。
@@ -512,7 +512,7 @@ npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.
 当你确实想更新本地运行时时,使用维护命令:
 
 ```bash
-npx @agentmemory/agentmemory upgrade
+bunx --bun @agentmemory/agentmemory upgrade
 ```
 
 警告:此命令会变更当前工作空间/运行时。它可能更新 JavaScript 依赖,并拉取固定版本的 Docker 镜像 `iiidev/iii:0.11.5`。它绝不会安装未固定版本或更新的 iii 引擎。
@@ -522,7 +522,7 @@ npx @agentmemory/agentmemory upgrade
 ### Claude Code(一段话,直接粘贴)
 
 ```text
-Install agentmemory: run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
+Install agentmemory: run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
 ```
 
 #### Claude Code 不安装插件(MCP-standalone 路径)
@@ -543,7 +543,7 @@ agentmemory connect claude-code --with-hooks
 
 ```bash
 # 1. 在单独终端启动记忆服务器
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # 2. 注册 agentmemory 市场并安装插件
 codex plugin marketplace add rohitg00/agentmemory
@@ -574,13 +574,13 @@ agentmemory connect codex --with-hooks
 <summary><b>OpenClaw(粘贴此提示)</b></summary>
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
+Install agentmemory for OpenClaw. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
 
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -599,12 +599,12 @@ Restart OpenClaw. Verify with `curl http://localhost:3111/agentmemory/health`. O
 <summary><b>Hermes Agent(粘贴此提示)</b></summary>
 
 ```text
-Install agentmemory for Hermes. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
+Install agentmemory for Hermes. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
 
 mcp_servers:
   agentmemory:
-    command: npx
-    args: ["-y", "@agentmemory/mcp"]
+    command: bunx
+    args: ["--bun", "@agentmemory/mcp"]
 
 memory:
   provider: agentmemory
@@ -618,22 +618,22 @@ Verify with `curl http://localhost:3111/agentmemory/health`. Open http://localho
 
 ### 其他代理
 
-启动记忆服务器:`npx @agentmemory/agentmemory`
+启动记忆服务器:`bunx --bun @agentmemory/agentmemory`
 
-#### 通过 `npx skills add` 安装原生 skills(50+ 代理)
+#### 通过 `bunx --bun skills add` 安装原生 skills(50+ 代理)
 
 agentmemory 以 Claude Code 风格的 `<dir>/SKILL.md` 格式提供 17 个 skills:9 个可调用的动作 skills(`remember`、`recall`、`recap`、`handoff`、`forget`、`lesson`、`commit-context`、`commit-history`、`session-history`)和 8 个代理按需加载的参考 skills(`memory-discipline`、`agentmemory-mcp-tools`、`agentmemory-rest-api`、`agentmemory-config`、`agentmemory-agents`、`agentmemory-hooks`、`agentmemory-architecture`、`write-agentmemory-skill`)。参考 skills 携带从源码生成的数据表,因此永不漂移。vercel-labs 的 [`skills`](https://npmjs.com/package/skills) CLI 会把它们自动安装到调用代理的原生 skill 目录,覆盖 50+ 代理(Claude Code、Cursor、Cline、Continue、Droid、Warp、Codex、Antigravity、Kiro、OpenCode、Goose、Roo、Trae、Windsurf 等):
 
 ```bash
-npx skills add rohitg00/agentmemory -y          # 自动检测调用代理
-npx skills add rohitg00/agentmemory -y -a warp  # 显式指定代理
-npx skills add rohitg00/agentmemory -y -a '*'   # 安装到每个已安装的代理
+bunx --bun skills add rohitg00/agentmemory -y          # 自动检测调用代理
+bunx --bun skills add rohitg00/agentmemory -y -a warp  # 显式指定代理
+bunx --bun skills add rohitg00/agentmemory -y -a '*'   # 安装到每个已安装的代理
 ```
 
 这与 `agentmemory connect <agent>` 是**互补**的:
 
 - `agentmemory connect <agent>` 写入 MCP 服务器配置,让工具可用。
-- `npx skills add rohitg00/agentmemory` 安装 skills,让代理知道何时调用它们。
+- `bunx --bun skills add rohitg00/agentmemory` 安装 skills,让代理知道何时调用它们。
 
 对于 skills CLI 尚未覆盖的少数代理(Zed v1.3.x 及以下),自己把 15 个 SKILL.md 文件放到代理的原生 skill 目录下即可;同一格式在任何地方都适用。
 
@@ -643,8 +643,8 @@ npx skills add rohitg00/agentmemory -y -a '*'   # 安装到每个已安装的代
 
 ```json
 "agentmemory": {
-  "command": "npx",
-  "args": ["-y", "@agentmemory/mcp"],
+  "command": "bunx",
+  "args": ["--bun", "@agentmemory/mcp"],
   "env": {
     "AGENTMEMORY_URL": "${AGENTMEMORY_URL}",
     "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET}"
@@ -661,13 +661,13 @@ npx skills add rohitg00/agentmemory -y -a '*'   # 安装到每个已安装的代
 | **Cline / Roo Code / Kilo Code** | Cline MCP 设置 (设置 UI → MCP Servers → Edit) | 同样的 `mcpServers` 块。 |
 | **Devin CLI** | `~/.config/devin/config.json` | `agentmemory connect devin` 合并 MCP 条目;`--with-hooks` 再加上六个原生自动捕获 hooks(SessionStart、UserPromptSubmit、PreToolUse、PostToolUse、Stop、SessionEnd),使用 Devin 的小写工具匹配器。用 `devin mcp list` 和 devin 内的 `/hooks` 验证。 |
 | **Devin(云端)** | Settings → Connections → MCP servers | 添加自定义 MCP(STDIO):command `npx`,args `-y @agentmemory/mcp@latest`,env `AGENTMEMORY_URL` 指向网络可达的 agentmemory 部署,并设置 `AGENTMEMORY_SECRET`(云端会话无法访问 localhost — 见 [`deploy/`](../deploy/))。 |
-| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory npx -y @agentmemory/mcp --scope user`(自动合并)。 |
+| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory bunx --bun @agentmemory/mcp --scope user`(自动合并)。 |
 | **GitHub Copilot CLI (仅 MCP)** | `~/.copilot/mcp-config.json` | `agentmemory connect copilot-cli` 合并 `mcpServers.agentmemory`;Copilot 在下次启动或 `/mcp` 后接收。 |
 | **GitHub Copilot CLI (完整插件)** | Copilot 插件安装 | `copilot plugin install rohitg00/agentmemory:plugin` 安装 GitHub 子目录中的插件。 |
 | **OpenClaw** | OpenClaw MCP 配置 | 同样的 `mcpServers` 块。更深:`openclaw plugins install ./integrations/openclaw` 会占用 OpenClaw 的记忆槽位(自动从 `memory-core` 切换);设置 `plugins.entries.agentmemory.hooks.allowConversationAccess=true`,否则轮次捕获会被静默阻止。见 [`integrations/openclaw`](integrations/openclaw/)。 |
-| **Codex CLI (仅 MCP)** | `.codex/config.toml` | TOML 形式:`codex mcp add agentmemory -- npx -y @agentmemory/mcp`,或手动添加 `[mcp_servers.agentmemory]`。 |
+| **Codex CLI (仅 MCP)** | `.codex/config.toml` | TOML 形式:`codex mcp add agentmemory -- bunx --bun @agentmemory/mcp`,或手动添加 `[mcp_servers.agentmemory]`。 |
 | **Codex CLI (完整插件)** | Codex 插件市场 | `codex plugin marketplace add rohitg00/agentmemory` 然后 `codex plugin add agentmemory@agentmemory`。注册 MCP + 6 个生命周期 hooks(SessionStart、UserPromptSubmit、PreToolUse、PostToolUse、PreCompact、Stop)+ 17 个 skills。在 Codex Desktop 上,直到 [openai/codex#16430](https://github.com/openai/codex/issues/16430) 落地之前,还要运行 `agentmemory connect codex --with-hooks`;那里的插件 hooks 当前无响应。 |
-| **OpenCode (仅 MCP)** | `opencode.json` | 不同结构:顶层 `mcp` key,command 是数组:`{"mcp": {"agentmemory": {"type": "local", "command": ["npx", "-y", "@agentmemory/mcp"], "enabled": true}}}`。 |
+| **OpenCode (仅 MCP)** | `opencode.json` | 不同结构:顶层 `mcp` key,command 是数组:`{"mcp": {"agentmemory": {"type": "local", "command": ["bunx", "--bun", "@agentmemory/mcp"], "enabled": true}}}`。 |
 | **OpenCode (完整插件)** | `plugin/opencode/` | 22 个自动捕获 hooks,覆盖会话生命周期、消息、工具、错误。项目归属按会话进行,因此一个跨多个仓库的 OpenCode 进程会把每个会话归档到各自的项目下。两个斜杠命令(`/recall`、`/remember`)。将 `plugin/opencode/` 复制到你的 OpenCode 工作空间并把插件条目添加到 `opencode.json`。完整 hook 表和差异分析见 [`plugin/opencode/README.md`](../plugin/opencode/README.md)。 |
 | **pi** | `~/.pi/agent/extensions/agentmemory` | `agentmemory connect pi` 把捆绑扩展安装到 pi 的自动发现目录(代理启动时召回、代理结束时捕获、`memory_search` / `memory_save` / `memory_health` 工具、`/agentmemory-status`)。在运行中的 pi 里执行 `/reload` 即可加载。[`integrations/pi`](../integrations/pi/) 也是一个 pi 包(从检出的仓库运行 `pi install ./integrations/pi`)。 |
 | **Hermes Agent** | `~/.hermes/config.yaml` | `cp -r integrations/hermes ~/.hermes/plugins/agentmemory` + `memory.provider: agentmemory` 启用 6 个 hook 的记忆提供者(预取、轮次捕获、会话结束、压缩前、MEMORY.md 镜像、系统提示词块)。用 `hermes plugins doctor` 和 `hermes memory status` 验证。见 [`integrations/hermes`](integrations/hermes/)。 |
@@ -683,7 +683,7 @@ npx skills add rohitg00/agentmemory -y -a '*'   # 安装到每个已安装的代
 | **DeepSeek Harness** | `$DSH_HOME/cordis.patch.yml` | `agentmemory connect dsh` 向每个 Harness profile 都会加载的家目录级补丁层追加一行 `@deepseek-ai/dsh-mcp-client`;工具注册为 `mcp__agentmemory__*`。传 `--with-hooks` 同时接入自动捕获:捆绑的 Claude Code hook 脚本通过 Harness 第一方的 `@deepseek-ai/dsh-hooks-claude-code` 桥(SessionStart、UserPromptSubmit、PreToolUse、PostToolUse、Stop)运行,清单写入 `$DSH_HOME/agentmemory.hooks.json`。`DSH_HOME` 未设置时默认为 `~/.dsh`。 |
 | **Goose** | Goose MCP 设置 UI | 同样的 `mcpServers` 块;使用 `goose configure` → Add Extension → MCP。支持直接编辑 `~/.config/goose/config.yaml`,但其 schema 使用 `extensions:` + `cmd`(而非 `mcpServers:` + `command`)。 |
 | **Aider** | n/a | 直接调用 REST API:`curl -X POST http://localhost:3111/agentmemory/smart-search -d '{"query": "auth"}'`。 |
-| **任何代理 (32+)** | n/a | `npx skillkit install agentmemory` 自动检测宿主并合并。 |
+| **任何代理 (32+)** | n/a | `bunx --bun skillkit install agentmemory` 自动检测宿主并合并。 |
 
 **沙盒化的 MCP 客户端**(Flatpak / Snap / 受限容器)无法访问宿主的 `localhost`:还要在 `env` 块中设置 `"AGENTMEMORY_FORCE_PROXY": "1"`,并把 `AGENTMEMORY_URL` 指向沙盒确实能到达的路由(例如你的 LAN IP)。
 
@@ -715,7 +715,7 @@ iii.trigger({
 
 ```bash
 git clone https://github.com/rohitg00/agentmemory.git && cd agentmemory
-npm install && npm run build && npm start
+bun install --frozen-lockfile && bun run build && bun run start
 ```
 
 如果已经安装 `iii`,这会以本地 `iii-engine` 启动 agentmemory;如果 Docker 可用,则回退到 Docker Compose。REST、流和查看器默认绑定到 `127.0.0.1`。
@@ -750,7 +750,7 @@ iii --version
 # 应输出:0.11.5
 
 # 5. 然后照常运行 agentmemory:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **选项 B:Docker Desktop**
@@ -759,18 +759,18 @@ npx -y @agentmemory/agentmemory
 # 1. 安装 Docker Desktop for Windows
 # 2. 启动 Docker Desktop 并确保引擎运行中
 # 3. 运行 agentmemory — 它会自动启动捆绑的 compose 文件:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **选项 C:仅独立 MCP(无引擎)。** 如果你只需要 MCP 工具供代理使用,不需要 REST API、查看器或定时任务,则完全跳过引擎:
 
 ```powershell
-npx -y @agentmemory/agentmemory mcp
+bunx --bun @agentmemory/agentmemory mcp
 # 或通过 shim 包:
-npx -y @agentmemory/mcp
+bunx --bun @agentmemory/mcp
 ```
 
-**Windows 诊断:** 如果 `npx @agentmemory/agentmemory` 失败,加 `--verbose` 重新运行以看到实际的引擎 stderr。常见失败模式:
+**Windows 诊断:** 如果 `bunx --bun @agentmemory/agentmemory` 失败,加 `--verbose` 重新运行以看到实际的引擎 stderr。常见失败模式:
 
 | 症状 | 修复 |
 |---|---|
@@ -779,7 +779,7 @@ npx -y @agentmemory/mcp
 | 端口冲突 | `netstat -ano \| findstr :3111` 查看占用,然后 kill 或用 `--port <N>` |
 | Docker 已安装但仍跳过回退 | 确保 Docker Desktop 确实在运行(系统托盘图标) |
 
-> 注意:iii **引擎** 是预构建的二进制文件,而非 cargo crate,所以不要尝试用 `cargo install` 安装它。(iii 的 **SDK** 确实已发布到 crates.io、npm 和 PyPI,但 agentmemory 并不需要它们。)受支持的引擎安装方式均固定为 v0.11.5:上面的预构建 v0.11.5 二进制、**带版本固定** 的上游 `sh` 安装脚本 `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh`(macOS/Linux),以及 Docker 镜像 `iiidev/iii:0.11.5`。直接运行 `install.sh | sh` 会安装 **最新** 引擎,而 agentmemory 不支持该版本;请务必传入 `VERSION=0.11.5`。最简单的方式:直接运行 `npx @agentmemory/agentmemory`,它会为你把固定版本的引擎获取到 `~/.agentmemory/bin`。
+> 注意:iii **引擎** 是预构建的二进制文件,而非 cargo crate,所以不要尝试用 `cargo install` 安装它。(iii 的 **SDK** 确实已发布到 crates.io、npm 和 PyPI,但 agentmemory 并不需要它们。)受支持的引擎安装方式均固定为 v0.11.5:上面的预构建 v0.11.5 二进制、**带版本固定** 的上游 `sh` 安装脚本 `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh`(macOS/Linux),以及 Docker 镜像 `iiidev/iii:0.11.5`。直接运行 `install.sh | sh` 会安装 **最新** 引擎,而 agentmemory 不支持该版本;请务必传入 `VERSION=0.11.5`。最简单的方式:直接运行 `bunx --bun @agentmemory/agentmemory`,它会为你把固定版本的引擎获取到 `~/.agentmemory/bin`。
 
 ---
 
@@ -942,14 +942,14 @@ SessionStart hook fires
 
 混合排序适用于主召回路径,而不仅是 `smart-search`:一旦向量索引填充完成,`mem::search`(`memory_recall` 背后)就通过同样的 BM25 + 向量 + 图融合进行排序。经验教训召回运行在专用的内存 BM25 索引上,而非每次查询扫描整个语料。被取代的记忆版本被排除在每条召回路径之外;版本链保留其历史。
 
-BM25 开箱即用支持希腊语、西里尔语、希伯来语、阿拉伯语和带音标的拉丁文分词。对于中文/日语/韩语记忆,安装可选分词器(`npm install @node-rs/jieba tiny-segmenter`)以把 CJK 串切分为词级 token;不安装的话,agentmemory 会软回退到整串分词并在 stderr 打印一次性提示。
+BM25 开箱即用支持希腊语、西里尔语、希伯来语、阿拉伯语和带音标的拉丁文分词。对于中文/日语/韩语记忆,安装可选分词器(`bun add @node-rs/jieba tiny-segmenter`)以把 CJK 串切分为词级 token;不安装的话,agentmemory 会软回退到整串分词并在 stderr 打印一次性提示。
 
 ### 嵌入提供者
 
 agentmemory 自动检测你的提供者。为获得最佳效果,安装本地嵌入(免费):
 
 ```bash
-npm install @huggingface/transformers
+bun add @huggingface/transformers
 ```
 
 | 提供者 | 模型 | 成本 | 备注 |
@@ -967,7 +967,7 @@ npm install @huggingface/transformers
 
 54 个工具、6 个资源、3 个提示词、17 个 skills。
 
-> **MCP shim 对比完整服务器:** 已发布的 `@agentmemory/mcp` 包是一个薄 shim。**只有当它能通过 `AGENTMEMORY_URL` 连通运行中的 agentmemory 服务器**(代理模式)时,才暴露完整的 54 工具表面。在没有可达服务器的情况下,shim 回退到 7 工具的本地集合(`memory_save`、`memory_recall`、`memory_smart_search`、`memory_sessions`、`memory_export`、`memory_audit`、`memory_governance_delete`)。`AGENTMEMORY_TOOLS=core|all` 环境变量是*服务器端*标志;在 shim 的 `env` 块中设置无效。如果在 Cursor / OpenCode / Gemini CLI 中只看到 7 个工具,启动 `npx @agentmemory/agentmemory`(或 Docker 栈)并设置 `AGENTMEMORY_URL=http://localhost:3111`。
+> **MCP shim 对比完整服务器:** 已发布的 `@agentmemory/mcp` 包是一个薄 shim。**只有当它能通过 `AGENTMEMORY_URL` 连通运行中的 agentmemory 服务器**(代理模式)时,才暴露完整的 54 工具表面。在没有可达服务器的情况下,shim 回退到 7 工具的本地集合(`memory_save`、`memory_recall`、`memory_smart_search`、`memory_sessions`、`memory_export`、`memory_audit`、`memory_governance_delete`)。`AGENTMEMORY_TOOLS=core|all` 环境变量是*服务器端*标志;在 shim 的 `env` 块中设置无效。如果在 Cursor / OpenCode / Gemini CLI 中只看到 7 个工具,启动 `bunx --bun @agentmemory/agentmemory`(或 Docker 栈)并设置 `AGENTMEMORY_URL=http://localhost:3111`。
 
 ### 54 个工具
 
@@ -1059,8 +1059,8 @@ npm install @huggingface/transformers
 无需完整服务器即可运行,适用于任何 MCP 客户端。以下两种都可以:
 
 ```bash
-npx -y @agentmemory/agentmemory mcp   # 规范命令(始终可用)
-npx -y @agentmemory/mcp                # shim 包别名
+bunx --bun @agentmemory/agentmemory mcp   # 规范命令(始终可用)
+bunx --bun @agentmemory/mcp                # shim 包别名
 ```
 
 或添加到你的代理的 MCP 配置:
@@ -1070,8 +1070,8 @@ npx -y @agentmemory/mcp                # shim 包别名
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -1088,7 +1088,7 @@ OpenCode (`opencode.json`):
   "mcp": {
     "agentmemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["bunx", "--bun", "@agentmemory/mcp"],
       "enabled": true
     }
   },
@@ -1557,13 +1557,13 @@ CONSOLIDATION_ENABLED=true
 <h2 id="development"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-development.svg"><img src="../assets/tags/section-development.svg" alt="Development" height="32" /></picture></h2>
 
 ```bash
-npm run dev               # 热重载
-npm run build             # 生产构建
-npm test                  # 1,619 测试
-npm run test:integration  # API 测试(需要服务运行中)
+bun run dev               # 热重载
+bun run build             # 生产构建
+bun run test                  # 1,619 测试
+bun run test:integration  # API 测试(需要服务运行中)
 ```
 
-**先决条件:** Node.js >= 26、[iii-engine](https://iii.dev/docs) 或 Docker
+**先决条件:** Bun >= 1.3.13、[iii-engine](https://iii.dev/docs) 或 Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 

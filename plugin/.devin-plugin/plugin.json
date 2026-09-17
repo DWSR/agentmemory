@@ -18,7 +18,7 @@
   ],
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
+      "command": "bunx",
       "args": [
         "-y",
         "@agentmemory/mcp"

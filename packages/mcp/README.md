@@ -4,13 +4,13 @@ Standalone MCP server for [agentmemory](https://github.com/rohitg00/agentmemory)
 
 This is a thin shim package that re-exposes the standalone MCP entrypoint from
 [`@agentmemory/agentmemory`](https://www.npmjs.com/package/@agentmemory/agentmemory),
-so MCP client configs that say `npx @agentmemory/mcp` work out of the box
+so MCP client configs that say `bunx --bun @agentmemory/mcp` work out of the box
 without installing the full package first.
 
 ## Usage
 
 ```bash
-npx -y @agentmemory/mcp
+bunx --bun @agentmemory/mcp
 ```
 
 Or wire it into your MCP client (Claude Desktop, OpenClaw, Cursor, Codex, etc.):
@@ -19,8 +19,8 @@ Or wire it into your MCP client (Claude Desktop, OpenClaw, Cursor, Codex, etc.):
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"]
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"]
     }
   }
 }
@@ -31,7 +31,7 @@ This package depends on `@agentmemory/agentmemory` and forwards to its
 installed, you can call the same entrypoint directly:
 
 ```bash
-npx @agentmemory/agentmemory mcp
+bunx --bun @agentmemory/agentmemory mcp
 ```
 
 Both commands do the same thing.
@@ -42,8 +42,8 @@ The original plan in [issue #120](https://github.com/rohitg00/agentmemory/issues
 was to publish `agentmemory-mcp` as an unscoped package, but npm's name-similarity
 policy blocks that name because of an unrelated package called `agent-memory-mcp`.
 Publishing under the `@agentmemory` scope sidesteps the conflict and keeps the
-"dedicated standalone package" UX — `npx @agentmemory/mcp` is one character
-longer than `npx agentmemory-mcp` and works on the live registry.
+"dedicated standalone package" UX — `bunx --bun @agentmemory/mcp` is one
+character longer than `bunx --bun agentmemory-mcp` and works on the live registry.
 
 ## License
 

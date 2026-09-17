@@ -28,7 +28,7 @@ const DETECT_DIR = join(homedir(), ".config", "opencode");
 // shim defaults unset vars (URL -> localhost:3111, no secret, all tools).
 const OPENCODE_ENTRY = {
   type: "local",
-  command: ["npx", "-y", "@agentmemory/mcp"],
+  command: ["bunx", "--bun", "@agentmemory/mcp"],
   enabled: true,
 };
 

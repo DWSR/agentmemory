@@ -37,8 +37,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - run: bun install --frozen-lockfile
-      - run: npm run build
-      - run: npm test
+      - run: bun run build
+      - run: bun run test
 
       - name: Publish @agentmemory/agentmemory
         run: |

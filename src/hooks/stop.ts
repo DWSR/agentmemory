@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 // Inlined — see src/hooks/sdk-guard.ts for canonical version. Kept local
 // per-hook so tsdown does not emit a shared hashed chunk that would churn

@@ -26,7 +26,7 @@ describe("Plugin hook manifests", () => {
       expect(commands.length, `${manifest} should contain hook commands`).toBeGreaterThan(0);
 
       for (const command of commands) {
-        expect(command).toMatch(/^node "\$\{CLAUDE_PLUGIN_ROOT\}\/scripts\/[^\s"]+\.mjs"$/);
+        expect(command).toMatch(/^bun "\$\{CLAUDE_PLUGIN_ROOT\}\/scripts\/[^\s"]+\.mjs"$/);
       }
     }
   });

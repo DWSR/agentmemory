@@ -14,11 +14,11 @@ const EXPECTED_COPILOT_MCP_COMMAND =
   process.platform === "win32"
     ? {
         command: process.env["ComSpec"] || process.env["COMSPEC"] || "cmd.exe",
-        args: ["/d", "/s", "/c", "npx", "-y", "@agentmemory/mcp"],
+        args: ["/d", "/s", "/c", "bunx", "--bun", "@agentmemory/mcp"],
       }
     : {
-        command: "npx",
-        args: ["-y", "@agentmemory/mcp"],
+        command: "bunx",
+        args: ["--bun", "@agentmemory/mcp"],
       };
 
 describe("agentmemory connect — dispatcher", () => {
@@ -137,7 +137,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     expect(first.kind).toBe("installed");
 
     const config = JSON.parse(readFileSync(join(tmpHome, ".claude.json"), "utf-8"));
-    expect(config.mcpServers.agentmemory.command).toBe("npx");
+    expect(config.mcpServers.agentmemory.command).toBe("bunx");
     expect(config.mcpServers.agentmemory.args).toContain("@agentmemory/mcp");
     expect(config.mcpServers.other.command).toBe("x");
 
@@ -179,7 +179,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
       join(tmpHome, ".claude.json"),
       JSON.stringify({
         mcpServers: {
-          agentmemory: { command: "npx", args: ["-y", "@agentmemory/mcp"] },
+          agentmemory: { command: "bunx", args: ["--bun", "@agentmemory/mcp"] },
         },
       }),
     );

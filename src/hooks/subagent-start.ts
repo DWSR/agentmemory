@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { resolveProject, hookCwd } from "./_project.js";
 
 // Inlined from ./sdk-guard so each hook bundles to a single self-contained

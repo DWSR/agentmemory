@@ -7,7 +7,7 @@
  * - captures completed conversation turns after the agent finishes (agent_end hook)
  *
  * Requires the agentmemory server on localhost:3111.
- * Start it with: npx @agentmemory/agentmemory
+ * Start it with: bunx --bun @agentmemory/agentmemory
  */
 
 const DEFAULT_BASE_URL = "http://localhost:3111";

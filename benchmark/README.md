@@ -49,23 +49,23 @@ number to plan against. p50 will lie to you.
 ### Running it
 
 ```bash
-# 1. Start the daemon however you normally do (npx, Docker, etc.)
-npx @agentmemory/agentmemory
+# 1. Start the daemon however you normally do (bunx, Docker, etc.)
+bunx --bun @agentmemory/agentmemory
 
 # 2. From the repo root, in another shell:
-npm run bench:load
+bun run bench:load
 ```
 
 To override the matrix:
 
 ```bash
-BENCH_N=1000 BENCH_C=1,10 BENCH_OPS=100 npm run bench:load
+BENCH_N=1000 BENCH_C=1,10 BENCH_OPS=100 bun run bench:load
 ```
 
-To have the harness spawn a daemon for the run (after `npm run build`):
+To have the harness spawn a daemon for the run (after `bun run build`):
 
 ```bash
-AGENTMEMORY_BENCH_AUTOSTART=1 npm run bench:load
+AGENTMEMORY_BENCH_AUTOSTART=1 bun run bench:load
 ```
 
 Other env knobs (see the file header for the canonical list):

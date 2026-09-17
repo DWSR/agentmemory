@@ -78,7 +78,7 @@
 Ein Befehl:
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 Der erste Lauf ist ein interaktives Setup: Wählen Sie die zu verdrahtenden Agenten (Claude Code, Cursor, Codex, Gemini CLI, OpenCode, ...), wählen Sie einen LLM-Provider oder bleiben Sie ohne Schlüssel, und es legt die Konfiguration an, startet den Memory-Server auf `:3111` und bietet eine globale Installation an, sodass der nackte Befehl `agentmemory` anschließend überall funktioniert.
@@ -87,7 +87,7 @@ Beweisen Sie dann, dass Recall funktioniert, und geben Sie Ihrem Agenten seine S
 
 ```bash
 agentmemory demo --serve                 # seed sample sessions + watch recall find them
-npx skills add rohitg00/agentmemory -y   # 17 native skills so your agent knows when to reach for memory
+bunx --bun skills add rohitg00/agentmemory -y   # 17 native skills so your agent knows when to reach for memory
 ```
 
 Sie möchten das Ganze lieber von einem Coding-Agenten erledigen lassen? Geben Sie ihm eine einzige Anweisung:
@@ -107,9 +107,9 @@ Der schnelle Weg ist WSL2. Das native Windows-Engine-Setup ist manuell (etwa 10 
 <summary><strong>Globale Installation / EACCES</strong></summary>
 
 ```bash
-npm install -g @agentmemory/agentmemory
+bun add --global @agentmemory/agentmemory
 # If you hit EACCES on macOS/Linux system Node installs:
-sudo npm install -g @agentmemory/agentmemory
+sudo bun add --global @agentmemory/agentmemory
 ```
 
 </details>
@@ -117,14 +117,14 @@ sudo npm install -g @agentmemory/agentmemory
 <details>
 <summary><strong>npx liefert eine alte Version</strong></summary>
 
-npx cached pro Version. Erzwingen Sie die neueste mit `npx -y @agentmemory/agentmemory@latest` oder leeren Sie den Cache einmalig mit `rm -rf ~/.npm/_npx` (macOS/Linux; unter Windows löschen Sie `%LOCALAPPDATA%\npm-cache\_npx`).
+npx cached pro Version. Erzwingen Sie die neueste mit `bunx --bun @agentmemory/agentmemory@latest` oder leeren Sie den Cache einmalig mit `rm -rf ~/.npm/_npx` (macOS/Linux; unter Windows löschen Sie `%LOCALAPPDATA%\npm-cache\_npx`).
 
 </details>
 
 <details>
 <summary><strong>Sie betreiben bereits eine eigene iii-Engine</strong></summary>
 
-agentmemory pinnt iii-engine v0.11.5 und verbindet sich nicht mit einer anderen Version (der Worker kann das Protokoll einer anderen Engine nicht sprechen). Stoppen Sie die andere Engine und führen Sie dann `npx -y @agentmemory/agentmemory@latest` aus. Es installiert und startet das gepinnte v0.11.5 in `~/.agentmemory/bin` und lässt Ihre eigene `iii` unangetastet.
+agentmemory pinnt iii-engine v0.11.5 und verbindet sich nicht mit einer anderen Version (der Worker kann das Protokoll einer anderen Engine nicht sprechen). Stoppen Sie die andere Engine und führen Sie dann `bunx --bun @agentmemory/agentmemory@latest` aus. Es installiert und startet das gepinnte v0.11.5 in `~/.agentmemory/bin` und lässt Ihre eigene `iii` unangetastet.
 
 </details>
 
@@ -232,7 +232,7 @@ Sie erklären in jeder Session dieselbe Architektur. Sie entdecken dieselben Bug
 **Was sich ändert:** Session 1 richten Sie JWT-Authentifizierung ein. Session 2 fragen Sie nach Rate Limiting. Der Agent weiß bereits, dass Ihre Auth jose-Middleware in `src/middleware/auth.ts` verwendet, dass Ihre Tests Token-Validierung abdecken und dass Sie sich aus Gründen der Edge-Kompatibilität für jose statt jsonwebtoken entschieden haben, ohne erneutes Erklären und ohne Copy-Paste.
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 > **Neu in v0.9.0** — Landing-Site unter [agent-memory.dev](https://agent-memory.dev), Filesystem-Connector (`@agentmemory/fs-watcher`), das standalone MCP proxyt nun zum laufenden Server, sodass Hooks und Viewer übereinstimmen, Audit-Policy auf jedem Delete-Pfad kodifiziert, der Health-Check meldet `memory_critical` nicht mehr bei kleinen Node-Prozessen. Vollständige Hinweise in [CHANGELOG.md](../CHANGELOG.md#090--2026-04-18).
@@ -469,10 +469,10 @@ Kompatibilität: Diese Version zielt auf stabiles `iii-sdk` `^0.11.0` und iii-en
 
 ```bash
 # Terminal 1: start the server
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # Terminal 2: seed sample data and see recall in action
-npx @agentmemory/agentmemory demo
+bunx --bun @agentmemory/agentmemory demo
 ```
 
 `demo` befüllt 3 realistische Sessions (JWT-Auth, N+1-Query-Fix, Rate Limiting) und führt semantische Suchen darauf aus. Sie sehen, wie „N+1 query fix" gefunden wird, wenn Sie nach „database performance optimization" suchen, was Keyword-Matching nicht kann.
@@ -499,10 +499,10 @@ So übernehmen Sie ältere Claude-Code-JSONL-Transkripte:
 
 ```bash
 # Import everything under the default ~/.claude/projects
-npx @agentmemory/agentmemory import-jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl
 
 # Or import a single file
-npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
 ```
 
 Importierte Sessions tauchen im Replay-Picker neben den nativen auf. Intern routet jeder Eintrag durch die iii-Funktionen `mem::replay::load`, `mem::replay::sessions` und `mem::replay::import-jsonl`, ohne Seitenkanal-Server. Jedes importierte Transkript wird für die Suche indiziert, mit dem Ursprungskanal `import` gestempelt, und daraus werden ein Session-Crystal und Lessons gewonnen.
@@ -514,7 +514,7 @@ Importierte Sessions tauchen im Replay-Picker neben den nativen auf. Intern rout
 Verwenden Sie den Wartungsbefehl, wenn Sie Ihr lokales Runtime bewusst aktualisieren wollen:
 
 ```bash
-npx @agentmemory/agentmemory upgrade
+bunx --bun @agentmemory/agentmemory upgrade
 ```
 
 Achtung: Dieser Befehl verändert den aktuellen Workspace/Runtime. Er kann JavaScript-Abhängigkeiten aktualisieren und das gepinnte Docker-Image `iiidev/iii:0.11.5` ziehen. Er installiert niemals eine ungepinnte oder neuere iii-Engine.
@@ -524,7 +524,7 @@ Implementierungsdetails in `src/cli.ts` (siehe `runUpgrade` rund um den Bereich 
 ### Claude Code (ein Block, einfügen)
 
 ```text
-Install agentmemory: run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
+Install agentmemory: run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
 ```
 
 #### Claude Code ohne Plugin-Installation (MCP-Standalone-Pfad)
@@ -544,7 +544,7 @@ Für entfernte oder geschützte Deployments starten Sie Claude Code mit gesetzte
 
 ```bash
 # 1. start the memory server in a separate terminal
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # 2. register the agentmemory marketplace and install the plugin
 codex plugin marketplace add rohitg00/agentmemory
@@ -575,13 +575,13 @@ Das fügt einen idempotenten Block zu `~/.codex/hooks.json` hinzu, der absolute 
 <summary><b>OpenClaw (diesen Prompt einfügen)</b></summary>
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
+Install agentmemory for OpenClaw. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
 
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -600,12 +600,12 @@ Vollständiger Leitfaden: [`integrations/openclaw/`](../integrations/openclaw/)
 <summary><b>Hermes Agent (diesen Prompt einfügen)</b></summary>
 
 ```text
-Install agentmemory for Hermes. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
+Install agentmemory for Hermes. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
 
 mcp_servers:
   agentmemory:
-    command: npx
-    args: ["-y", "@agentmemory/mcp"]
+    command: bunx
+    args: ["--bun", "@agentmemory/mcp"]
 
 memory:
   provider: agentmemory
@@ -619,22 +619,22 @@ Vollständiger Leitfaden: [`integrations/hermes/`](../integrations/hermes/)
 
 ### Andere Agenten
 
-Starten Sie den Memory-Server: `npx @agentmemory/agentmemory`
+Starten Sie den Memory-Server: `bunx --bun @agentmemory/agentmemory`
 
-#### Native Skills via `npx skills add` (50+ Agenten)
+#### Native Skills via `bunx --bun skills add` (50+ Agenten)
 
 agentmemory liefert 17 Skills im Claude-Code-artigen `<dir>/SKILL.md`-Format mit: 9 aufrufbare Action-Skills (`remember`, `recall`, `recap`, `handoff`, `forget`, `lesson`, `commit-context`, `commit-history`, `session-history`) und 8 Referenz-Skills, die der Agent bei Bedarf lädt (`memory-discipline`, `agentmemory-mcp-tools`, `agentmemory-rest-api`, `agentmemory-config`, `agentmemory-agents`, `agentmemory-hooks`, `agentmemory-architecture`, `write-agentmemory-skill`). Die Referenz-Skills tragen aus dem Quellcode generierte Datentabellen, sodass sie nie driften. Die [`skills`](https://npmjs.com/package/skills)-CLI von vercel-labs installiert sie automatisch in das native Skill-Verzeichnis des aufrufenden Agenten, über 50+ Agenten hinweg (Claude Code, Cursor, Cline, Continue, Droid, Warp, Codex, Antigravity, Kiro, OpenCode, Goose, Roo, Trae, Windsurf und mehr):
 
 ```bash
-npx skills add rohitg00/agentmemory -y          # auto-detects the calling agent
-npx skills add rohitg00/agentmemory -y -a warp  # explicit agent
-npx skills add rohitg00/agentmemory -y -a '*'   # install to every installed agent
+bunx --bun skills add rohitg00/agentmemory -y          # auto-detects the calling agent
+bunx --bun skills add rohitg00/agentmemory -y -a warp  # explicit agent
+bunx --bun skills add rohitg00/agentmemory -y -a '*'   # install to every installed agent
 ```
 
 Das ist **komplementär** zu `agentmemory connect <agent>`:
 
 - `agentmemory connect <agent>` schreibt die MCP-Server-Konfig, damit die Tools verfügbar sind.
-- `npx skills add rohitg00/agentmemory` installiert die Skills, damit der Agent weiß, wann er sie aufrufen soll.
+- `bunx --bun skills add rohitg00/agentmemory` installiert die Skills, damit der Agent weiß, wann er sie aufrufen soll.
 
 Für die wenigen Agenten, die die skills-CLI noch nicht abdeckt (Zed v1.3.x und darunter), legen Sie die 17 SKILL.md-Dateien selbst unter dem nativen Skill-Verzeichnis des Agenten ab; dasselbe Format funktioniert überall.
 
@@ -644,8 +644,8 @@ Der agentmemory-Eintrag ist der **gleiche MCP-Server-Block** für jeden Host, de
 
 ```json
 "agentmemory": {
-  "command": "npx",
-  "args": ["-y", "@agentmemory/mcp"],
+  "command": "bunx",
+  "args": ["--bun", "@agentmemory/mcp"],
   "env": {
     "AGENTMEMORY_URL": "${AGENTMEMORY_URL}",
     "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET}"
@@ -662,13 +662,13 @@ Der agentmemory-Eintrag ist der **gleiche MCP-Server-Block** für jeden Host, de
 | **Cline / Roo Code / Kilo Code** | Cline-MCP-Einstellungen (Settings UI → MCP Servers → Edit) | Gleicher `mcpServers`-Block. |
 | **Devin CLI** | `~/.config/devin/config.json` | `agentmemory connect devin` fügt den MCP-Eintrag ein; `--with-hooks` ergänzt sechs native Auto-Capture-Hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd) mit Devins kleingeschriebenen Tool-Matchern. Prüfen mit `devin mcp list` und `/hooks` in devin. |
 | **Devin (Cloud)** | Settings → Connections → MCP servers | Custom MCP (STDIO) hinzufügen: Command `npx`, Args `-y @agentmemory/mcp@latest`, Env `AGENTMEMORY_URL` auf ein netzwerkerreichbares agentmemory-Deployment plus `AGENTMEMORY_SECRET` (Cloud-Sitzungen erreichen kein localhost — siehe [`deploy/`](../deploy/)). |
-| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory npx -y @agentmemory/mcp --scope user` (automatisches Mergen). |
+| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory bunx --bun @agentmemory/mcp --scope user` (automatisches Mergen). |
 | **GitHub Copilot CLI (nur MCP)** | `~/.copilot/mcp-config.json` | `agentmemory connect copilot-cli` merged `mcpServers.agentmemory`; Copilot übernimmt es beim nächsten Start oder per `/mcp`. |
 | **GitHub Copilot CLI (volles Plugin)** | Copilot-Plugin-Installation | `copilot plugin install rohitg00/agentmemory:plugin` für das Plugin aus dem GitHub-Unterverzeichnis. |
 | **OpenClaw** | OpenClaw-MCP-Konfig | Gleicher `mcpServers`-Block. Tiefer: `openclaw plugins install ./integrations/openclaw` beansprucht OpenClaws Memory-Slot (wechselt automatisch von `memory-core`); setzen Sie `plugins.entries.agentmemory.hooks.allowConversationAccess=true`, sonst wird die Turn-Erfassung stillschweigend blockiert. Siehe [`integrations/openclaw`](integrations/openclaw/). |
-| **Codex CLI (nur MCP)** | `.codex/config.toml` | TOML-Form: `codex mcp add agentmemory -- npx -y @agentmemory/mcp` oder `[mcp_servers.agentmemory]` manuell hinzufügen. |
+| **Codex CLI (nur MCP)** | `.codex/config.toml` | TOML-Form: `codex mcp add agentmemory -- bunx --bun @agentmemory/mcp` oder `[mcp_servers.agentmemory]` manuell hinzufügen. |
 | **Codex CLI (volles Plugin)** | Codex-Plugin-Marketplace | `codex plugin marketplace add rohitg00/agentmemory`, dann `codex plugin add agentmemory@agentmemory`. Registriert MCP + 6 Lifecycle-Hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PreCompact, Stop) + 17 Skills. Auf Codex Desktop zusätzlich `agentmemory connect codex --with-hooks` ausführen, bis [openai/codex#16430](https://github.com/openai/codex/issues/16430) landet; Plugin-Hooks sind dort derzeit lautlos. |
-| **OpenCode (nur MCP)** | `opencode.json` | Anderes Format: `mcp`-Schlüssel auf oberster Ebene, Command als Array: `{"mcp": {"agentmemory": {"type": "local", "command": ["npx", "-y", "@agentmemory/mcp"], "enabled": true}}}`. |
+| **OpenCode (nur MCP)** | `opencode.json` | Anderes Format: `mcp`-Schlüssel auf oberster Ebene, Command als Array: `{"mcp": {"agentmemory": {"type": "local", "command": ["bunx", "--bun", "@agentmemory/mcp"], "enabled": true}}}`. |
 | **OpenCode (volles Plugin)** | `plugin/opencode/` | 22 Auto-Capture-Hooks für Session-Lifecycle, Messages, Tools, Fehler. Die Projekt-Zuordnung erfolgt pro Session, sodass ein OpenCode-Prozess, der mehrere Repositories umspannt, jede Session unter ihrem eigenen Projekt ablegt. Zwei Slash-Befehle (`/recall`, `/remember`). Kopieren Sie `plugin/opencode/` in Ihren OpenCode-Workspace und fügen Sie den Plugin-Eintrag zu `opencode.json` hinzu. Siehe [`plugin/opencode/README.md`](../plugin/opencode/README.md) für die vollständige Hook-Tabelle + Gap-Analyse. |
 | **pi** | `~/.pi/agent/extensions/agentmemory` | `agentmemory connect pi` installiert die mitgelieferte Extension in pis Auto-Discovery-Verzeichnis (Recall beim Agent-Start, Capture beim Agent-Ende, `memory_search` / `memory_save` / `memory_health` Tools, `/agentmemory-status`). `/reload` in einem laufenden pi übernimmt sie. [`integrations/pi`](../integrations/pi/) ist außerdem ein pi-Paket (`pi install ./integrations/pi` aus einem Checkout). |
 | **Hermes Agent** | `~/.hermes/config.yaml` | `cp -r integrations/hermes ~/.hermes/plugins/agentmemory` + `memory.provider: agentmemory` liefert den 6-Hook-Memory-Provider (Prefetch, Turn-Erfassung, Session-Ende, Vorkomprimierung, MEMORY.md-Spiegelung, System-Prompt-Block). Validieren Sie mit `hermes plugins doctor` und `hermes memory status`. Siehe [`integrations/hermes`](integrations/hermes/). |
@@ -684,7 +684,7 @@ Der agentmemory-Eintrag ist der **gleiche MCP-Server-Block** für jeden Host, de
 | **DeepSeek Harness** | `$DSH_HOME/cordis.patch.yml` | `agentmemory connect dsh` hängt eine `@deepseek-ai/dsh-mcp-client`-Zeile an die Home-Level-Patch-Schicht an, die jedes Harness-Profil lädt; Tools registrieren sich als `mcp__agentmemory__*`. Übergeben Sie `--with-hooks`, um zusätzlich Auto-Erfassung zu verdrahten: Die mitgelieferten Claude-Code-Hook-Skripte laufen über Harness' First-Party-Bridge `@deepseek-ai/dsh-hooks-claude-code` (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop) via eines Manifests, das nach `$DSH_HOME/agentmemory.hooks.json` geschrieben wird. Standard ist `~/.dsh`, wenn `DSH_HOME` nicht gesetzt ist. |
 | **Goose** | Goose-MCP-Einstellungen-UI | Gleicher `mcpServers`-Block; nutzen Sie `goose configure` → Add Extension → MCP. Direktes YAML-Editieren unter `~/.config/goose/config.yaml` wird unterstützt, aber das Schema verwendet `extensions:` + `cmd` (nicht `mcpServers:` + `command`). |
 | **Aider** | n/v | Sprechen Sie direkt mit der REST API: `curl -X POST http://localhost:3111/agentmemory/smart-search -d '{"query": "auth"}'`. |
-| **Jeder Agent (32+)** | n/v | `npx skillkit install agentmemory` erkennt den Host automatisch und merged. |
+| **Jeder Agent (32+)** | n/v | `bunx --bun skillkit install agentmemory` erkennt den Host automatisch und merged. |
 
 **MCP-Clients in Sandboxen** (Flatpak / Snap / restriktive Container), die den `localhost` des Hosts nicht erreichen können: Setzen Sie zusätzlich `"AGENTMEMORY_FORCE_PROXY": "1"` im `env`-Block und lassen Sie `AGENTMEMORY_URL` auf eine Route zeigen, die die Sandbox tatsächlich erreichen kann (z. B. Ihre LAN-IP).
 
@@ -716,7 +716,7 @@ Vollständiges Beispiel: [`examples/python/`](../examples/python/) (Quickstart +
 
 ```bash
 git clone https://github.com/rohitg00/agentmemory.git && cd agentmemory
-npm install && npm run build && npm start
+bun install --frozen-lockfile && bun run build && bun run start
 ```
 
 Das startet agentmemory mit einer lokalen `iii-engine`, falls `iii` bereits installiert ist, oder fällt auf Docker Compose zurück, falls Docker vorhanden ist. REST, Streams und der Viewer binden sich standardmäßig an `127.0.0.1`.
@@ -751,7 +751,7 @@ iii --version
 # Should print: 0.11.5
 
 # 5. Then run agentmemory as usual:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **Option B: Docker Desktop**
@@ -760,18 +760,18 @@ npx -y @agentmemory/agentmemory
 # 1. Install Docker Desktop for Windows
 # 2. Start Docker Desktop and make sure the engine is running
 # 3. Run agentmemory — it will auto-start the bundled compose file:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **Option C: Nur Standalone-MCP (ohne Engine).** Wenn Sie nur die MCP-Tools für Ihren Agenten brauchen und weder REST API, Viewer noch Cron-Jobs, überspringen Sie die Engine ganz:
 
 ```powershell
-npx -y @agentmemory/agentmemory mcp
+bunx --bun @agentmemory/agentmemory mcp
 # or via the shim package:
-npx -y @agentmemory/mcp
+bunx --bun @agentmemory/mcp
 ```
 
-**Diagnose unter Windows:** Wenn `npx @agentmemory/agentmemory` fehlschlägt, mit `--verbose` neu starten, um das tatsächliche Engine-stderr zu sehen. Häufige Fehlerbilder:
+**Diagnose unter Windows:** Wenn `bunx --bun @agentmemory/agentmemory` fehlschlägt, mit `--verbose` neu starten, um das tatsächliche Engine-stderr zu sehen. Häufige Fehlerbilder:
 
 | Symptom | Lösung |
 |---|---|
@@ -780,7 +780,7 @@ npx -y @agentmemory/mcp
 | Port-Konflikt | `netstat -ano \| findstr :3111`, um zu sehen, was gebunden ist, dann beenden oder `--port <N>` verwenden |
 | Docker-Fallback wird übersprungen, obwohl Docker installiert ist | Stellen Sie sicher, dass Docker Desktop tatsächlich läuft (Taskleisten-Icon) |
 
-> Hinweis: Die iii-**Engine** ist ein vorgebautes Binary, kein Cargo-Crate, versuche also nicht, sie per `cargo install` zu installieren. (Die iii-**SDKs** sind auf crates.io, npm und PyPI veröffentlicht, aber agentmemory benötigt sie nicht.) Unterstützte Engine-Installationsmethoden, alle auf v0.11.5 gepinnt: das vorgebaute v0.11.5-Binary oben, das Upstream-`sh`-Installationsskript **mit dem Versions-Pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux) und das Docker-Image `iiidev/iii:0.11.5`. Ein bloßes `install.sh | sh` installiert die **neueste** Engine, die agentmemory nicht unterstützt; übergib immer `VERSION=0.11.5`. Am einfachsten von allen: Führe einfach `npx @agentmemory/agentmemory` aus, das die gepinnte Engine für dich nach `~/.agentmemory/bin` holt.
+> Hinweis: Die iii-**Engine** ist ein vorgebautes Binary, kein Cargo-Crate, versuche also nicht, sie per `cargo install` zu installieren. (Die iii-**SDKs** sind auf crates.io, npm und PyPI veröffentlicht, aber agentmemory benötigt sie nicht.) Unterstützte Engine-Installationsmethoden, alle auf v0.11.5 gepinnt: das vorgebaute v0.11.5-Binary oben, das Upstream-`sh`-Installationsskript **mit dem Versions-Pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux) und das Docker-Image `iiidev/iii:0.11.5`. Ein bloßes `install.sh | sh` installiert die **neueste** Engine, die agentmemory nicht unterstützt; übergib immer `VERSION=0.11.5`. Am einfachsten von allen: Führe einfach `bunx --bun @agentmemory/agentmemory` aus, das die gepinnte Engine für dich nach `~/.agentmemory/bin` holt.
 
 ---
 
@@ -943,14 +943,14 @@ Verschmolzen mit Reciprocal Rank Fusion (RRF, k=60) und session-diversifiziert (
 
 Hybrides Ranking gilt für den primären Recall-Pfad, nicht nur für `smart-search`: `mem::search` (hinter `memory_recall`) rankt durch dieselbe BM25 + Vector + Graph-Fusion, sobald der Vector-Index befüllt ist. Lesson-Recall läuft auf einem dedizierten In-Memory-BM25-Index, statt bei jeder Anfrage den ganzen Korpus zu scannen. Überholte Memory-Versionen sind von jedem Recall-Pfad ausgeschlossen; die Versionskette bewahrt ihre Historie.
 
-BM25 tokenisiert Griechisch, Kyrillisch, Hebräisch, Arabisch und akzentuiertes Latein standardmäßig. Für Erinnerungen in Chinesisch / Japanisch / Koreanisch installieren Sie die optionalen Segmentierer (`npm install @node-rs/jieba tiny-segmenter`), um CJK-Folgen in Worttokens aufzuteilen; ohne sie fällt agentmemory weich auf eine Tokenisierung als gesamte Folge zurück und gibt einmalig einen Hinweis auf stderr aus.
+BM25 tokenisiert Griechisch, Kyrillisch, Hebräisch, Arabisch und akzentuiertes Latein standardmäßig. Für Erinnerungen in Chinesisch / Japanisch / Koreanisch installieren Sie die optionalen Segmentierer (`bun add @node-rs/jieba tiny-segmenter`), um CJK-Folgen in Worttokens aufzuteilen; ohne sie fällt agentmemory weich auf eine Tokenisierung als gesamte Folge zurück und gibt einmalig einen Hinweis auf stderr aus.
 
 ### Embedding-Provider
 
 agentmemory erkennt Ihren Provider automatisch. Für die besten Ergebnisse installieren Sie lokale Embeddings (kostenlos):
 
 ```bash
-npm install @huggingface/transformers
+bun add @huggingface/transformers
 ```
 
 | Provider | Modell | Kosten | Hinweise |
@@ -968,7 +968,7 @@ npm install @huggingface/transformers
 
 54 Tools, 6 Resources, 3 Prompts und 17 Skills.
 
-> **MCP-Shim vs. voller Server:** Das veröffentlichte `@agentmemory/mcp`-Paket ist ein dünnes Shim. Es legt die volle 54-Tool-Oberfläche **nur dann** offen, wenn es per `AGENTMEMORY_URL` einen laufenden agentmemory-Server erreichen kann (Proxy-Modus). Ohne erreichbaren Server fällt das Shim auf einen lokalen 7-Tool-Satz zurück (`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`). Die Umgebungsvariable `AGENTMEMORY_TOOLS=core|all` ist ein *serverseitiger* Schalter; sie im `env`-Block des Shims zu setzen hat keinen Effekt. Wenn Sie in Cursor / OpenCode / Gemini CLI nur 7 Tools sehen, starten Sie `npx @agentmemory/agentmemory` (oder den Docker-Stack) und setzen Sie `AGENTMEMORY_URL=http://localhost:3111`.
+> **MCP-Shim vs. voller Server:** Das veröffentlichte `@agentmemory/mcp`-Paket ist ein dünnes Shim. Es legt die volle 54-Tool-Oberfläche **nur dann** offen, wenn es per `AGENTMEMORY_URL` einen laufenden agentmemory-Server erreichen kann (Proxy-Modus). Ohne erreichbaren Server fällt das Shim auf einen lokalen 7-Tool-Satz zurück (`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`). Die Umgebungsvariable `AGENTMEMORY_TOOLS=core|all` ist ein *serverseitiger* Schalter; sie im `env`-Block des Shims zu setzen hat keinen Effekt. Wenn Sie in Cursor / OpenCode / Gemini CLI nur 7 Tools sehen, starten Sie `bunx --bun @agentmemory/agentmemory` (oder den Docker-Stack) und setzen Sie `AGENTMEMORY_URL=http://localhost:3111`.
 
 ### 54 Tools
 
@@ -1060,8 +1060,8 @@ Die Tabelle zeigt die vier Kern-Skills. Der volle Satz umfasst 8 aufrufbare Skil
 Ohne den vollen Server laufen lassen, für jeden MCP-Client. Eines der folgenden geht:
 
 ```bash
-npx -y @agentmemory/agentmemory mcp   # canonical (always available)
-npx -y @agentmemory/mcp                # shim package alias
+bunx --bun @agentmemory/agentmemory mcp   # canonical (always available)
+bunx --bun @agentmemory/mcp                # shim package alias
 ```
 
 Oder zur MCP-Konfig Ihres Agenten hinzufügen:
@@ -1071,8 +1071,8 @@ Die meisten Agenten (Cursor, Claude Desktop, Cline, Roo Code, Windsurf, Gemini C
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -1089,7 +1089,7 @@ OpenCode (`opencode.json`):
   "mcp": {
     "agentmemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["bunx", "--bun", "@agentmemory/mcp"],
       "enabled": true
     }
   },
@@ -1558,13 +1558,13 @@ Volle Endpunktliste: [`src/triggers/api.ts`](../src/triggers/api.ts)
 <h2 id="development"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-development.svg"><img src="../assets/tags/section-development.svg" alt="Entwicklung" height="32" /></picture></h2>
 
 ```bash
-npm run dev               # Hot reload
-npm run build             # Production build
-npm test                  # 1,674 tests
-npm run test:integration  # API tests (requires running services)
+bun run dev               # Hot reload
+bun run build             # Production build
+bun run test                  # 1,674 tests
+bun run test:integration  # API tests (requires running services)
 ```
 
-**Voraussetzungen:** Node.js >= 26, [iii-engine](https://iii.dev/docs) oder Docker
+**Voraussetzungen:** Bun >= 1.3.13, [iii-engine](https://iii.dev/docs) oder Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="Lizenz" height="32" /></picture></h2>
 

@@ -24,6 +24,7 @@
           version = packageJson.version;
           src = pkgs.lib.cleanSource ./.;
           nodejs = pkgs.nodejs_26;
+          nativeBuildInputs = [ pkgs.bun ];
 
           npmDeps = pkgs.fetchNpmDeps {
             name = "agentmemory-npm-deps";
@@ -41,15 +42,12 @@
             "--no-fund"
           ];
           npmInstallFlags = [ "--legacy-peer-deps" ];
-          makeWrapperArgs = [
-            "--prefix"
-            "PATH"
-            ":"
-            (pkgs.lib.makeBinPath [
-              pkgs.curl
-              pkgs.gnutar
-            ])
-          ];
+          postInstall = ''
+            rm "$out/bin/agentmemory"
+            makeWrapper ${pkgs.bun}/bin/bun "$out/bin/agentmemory" \
+              --add-flags "$out/lib/node_modules/@agentmemory/agentmemory/dist/cli.mjs" \
+              --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.curl pkgs.gnutar ]}
+          '';
 
           meta = {
             description = packageJson.description;
@@ -73,7 +71,6 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
-              nodejs_26
               bun
               curl
               gnutar

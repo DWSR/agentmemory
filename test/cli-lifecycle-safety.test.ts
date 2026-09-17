@@ -27,7 +27,7 @@ function installFakeDocker(binDir: string): void {
   const dockerPath = join(binDir, "docker");
   writeFileSync(
     dockerPath,
-    `#!/usr/bin/env node
+    `#!/usr/bin/env bun
 const { appendFileSync } = require("node:fs");
 const args = process.argv.slice(2);
 appendFileSync(process.env.DOCKER_LOG, args.join(" ") + "\\n");

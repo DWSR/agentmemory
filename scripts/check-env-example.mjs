@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 //
 // Sync-check: every env var read by `src/` MUST be documented in
 // `.env.example`. Runs in CI as a soft guard rail — keeps `.env.example`

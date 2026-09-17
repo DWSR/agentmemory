@@ -22,7 +22,7 @@ const CODEX_TOML = join(CODEX_DIR, "config.toml");
 const CODEX_HOOKS = join(CODEX_DIR, "hooks.json");
 
 const TOML_BLOCK = `[mcp_servers.agentmemory]
-command = "npx"
+command = "bunx"
 args = ["-y", "@agentmemory/mcp"]
 
 [mcp_servers.agentmemory.env]

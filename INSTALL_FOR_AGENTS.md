@@ -12,27 +12,26 @@ Default keyless mode needs no API key or cloud account and disables vector embed
 
 ## Prerequisites
 
-- Node.js >= 26 with npm and npx. Check with `node -v`, `npm -v`, and `npx -v`.
-- macOS/Linux automatic iii installation also requires `curl`, a POSIX `sh`, and `tar`. Check with `command -v curl sh tar`. Minimal images such as `node:26-slim` may not include them.
+- Bun >= 1.3.13. Check with `bun --version` and `bunx --version`.
+- macOS/Linux automatic iii installation also requires `curl`, a POSIX `sh`, and `tar`. Check with `command -v curl sh tar`. Minimal images such as `oven/bun:1.3.13-slim` may not include them.
 - Windows: WSL2 follows the Linux path above. Native Windows requires a manually downloaded, pinned iii-engine v0.11.5 `iii.exe`, or Docker Desktop; the CLI does not auto-extract the Windows ZIP. Native automated `connect` supports only `copilot-cli`. Other Windows agents need manual MCP configuration; WSL `connect` applies only to agents installed in that same WSL environment.
 - Ports 3111 (REST), 3112 (streams), 3113 (viewer), and 49134 (engine) free. If any are taken, stop whatever is using them before starting (see Troubleshooting).
 
 ## Running non-interactively
 
-Use `npx -y @agentmemory/agentmemory@latest` as the canonical command. `-y` accepts npx's package prompt and `@latest` avoids running a stale cached release. Several agentmemory onboarding choices can still prompt on a TTY; set `CI=1` for unattended runs or use non-TTY stdin. Re-run onboarding any time with `npx -y @agentmemory/agentmemory@latest --reset`.
+Use `bunx --bun @agentmemory/agentmemory@latest` as the canonical command. `@latest` avoids running a stale cached release. Several agentmemory onboarding choices can still prompt on a TTY; set `CI=1` for unattended runs or use non-TTY stdin. Re-run onboarding any time with `bunx --bun @agentmemory/agentmemory@latest --reset`.
 
 ## 1. Verify the runtime prerequisites
 
 ```bash
-node -v
-npm -v
-npx -v
+bun --version
+bunx --version
 
 # macOS/Linux only
 command -v curl sh tar
 ```
 
-Expect: Node prints v26 or newer, npm succeeds, and macOS/Linux prints a path for each automatic-installer dependency.
+Expect: Bun prints 1.3.13 or newer, and macOS/Linux prints a path for each automatic-installer dependency.
 
 For native Windows, install the engine before continuing:
 
@@ -47,16 +46,16 @@ Expect: exactly `0.11.5`. Do not install the latest unpinned iii release. Altern
 
 ## 2. Start the server
 
-The canonical command downloads the npm package and, on macOS/Linux, auto-installs its pinned iii-engine into the private agentmemory bin directory. Run it in a dedicated terminal:
+The canonical command downloads the Bun package and, on macOS/Linux, auto-installs its pinned iii-engine into the private agentmemory bin directory. Run it in a dedicated terminal:
 
 ```bash
-npx -y @agentmemory/agentmemory@latest
+bunx --bun @agentmemory/agentmemory@latest
 ```
 
 To prefer Docker even when a compatible native binary is present, set `AGENTMEMORY_USE_DOCKER=1` for the same command. To choose persistent storage, pass an absolute path and reuse it on every start:
 
 ```bash
-npx -y @agentmemory/agentmemory@latest --data-dir /absolute/path/to/agentmemory-data
+bunx --bun @agentmemory/agentmemory@latest --data-dir /absolute/path/to/agentmemory-data
 ```
 
 Docker bind-mounts that same resolved host directory at `/data`. For a second isolated daemon, add `--instance 1`; it stores data and lifecycle metadata under `instance-1` and defaults to ports 3211, 3212, 3213, and 49234. Do not use `--port` alone for concurrent daemons: it changes the ports but keeps instance 0's canonical lifecycle ownership. Use `--instance` for isolation.
@@ -78,7 +77,7 @@ From a second terminal, run:
 curl -fsS http://localhost:3111/agentmemory/livez
 curl -fsS http://localhost:3111/agentmemory/health
 curl -fsS -o /dev/null http://localhost:3113/
-npx -y @agentmemory/agentmemory@latest status
+bunx --bun @agentmemory/agentmemory@latest status
 ```
 
 Expect: both REST checks return JSON, the viewer request succeeds, the startup ready panel has listed all four addresses, and `status` reports healthy agentmemory state. In keyless mode, status should report vectors disabled or `bm25-only`; `mem::search` uses BM25, while smart search may also include existing graph matches. Native PowerShell users can use `Invoke-RestMethod` instead of `curl`.
@@ -86,7 +85,7 @@ Expect: both REST checks return JSON, the viewer request succeeds, the startup r
 ## 4. Exercise default recall and optional local semantics
 
 ```bash
-npx -y @agentmemory/agentmemory@latest demo
+bunx --bun @agentmemory/agentmemory@latest demo
 ```
 
 The demo seeds three realistic sessions and searches them. In default keyless mode, vectors are disabled and the `mem::search` keyword queries such as `jwt auth middleware` and `rate limiting` should return BM25 hits. The deliberately semantic query `database performance optimization` can return zero because no embedding provider is active. Smart search can still add structural graph matches if graph data already exists.
@@ -104,7 +103,7 @@ The first embedding request downloads `Xenova/all-MiniLM-L6-v2`; wait for that d
 Detect which agent is running this runbook, then wire its MCP config. On native Windows, run this automated step only for `copilot-cli`:
 
 ```bash
-npx -y @agentmemory/agentmemory@latest connect <agent>
+bunx --bun @agentmemory/agentmemory@latest connect <agent>
 ```
 
 `connect` merges agentmemory into that agent's MCP config and preserves any existing servers. Supported agent names:
@@ -118,7 +117,7 @@ Expect: the agent now lists agentmemory's tools. With the server running you sho
 ## 6. Install native skills
 
 ```bash
-npx skills add rohitg00/agentmemory -y
+bunx --bun skills add rohitg00/agentmemory -y
 ```
 
 This installs the native skills so the agent knows when to call the memory tools, not just that they exist. `connect` makes the tools available; skills teach the agent when to use them.
@@ -154,22 +153,22 @@ If `AGENTMEMORY_SECRET` is set in the environment, the REST API requires it. Add
 Now stop and restart the processes, using the same `--data-dir` value if you set one:
 
 ```bash
-npx -y @agentmemory/agentmemory@latest stop
-npx -y @agentmemory/agentmemory@latest
+bunx --bun @agentmemory/agentmemory@latest stop
+bunx --bun @agentmemory/agentmemory@latest
 ```
 
 After `/agentmemory/livez` returns 200 again, repeat the `smart-search` request above. Expect: the saved probe is still returned. This restart check proves the selected platform data directory is persistent rather than only proving the in-memory index.
 
 ## Optional: install a global command
 
-The npx form above is the canonical fresh-install path. If you want the shorter `agentmemory` command afterward:
+The `bunx` form above is the canonical fresh-install path. If you want the shorter `agentmemory` command afterward:
 
 ```bash
-npm install -g @agentmemory/agentmemory@latest
+bun add --global @agentmemory/agentmemory@latest
 agentmemory --version
 ```
 
-If a system Node install returns `EACCES` on macOS/Linux, use a user-owned npm prefix rather than changing repository permissions. The npx form remains available without a global install.
+Bun's global bin directory must be on `PATH`; the `bunx` form remains available without a global install.
 
 ## Optional: richer features
 
@@ -185,25 +184,25 @@ The MCP server exposes 54 tools by default (`--tools all`). Use `--tools core` (
 
 ## Lifecycle commands
 
-- `npx -y @agentmemory/agentmemory@latest status` shows server health, viewer, provider, and embedding state.
-- `npx -y @agentmemory/agentmemory@latest doctor` runs diagnostics and reports what is misconfigured.
-- `npx -y @agentmemory/agentmemory@latest stop` stops the engine this CLI started. Docker mode validates and preserves the exact container and `/data` mount for the next restart; `stop --force` applies only to native ownership checks.
-- `npx -y @agentmemory/agentmemory@latest upgrade` upgrades agentmemory and the iii runtime, best effort.
-- `npx -y @agentmemory/agentmemory@latest --reset` wipes onboarding preferences and re-runs the wizard.
-- `npx -y @agentmemory/agentmemory@latest import-jsonl <file>` imports prior Claude Code session logs as memories.
+- `bunx --bun @agentmemory/agentmemory@latest status` shows server health, viewer, provider, and embedding state.
+- `bunx --bun @agentmemory/agentmemory@latest doctor` runs diagnostics and reports what is misconfigured.
+- `bunx --bun @agentmemory/agentmemory@latest stop` stops the engine this CLI started. Docker mode validates and preserves the exact container and `/data` mount for the next restart; `stop --force` applies only to native ownership checks.
+- `bunx --bun @agentmemory/agentmemory@latest upgrade` upgrades agentmemory and the iii runtime, best effort.
+- `bunx --bun @agentmemory/agentmemory@latest --reset` wipes onboarding preferences and re-runs the wizard.
+- `bunx --bun @agentmemory/agentmemory@latest import-jsonl <file>` imports prior Claude Code session logs as memories.
 
 ## Troubleshooting
 
-- `command not found: agentmemory`: the optional global bin is not on `PATH`. Use `npx -y @agentmemory/agentmemory@latest`.
+- `command not found: agentmemory`: the optional global bin is not on `PATH`. Use `bunx --bun @agentmemory/agentmemory@latest`.
 - Automatic iii install fails on macOS/Linux: verify `command -v curl sh tar`; install the missing prerequisite or use Docker.
-- Stale npx version: include both `-y` and `@latest` as shown throughout this runbook.
+- Stale Bun version: include `@latest` as shown throughout this runbook.
 - Port already in use: another process holds 3111, 3112, 3113, or 49134. Stop that process, then re-run.
 - Custom REST port: `--port <N>` derives streams as `N+1`, viewer as `N+2`, and the iii worker WebSocket as `N+46023` only when their explicit port/URL variables are unset (`III_STREAM_PORT` or legacy `III_STREAMS_PORT`, `III_VIEWER_PORT` or `AGENTMEMORY_VIEWER_URL`, and `III_ENGINE_PORT` or `III_ENGINE_URL`).
-- Server starts but `livez` never returns 200: re-run with `npx -y @agentmemory/agentmemory@latest --verbose` to see engine stderr.
+- Server starts but `livez` never returns 200: re-run with `bunx --bun @agentmemory/agentmemory@latest --verbose` to see engine stderr.
 - `The engine process started but the REST API never responded.`: inspect all four derived ports, confirm the pinned iii process stayed alive, and use `--verbose` for captured engine stderr.
 - Engine version warning on start: harmless. agentmemory uses its own pinned engine in `~/.agentmemory/bin` regardless of any `iii` on `PATH`. Set `AGENTMEMORY_III_VERSION` only to override deliberately.
-- "engine conflict" / another iii engine already running: if a different iii version is already serving the port, agentmemory will not adopt it. Stop that engine (`npx -y @agentmemory/agentmemory@latest stop --force`, or however you started it), then rerun the canonical command. Its private v0.11.5 binary does not replace a user-managed `iii` on `PATH`.
-- Only 7 tools visible in the agent: the MCP shim is in local fallback because it could not reach a server. Start `npx -y @agentmemory/agentmemory@latest`, ensure `AGENTMEMORY_URL` points at it (default `http://localhost:3111`), then reload MCP.
+- "engine conflict" / another iii engine already running: if a different iii version is already serving the port, agentmemory will not adopt it. Stop that engine (`bunx --bun @agentmemory/agentmemory@latest stop --force`, or however you started it), then rerun the canonical command. Its private v0.11.5 binary does not replace a user-managed `iii` on `PATH`.
+- Only 7 tools visible in the agent: the MCP shim is in local fallback because it could not reach a server. Start `bunx --bun @agentmemory/agentmemory@latest`, ensure `AGENTMEMORY_URL` points at it (default `http://localhost:3111`), then reload MCP.
 - Native Windows: the CLI does not auto-extract the ZIP. Install the pinned v0.11.5 `iii.exe` manually, use WSL2, or run with Docker Desktop and `AGENTMEMORY_USE_DOCKER=1`. Automated `connect` supports only `copilot-cli`; configure other native agents manually.
 - Semantic demo query returns zero hits: this is expected with vectors disabled in default keyless mode. Set `EMBEDDING_PROVIDER=local`, restart, allow the first model download to complete, and rerun the demo.
 

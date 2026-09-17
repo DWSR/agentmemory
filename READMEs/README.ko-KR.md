@@ -78,7 +78,7 @@
 명령 하나면 됩니다:
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 첫 실행은 인터랙티브 설정입니다: 연결할 에이전트(Claude Code, Cursor, Codex, Gemini CLI, OpenCode, ...)를 고르고, LLM 프로바이더를 선택하거나 키 없이 유지하십시오. 그러면 설정을 시드하고 `:3111`에서 메모리 서버를 시작하며, 이후 어디서나 단순한 `agentmemory` 명령이 동작하도록 전역 설치를 제안합니다.
@@ -87,7 +87,7 @@ npx @agentmemory/agentmemory
 
 ```bash
 agentmemory demo --serve                 # seed sample sessions + watch recall find them
-npx skills add rohitg00/agentmemory -y   # 17 native skills so your agent knows when to reach for memory
+bunx --bun skills add rohitg00/agentmemory -y   # 17 native skills so your agent knows when to reach for memory
 ```
 
 코딩 에이전트에게 전체 과정을 맡기고 싶다면 지침 하나만 건네십시오:
@@ -107,9 +107,9 @@ npx skills add rohitg00/agentmemory -y   # 17 native skills so your agent knows 
 <summary><strong>전역 설치 / EACCES</strong></summary>
 
 ```bash
-npm install -g @agentmemory/agentmemory
+bun add --global @agentmemory/agentmemory
 # If you hit EACCES on macOS/Linux system Node installs:
-sudo npm install -g @agentmemory/agentmemory
+sudo bun add --global @agentmemory/agentmemory
 ```
 
 </details>
@@ -117,14 +117,14 @@ sudo npm install -g @agentmemory/agentmemory
 <details>
 <summary><strong>npx가 이전 버전을 제공하는 경우</strong></summary>
 
-npx는 버전별로 캐싱합니다. `npx -y @agentmemory/agentmemory@latest`로 최신 버전을 강제하거나, `rm -rf ~/.npm/_npx`로 캐시를 한 번 비우십시오(macOS/Linux; Windows에서는 `%LOCALAPPDATA%\npm-cache\_npx`를 삭제).
+npx는 버전별로 캐싱합니다. `bunx --bun @agentmemory/agentmemory@latest`로 최신 버전을 강제하거나, `rm -rf ~/.npm/_npx`로 캐시를 한 번 비우십시오(macOS/Linux; Windows에서는 `%LOCALAPPDATA%\npm-cache\_npx`를 삭제).
 
 </details>
 
 <details>
 <summary><strong>이미 자체 iii 엔진을 실행 중인 경우</strong></summary>
 
-agentmemory는 iii-engine v0.11.5를 고정하며 다른 버전에는 연결되지 않습니다(워커가 다른 엔진의 프로토콜을 말할 수 없습니다). 다른 엔진을 중지한 후 `npx -y @agentmemory/agentmemory@latest`를 실행하십시오. 고정된 v0.11.5를 `~/.agentmemory/bin`에 설치·실행하며, 기존 `iii`는 건드리지 않습니다.
+agentmemory는 iii-engine v0.11.5를 고정하며 다른 버전에는 연결되지 않습니다(워커가 다른 엔진의 프로토콜을 말할 수 없습니다). 다른 엔진을 중지한 후 `bunx --bun @agentmemory/agentmemory@latest`를 실행하십시오. 고정된 v0.11.5를 `~/.agentmemory/bin`에 설치·실행하며, 기존 `iii`는 건드리지 않습니다.
 
 </details>
 
@@ -232,7 +232,7 @@ agentmemory는 hooks, MCP, REST API를 지원하는 모든 에이전트와 호�
 **무엇이 바뀌는가:** 세션 1에서 JWT 인증을 설정합니다. 세션 2에서 rate limiting을 요청합니다. 에이전트는 이미 인증이 `src/middleware/auth.ts`의 jose 미들웨어로 처리된다는 것, 테스트가 토큰 검증을 다룬다는 것, 그리고 Edge 호환성 때문에 jsonwebtoken 대신 jose를 선택했다는 것을 알고 있으며, 다시 설명할 필요도 복사·붙여넣기도 없습니다.
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 > **v0.9.0의 새로운 기능** — [agent-memory.dev](https://agent-memory.dev)의 랜딩 사이트, 파일시스템 커넥터(`@agentmemory/fs-watcher`), 독립형 MCP가 이제 실행 중인 서버로 프록시되어 hooks와 뷰어가 일치합니다. 모든 삭제 경로에 감사 정책이 코드로 명문화되었고, 작은 Node 프로세스에서 health가 `memory_critical`로 잘못 표시되지 않습니다. 전체 노트는 [CHANGELOG.md](../CHANGELOG.md#090--2026-04-18)에서 확인할 수 있습니다.
@@ -469,10 +469,10 @@ npx @agentmemory/agentmemory
 
 ```bash
 # Terminal 1: start the server
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # Terminal 2: seed sample data and see recall in action
-npx @agentmemory/agentmemory demo
+bunx --bun @agentmemory/agentmemory demo
 ```
 
 `demo`는 현실적인 세션 3개(JWT 인증, N+1 쿼리 수정, rate limiting)를 시드하고, 그 위에서 시맨틱 검색을 실행합니다. "database performance optimization"으로 검색하면 "N+1 query fix"를 찾는 것을 확인할 수 있는데, 키워드 매칭으로는 불가능한 결과입니다.
@@ -499,10 +499,10 @@ agentmemory가 기록한 모든 세션은 재생 가능합니다. 뷰어를 열�
 
 ```bash
 # Import everything under the default ~/.claude/projects
-npx @agentmemory/agentmemory import-jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl
 
 # Or import a single file
-npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
+bunx --bun @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
 ```
 
 가져온 세션은 네이티브 세션과 함께 Replay 선택기에 표시됩니다. 내부적으로 각 항목은 별도의 사이드 채널 서버 없이 `mem::replay::load`, `mem::replay::sessions`, `mem::replay::import-jsonl` iii 함수로 라우팅됩니다. 가져온 각 트랜스크립트는 검색을 위해 인덱싱되고, origin 채널 `import`로 스탬프되며, 세션 crystal과 lessons로 마이닝됩니다.
@@ -512,7 +512,7 @@ npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.
 로컬 런타임을 의도적으로 업데이트할 때는 maintenance 명령을 사용하십시오:
 
 ```bash
-npx @agentmemory/agentmemory upgrade
+bunx --bun @agentmemory/agentmemory upgrade
 ```
 
 경고: 이 명령은 현재 workspace/런타임을 변경합니다. JavaScript 의존성을 업데이트할 수 있으며, 고정된 Docker 이미지 `iiidev/iii:0.11.5`를 pull할 수 있습니다. 고정되지 않았거나 더 새로운 iii 엔진을 설치하는 일은 절대 없습니다.
@@ -522,7 +522,7 @@ npx @agentmemory/agentmemory upgrade
 ### Claude Code (블록 한 번, 붙여넣기)
 
 ```text
-Install agentmemory: run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
+Install agentmemory: run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 17 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 54 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
 ```
 
 #### 플러그인 설치 없이 Claude Code 사용 (MCP-독립형 경로)
@@ -542,7 +542,7 @@ agentmemory connect claude-code --with-hooks
 
 ```bash
 # 1. start the memory server in a separate terminal
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 
 # 2. register the agentmemory marketplace and install the plugin
 codex plugin marketplace add rohitg00/agentmemory
@@ -573,13 +573,13 @@ agentmemory connect codex --with-hooks
 <summary><b>OpenClaw (이 프롬프트를 붙여넣으세요)</b></summary>
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
+Install agentmemory for OpenClaw. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 54 memory tools:
 
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -598,12 +598,12 @@ Restart OpenClaw. Verify with `curl http://localhost:3111/agentmemory/health`. O
 <summary><b>Hermes Agent (이 프롬프트를 붙여넣으세요)</b></summary>
 
 ```text
-Install agentmemory for Hermes. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
+Install agentmemory for Hermes. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 54 memory tools:
 
 mcp_servers:
   agentmemory:
-    command: npx
-    args: ["-y", "@agentmemory/mcp"]
+    command: bunx
+    args: ["--bun", "@agentmemory/mcp"]
 
 memory:
   provider: agentmemory
@@ -617,22 +617,22 @@ Verify with `curl http://localhost:3111/agentmemory/health`. Open http://localho
 
 ### 다른 에이전트
 
-메모리 서버 시작: `npx @agentmemory/agentmemory`
+메모리 서버 시작: `bunx --bun @agentmemory/agentmemory`
 
-#### `npx skills add`를 통한 네이티브 skills (50+ 에이전트)
+#### `bunx --bun skills add`를 통한 네이티브 skills (50+ 에이전트)
 
 agentmemory는 Claude Code 스타일의 `<dir>/SKILL.md` 형식으로 17개의 skills를 제공합니다: 9개의 호출 가능한 액션 skills(`remember`, `recall`, `recap`, `handoff`, `forget`, `lesson`, `commit-context`, `commit-history`, `session-history`)와 에이전트가 필요할 때 로드하는 8개의 레퍼런스 skills(`memory-discipline`, `agentmemory-mcp-tools`, `agentmemory-rest-api`, `agentmemory-config`, `agentmemory-agents`, `agentmemory-hooks`, `agentmemory-architecture`, `write-agentmemory-skill`)입니다. 레퍼런스 skills는 소스에서 생성된 데이터 표를 담고 있어 절대 드리프트하지 않습니다. vercel-labs의 [`skills`](https://npmjs.com/package/skills) CLI가 50개 이상의 에이전트(Claude Code, Cursor, Cline, Continue, Droid, Warp, Codex, Antigravity, Kiro, OpenCode, Goose, Roo, Trae, Windsurf 등)에서 호출한 에이전트의 네이티브 skill 디렉터리에 이를 자동 설치합니다:
 
 ```bash
-npx skills add rohitg00/agentmemory -y          # auto-detects the calling agent
-npx skills add rohitg00/agentmemory -y -a warp  # explicit agent
-npx skills add rohitg00/agentmemory -y -a '*'   # install to every installed agent
+bunx --bun skills add rohitg00/agentmemory -y          # auto-detects the calling agent
+bunx --bun skills add rohitg00/agentmemory -y -a warp  # explicit agent
+bunx --bun skills add rohitg00/agentmemory -y -a '*'   # install to every installed agent
 ```
 
 이는 `agentmemory connect <agent>`와 **상호 보완적**입니다:
 
 - `agentmemory connect <agent>`는 도구를 사용할 수 있도록 MCP 서버 설정을 기록합니다.
-- `npx skills add rohitg00/agentmemory`는 에이전트가 언제 도구를 호출해야 하는지 알도록 skills를 설치합니다.
+- `bunx --bun skills add rohitg00/agentmemory`는 에이전트가 언제 도구를 호출해야 하는지 알도록 skills를 설치합니다.
 
 skills CLI가 아직 지원하지 않는 일부 에이전트(Zed v1.3.x 이하)의 경우, 15개의 SKILL.md 파일을 에이전트의 네이티브 skill 디렉터리에 직접 넣으십시오. 동일한 형식이 어디서나 동작합니다.
 
@@ -642,8 +642,8 @@ agentmemory 항목은 `mcpServers` 형태를 사용하는 모든 호스트(Curso
 
 ```json
 "agentmemory": {
-  "command": "npx",
-  "args": ["-y", "@agentmemory/mcp"],
+  "command": "bunx",
+  "args": ["--bun", "@agentmemory/mcp"],
   "env": {
     "AGENTMEMORY_URL": "${AGENTMEMORY_URL}",
     "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET}"
@@ -660,13 +660,13 @@ agentmemory 항목은 `mcpServers` 형태를 사용하는 모든 호스트(Curso
 | **Cline / Roo Code / Kilo Code** | Cline MCP settings (Settings UI → MCP Servers → Edit) | 동일한 `mcpServers` 블록. |
 | **Devin CLI** | `~/.config/devin/config.json` | `agentmemory connect devin`이 MCP 항목을 병합하고, `--with-hooks`는 Devin의 소문자 tool matcher를 사용하는 6개의 네이티브 자동 캡처 hooks(SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd)를 추가합니다. `devin mcp list`와 devin 내부의 `/hooks`로 확인하세요. |
 | **Devin (클라우드)** | Settings → Connections → MCP servers | 커스텀 MCP(STDIO) 추가: command `npx`, args `-y @agentmemory/mcp@latest`, env `AGENTMEMORY_URL`을 네트워크로 접근 가능한 agentmemory 배포로 지정하고 `AGENTMEMORY_SECRET` 설정(클라우드 세션은 localhost에 접근할 수 없음 — [`deploy/`](../deploy/) 참고). |
-| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory npx -y @agentmemory/mcp --scope user` (자동 병합). |
+| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory bunx --bun @agentmemory/mcp --scope user` (자동 병합). |
 | **GitHub Copilot CLI (MCP only)** | `~/.copilot/mcp-config.json` | `agentmemory connect copilot-cli`가 `mcpServers.agentmemory`를 병합. Copilot은 다음 실행 또는 `/mcp`에서 인식. |
 | **GitHub Copilot CLI (full plugin)** | Copilot 플러그인 설치 | GitHub 하위 디렉터리의 플러그인은 `copilot plugin install rohitg00/agentmemory:plugin`. |
 | **OpenClaw** | OpenClaw MCP config | 동일한 `mcpServers` 블록. 더 깊게: `openclaw plugins install ./integrations/openclaw`는 OpenClaw의 메모리 슬롯을 차지합니다(`memory-core`에서 자동 전환). `plugins.entries.agentmemory.hooks.allowConversationAccess=true`를 설정하지 않으면 턴 캡처가 조용히 차단됩니다. [`integrations/openclaw`](integrations/openclaw/) 참고. |
-| **Codex CLI (MCP only)** | `.codex/config.toml` | TOML 형식: `codex mcp add agentmemory -- npx -y @agentmemory/mcp`, 또는 `[mcp_servers.agentmemory]`를 수동으로 추가. |
+| **Codex CLI (MCP only)** | `.codex/config.toml` | TOML 형식: `codex mcp add agentmemory -- bunx --bun @agentmemory/mcp`, 또는 `[mcp_servers.agentmemory]`를 수동으로 추가. |
 | **Codex CLI (full plugin)** | Codex 플러그인 마켓플레이스 | `codex plugin marketplace add rohitg00/agentmemory` 후 `codex plugin add agentmemory@agentmemory`. MCP + 6 lifecycle hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PreCompact, Stop) + 17 skills 등록. Codex Desktop에서는 [openai/codex#16430](https://github.com/openai/codex/issues/16430)이 머지될 때까지 `agentmemory connect codex --with-hooks`도 실행해야 합니다. 현재 그곳에서는 플러그인 hooks가 동작하지 않습니다. |
-| **OpenCode (MCP only)** | `opencode.json` | 다른 형식: 최상위 `mcp` 키, 명령은 배열로: `{"mcp": {"agentmemory": {"type": "local", "command": ["npx", "-y", "@agentmemory/mcp"], "enabled": true}}}`. |
+| **OpenCode (MCP only)** | `opencode.json` | 다른 형식: 최상위 `mcp` 키, 명령은 배열로: `{"mcp": {"agentmemory": {"type": "local", "command": ["bunx", "--bun", "@agentmemory/mcp"], "enabled": true}}}`. |
 | **OpenCode (full plugin)** | `plugin/opencode/` | 세션 라이프사이클, 메시지, 도구, 오류를 다루는 22개의 자동 캡처 hooks. 프로젝트 어트리뷰션은 세션 단위이므로, 하나의 OpenCode 프로세스가 여러 저장소에 걸쳐 있어도 각 세션은 자기 프로젝트 아래에 기록됩니다. 두 개의 슬래시 명령(`/recall`, `/remember`). `plugin/opencode/`를 OpenCode workspace에 복사한 후 `opencode.json`에 플러그인 항목을 추가하십시오. 전체 hook 표 + gap 분석은 [`plugin/opencode/README.md`](../plugin/opencode/README.md) 참고. |
 | **pi** | `~/.pi/agent/extensions/agentmemory` | `agentmemory connect pi`가 번들된 확장을 pi의 자동 발견 디렉터리에 설치합니다(에이전트 시작 시 리콜, 에이전트 종료 시 캡처, `memory_search` / `memory_save` / `memory_health` 도구, `/agentmemory-status`). 실행 중인 pi에서 `/reload`를 하면 인식됩니다. [`integrations/pi`](../integrations/pi/)는 pi 패키지이기도 합니다(체크아웃에서 `pi install ./integrations/pi`). |
 | **Hermes Agent** | `~/.hermes/config.yaml` | `cp -r integrations/hermes ~/.hermes/plugins/agentmemory` + `memory.provider: agentmemory`가 6개 hook로 구성된 메모리 프로바이더(프리페치, 턴 캡처, 세션 종료, 사전 압축, MEMORY.md 미러링, 시스템 프롬프트 블록)를 활성화합니다. `hermes plugins doctor`와 `hermes memory status`로 검증하세요. [`integrations/hermes`](integrations/hermes/) 참고. |
@@ -682,7 +682,7 @@ agentmemory 항목은 `mcpServers` 형태를 사용하는 모든 호스트(Curso
 | **DeepSeek Harness** | `$DSH_HOME/cordis.patch.yml` | `agentmemory connect dsh`는 모든 Harness 프로필이 로드하는 홈 레벨 패치 레이어에 `@deepseek-ai/dsh-mcp-client` 행을 추가합니다. 도구는 `mcp__agentmemory__*`로 등록됩니다. 자동 캡처도 연결하려면 `--with-hooks`를 전달하십시오: 번들된 Claude Code hook 스크립트가 `$DSH_HOME/agentmemory.hooks.json`에 기록된 manifest를 통해 Harness의 퍼스트파티 `@deepseek-ai/dsh-hooks-claude-code` 브리지(SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop)로 실행됩니다. `DSH_HOME`이 설정되지 않으면 기본값은 `~/.dsh`입니다. |
 | **Goose** | Goose MCP settings UI | 동일한 `mcpServers` 블록. `goose configure` → Add Extension → MCP를 사용하십시오. `~/.config/goose/config.yaml`의 직접 YAML 편집도 지원되지만 스키마는 `extensions:` + `cmd`를 사용합니다(`mcpServers:` + `command` 아님). |
 | **Aider** | n/a | REST API와 직접 통신: `curl -X POST http://localhost:3111/agentmemory/smart-search -d '{"query": "auth"}'`. |
-| **모든 에이전트 (32+)** | n/a | `npx skillkit install agentmemory`가 호스트를 자동 감지하고 병합. |
+| **모든 에이전트 (32+)** | n/a | `bunx --bun skillkit install agentmemory`가 호스트를 자동 감지하고 병합. |
 
 **샌드박스된 MCP 클라이언트**(Flatpak / Snap / 제한적인 컨테이너 등)가 호스트의 `localhost`에 도달할 수 없는 경우: `env` 블록에 `"AGENTMEMORY_FORCE_PROXY": "1"`도 설정하고, `AGENTMEMORY_URL`을 샌드박스가 실제로 도달 가능한 경로(예: LAN IP)로 지정하십시오.
 
@@ -714,7 +714,7 @@ iii.trigger({
 
 ```bash
 git clone https://github.com/rohitg00/agentmemory.git && cd agentmemory
-npm install && npm run build && npm start
+bun install --frozen-lockfile && bun run build && bun run start
 ```
 
 `iii`가 이미 설치되어 있으면 로컬 `iii-engine`으로 agentmemory를 시작하고, Docker가 사용 가능하면 Docker Compose로 폴백합니다. REST, 스트림, 뷰어는 기본적으로 `127.0.0.1`에 바인딩됩니다.
@@ -749,7 +749,7 @@ iii --version
 # Should print: 0.11.5
 
 # 5. Then run agentmemory as usual:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **옵션 B: Docker Desktop**
@@ -758,18 +758,18 @@ npx -y @agentmemory/agentmemory
 # 1. Install Docker Desktop for Windows
 # 2. Start Docker Desktop and make sure the engine is running
 # 3. Run agentmemory — it will auto-start the bundled compose file:
-npx -y @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 **옵션 C: 독립형 MCP만 사용 (엔진 없음).** 에이전트용 MCP 도구만 필요하고 REST API, 뷰어, cron 작업이 필요하지 않다면 엔진을 완전히 건너뛸 수 있습니다:
 
 ```powershell
-npx -y @agentmemory/agentmemory mcp
+bunx --bun @agentmemory/agentmemory mcp
 # or via the shim package:
-npx -y @agentmemory/mcp
+bunx --bun @agentmemory/mcp
 ```
 
-**Windows 진단:** `npx @agentmemory/agentmemory`가 실패하면 `--verbose`로 다시 실행하여 실제 엔진 stderr를 확인하십시오. 일반적인 실패 모드:
+**Windows 진단:** `bunx --bun @agentmemory/agentmemory`가 실패하면 `--verbose`로 다시 실행하여 실제 엔진 stderr를 확인하십시오. 일반적인 실패 모드:
 
 | 증상 | 해결 방법 |
 |---|---|
@@ -778,7 +778,7 @@ npx -y @agentmemory/mcp
 | 포트 충돌 | `netstat -ano \| findstr :3111`로 무엇이 바인딩되어 있는지 확인하고 종료하거나 `--port <N>` 사용 |
 | Docker가 설치되어 있어도 Docker 폴백을 건너뜀 | Docker Desktop이 실제로 실행 중인지 확인 (시스템 트레이 아이콘) |
 
-> 참고: iii **엔진**은 사전 빌드된 바이너리이며 cargo 크레이트가 아니므로, `cargo install`로 설치하려 하지 마세요. (iii **SDK**는 crates.io, npm, PyPI에 게시되어 있지만 agentmemory에는 필요하지 않습니다.) 지원되는 엔진 설치 방법은 모두 v0.11.5에 고정되어 있습니다: 위의 사전 빌드된 v0.11.5 바이너리, 버전 핀**을 포함한** 업스트림 `sh` 설치 스크립트 `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux), 그리고 Docker 이미지 `iiidev/iii:0.11.5`. 그냥 `install.sh | sh`를 실행하면 **최신** 엔진이 설치되는데, agentmemory는 이를 지원하지 않습니다; 항상 `VERSION=0.11.5`를 전달하세요. 가장 쉬운 방법은 그냥 `npx @agentmemory/agentmemory`를 실행하는 것입니다. 이 명령이 고정된 엔진을 `~/.agentmemory/bin`에 가져다 줍니다.
+> 참고: iii **엔진**은 사전 빌드된 바이너리이며 cargo 크레이트가 아니므로, `cargo install`로 설치하려 하지 마세요. (iii **SDK**는 crates.io, npm, PyPI에 게시되어 있지만 agentmemory에는 필요하지 않습니다.) 지원되는 엔진 설치 방법은 모두 v0.11.5에 고정되어 있습니다: 위의 사전 빌드된 v0.11.5 바이너리, 버전 핀**을 포함한** 업스트림 `sh` 설치 스크립트 `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux), 그리고 Docker 이미지 `iiidev/iii:0.11.5`. 그냥 `install.sh | sh`를 실행하면 **최신** 엔진이 설치되는데, agentmemory는 이를 지원하지 않습니다; 항상 `VERSION=0.11.5`를 전달하세요. 가장 쉬운 방법은 그냥 `bunx --bun @agentmemory/agentmemory`를 실행하는 것입니다. 이 명령이 고정된 엔진을 `~/.agentmemory/bin`에 가져다 줍니다.
 
 ---
 
@@ -925,14 +925,14 @@ Reciprocal Rank Fusion(RRF, k=60)으로 융합하고, 세션 다양화(세션당
 
 하이브리드 랭킹은 `smart-search`뿐 아니라 기본 리콜 경로에도 적용됩니다: (`memory_recall` 뒤의) `mem::search`는 벡터 인덱스가 채워지면 동일한 BM25 + vector + graph 융합으로 랭킹합니다. Lesson 리콜은 쿼리마다 전체 코퍼스를 스캔하는 대신 전용 인메모리 BM25 인덱스에서 실행됩니다. 대체된 메모리 버전은 모든 리콜 경로에서 제외되며, 버전 체인이 그 이력을 유지합니다.
 
-BM25는 기본적으로 그리스어, 키릴 문자, 히브리어, 아랍어, 강세 부호가 있는 라틴 문자를 토크나이즈합니다. 중국어 / 일본어 / 한국어 메모리의 경우 선택적 세그멘터(`npm install @node-rs/jieba tiny-segmenter`)를 설치하여 CJK 런을 단어 수준 토큰으로 분할하십시오. 설치하지 않으면 agentmemory는 전체 런 토크나이제이션으로 soft fallback하고 stderr에 일회성 힌트를 출력합니다.
+BM25는 기본적으로 그리스어, 키릴 문자, 히브리어, 아랍어, 강세 부호가 있는 라틴 문자를 토크나이즈합니다. 중국어 / 일본어 / 한국어 메모리의 경우 선택적 세그멘터(`bun add @node-rs/jieba tiny-segmenter`)를 설치하여 CJK 런을 단어 수준 토큰으로 분할하십시오. 설치하지 않으면 agentmemory는 전체 런 토크나이제이션으로 soft fallback하고 stderr에 일회성 힌트를 출력합니다.
 
 ### 임베딩 프로바이더
 
 agentmemory는 프로바이더를 자동 감지합니다. 최상의 결과를 위해 로컬 임베딩을 설치하십시오 (무료):
 
 ```bash
-npm install @huggingface/transformers
+bun add @huggingface/transformers
 ```
 
 | 프로바이더 | 모델 | 비용 | 비고 |
@@ -950,7 +950,7 @@ npm install @huggingface/transformers
 
 54개 도구, 6개 리소스, 3개 프롬프트, 17개 skills.
 
-> **MCP shim 대 전체 서버:** 게시된 `@agentmemory/mcp` 패키지는 얇은 shim입니다. `AGENTMEMORY_URL`을 통해 실행 중인 agentmemory 서버에 도달할 수 있을 때 **만** 전체 54-도구 표면을 노출합니다(프록시 모드). 도달 가능한 서버가 없으면 shim은 7-도구 로컬 세트(`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`)로 폴백합니다. `AGENTMEMORY_TOOLS=core|all` 환경 변수는 *서버 측* 플래그이며, shim의 `env` 블록에 설정해도 효과가 없습니다. Cursor / OpenCode / Gemini CLI에서 도구가 7개만 보인다면 `npx @agentmemory/agentmemory`(또는 Docker 스택)를 시작하고 `AGENTMEMORY_URL=http://localhost:3111`을 설정하십시오.
+> **MCP shim 대 전체 서버:** 게시된 `@agentmemory/mcp` 패키지는 얇은 shim입니다. `AGENTMEMORY_URL`을 통해 실행 중인 agentmemory 서버에 도달할 수 있을 때 **만** 전체 54-도구 표면을 노출합니다(프록시 모드). 도달 가능한 서버가 없으면 shim은 7-도구 로컬 세트(`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`)로 폴백합니다. `AGENTMEMORY_TOOLS=core|all` 환경 변수는 *서버 측* 플래그이며, shim의 `env` 블록에 설정해도 효과가 없습니다. Cursor / OpenCode / Gemini CLI에서 도구가 7개만 보인다면 `bunx --bun @agentmemory/agentmemory`(또는 Docker 스택)를 시작하고 `AGENTMEMORY_URL=http://localhost:3111`을 설정하십시오.
 
 ### 54개 도구
 
@@ -1042,8 +1042,8 @@ npm install @huggingface/transformers
 전체 서버 없이, 모든 MCP 클라이언트에서 실행합니다. 다음 둘 다 동작합니다:
 
 ```bash
-npx -y @agentmemory/agentmemory mcp   # canonical (always available)
-npx -y @agentmemory/mcp                # shim package alias
+bunx --bun @agentmemory/agentmemory mcp   # canonical (always available)
+bunx --bun @agentmemory/mcp                # shim package alias
 ```
 
 또는 에이전트의 MCP 설정에 추가:
@@ -1053,8 +1053,8 @@ npx -y @agentmemory/mcp                # shim package alias
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"],
       "env": {
         "AGENTMEMORY_URL": "http://localhost:3111"
       }
@@ -1071,7 +1071,7 @@ OpenCode (`opencode.json`):
   "mcp": {
     "agentmemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["bunx", "--bun", "@agentmemory/mcp"],
       "enabled": true
     }
   },
@@ -1540,13 +1540,13 @@ CONSOLIDATION_ENABLED=true
 <h2 id="development"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-development.svg"><img src="../assets/tags/section-development.svg" alt="개발" height="32" /></picture></h2>
 
 ```bash
-npm run dev               # Hot reload
-npm run build             # Production build
-npm test                  # 1,674 tests
-npm run test:integration  # API tests (requires running services)
+bun run dev               # Hot reload
+bun run build             # Production build
+bun run test                  # 1,674 tests
+bun run test:integration  # API tests (requires running services)
 ```
 
-**전제 조건:** Node.js >= 26, [iii-engine](https://iii.dev/docs) 또는 Docker
+**전제 조건:** Bun >= 1.3.13, [iii-engine](https://iii.dev/docs) 또는 Docker
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-license.svg"><img src="../assets/tags/section-license.svg" alt="라이선스" height="32" /></picture></h2>
 
