@@ -124,7 +124,7 @@ npx cached pro Version. Erzwingen Sie die neueste mit `bunx --bun @agentmemory/a
 <details>
 <summary><strong>Sie betreiben bereits eine eigene iii-Engine</strong></summary>
 
-agentmemory pinnt iii-engine v0.11.5 und verbindet sich nicht mit einer anderen Version (der Worker kann das Protokoll einer anderen Engine nicht sprechen). Stoppen Sie die andere Engine und führen Sie dann `bunx --bun @agentmemory/agentmemory@latest` aus. Es installiert und startet das gepinnte v0.11.5 in `~/.agentmemory/bin` und lässt Ihre eigene `iii` unangetastet.
+agentmemory pinnt iii-engine v0.11.6 und verbindet sich nicht mit einer anderen Version (der Worker kann das Protokoll einer anderen Engine nicht sprechen). Stoppen Sie die andere Engine und führen Sie dann `bunx --bun @agentmemory/agentmemory@latest` aus. Es installiert und startet das gepinnte v0.11.6 in `~/.agentmemory/bin` und lässt Ihre eigene `iii` unangetastet.
 
 </details>
 
@@ -463,7 +463,7 @@ Keines davon erfasst automatisch aus Coding-Agent-Hooks, liefert einen local-fir
 
 <h2 id="quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-quickstart.svg"><img src="../assets/tags/section-quickstart.svg" alt="Schnellstart" height="32" /></picture></h2>
 
-Kompatibilität: Diese Version zielt auf stabiles `iii-sdk` `^0.11.0` und iii-engine v0.11.x ab.
+Kompatibilität: Diese Version zielt auf stabiles `iii-sdk` `^0.11.0` und iii-engine v0.11.6 ab.
 
 ### In 30 Sekunden ausprobieren
 
@@ -517,7 +517,7 @@ Verwenden Sie den Wartungsbefehl, wenn Sie Ihr lokales Runtime bewusst aktualisi
 bunx --bun @agentmemory/agentmemory upgrade
 ```
 
-Achtung: Dieser Befehl verändert den aktuellen Workspace/Runtime. Er kann JavaScript-Abhängigkeiten aktualisieren und das gepinnte Docker-Image `iiidev/iii:0.11.5` ziehen. Er installiert niemals eine ungepinnte oder neuere iii-Engine.
+Achtung: Dieser Befehl verändert den aktuellen Workspace/Runtime. Er kann JavaScript-Abhängigkeiten aktualisieren und das gepinnte Docker-Image `iiidev/iii:0.11.6` ziehen. Eigene laufende Runtimes werden vor dem Austausch gestoppt; Docker-Container werden ohne Löschen ihrer Daten neu erstellt.
 
 Implementierungsdetails in `src/cli.ts` (siehe `runUpgrade` rund um den Bereich `src/cli.ts:544-595`).
 
@@ -693,9 +693,9 @@ Der agentmemory-Eintrag ist der **gleiche MCP-Server-Block** für jeden Host, de
 agentmemory registriert seine Kernoperationen als iii-Funktionen (`mem::remember`, `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Jede Sprache mit einem iii-SDK kann sie direkt über `ws://localhost:49134` aufrufen, ohne separaten REST-Client pro Sprache.
 
 ```bash
-pip install iii-sdk         # Python
-cargo add iii-sdk           # Rust
-npm  install iii-sdk        # Node
+pip install iii-sdk==0.11.6         # Python
+cargo add iii-sdk@0.11.6           # Rust
+npm install iii-sdk@0.11.6        # Node
 ```
 
 ```python
@@ -721,15 +721,15 @@ bun install --frozen-lockfile && bun run build && bun run start
 
 Das startet agentmemory mit einer lokalen `iii-engine`, falls `iii` bereits installiert ist, oder fällt auf Docker Compose zurück, falls Docker vorhanden ist. REST, Streams und der Viewer binden sich standardmäßig an `127.0.0.1`.
 
-`iii-engine` manuell installieren. **agentmemory pinnt `iii-engine` derzeit auf `v0.11.5`**. `v0.11.6` führt ein neues Modell ein, alles per `iii worker add` zu sandboxen, für das agentmemory noch nicht refaktoriert wurde. Der Pin wird aufgehoben, sobald die Refaktorierung erfolgt ist. Überschreiben Sie mit `AGENTMEMORY_III_VERSION=<version>`, wenn Sie manuell auf das Sandbox-Modell migriert sind.
+`iii-engine` manuell installieren. **agentmemory pinnt `iii-engine` und `iii-sdk` auf die übereinstimmende Version `0.11.6`**. Der Worker registriert sich weiterhin direkt über das SDK; eine `iii worker add`-Migration ist nicht erforderlich. Überschreiben Sie mit `AGENTMEMORY_III_VERSION=<version>` nur für eine bewusst verwaltete andere Engine.
 
-- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.5/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
+- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.6/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
 - **macOS x64:** `aarch64-apple-darwin` durch `x86_64-apple-darwin` ersetzen
 - **Linux x64:** durch `x86_64-unknown-linux-gnu` ersetzen
 - **Linux arm64:** durch `aarch64-unknown-linux-gnu` ersetzen
-- **Windows:** `iii-x86_64-pc-windows-msvc.zip` von [iii-hq/iii releases v0.11.5](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5) herunterladen, `iii.exe` extrahieren, zum PATH hinzufügen
+- **Windows:** `iii-x86_64-pc-windows-msvc.zip` von [iii-hq/iii releases v0.11.6](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6) herunterladen, `iii.exe` extrahieren, zum PATH hinzufügen
 
-Oder Docker verwenden (die mitgelieferte `docker-compose.yml` zieht `iiidev/iii:0.11.5`). Vollständige Doku: [iii.dev/docs](https://iii.dev/docs).
+Oder Docker verwenden (die mitgelieferte `docker-compose.yml` zieht `iiidev/iii:0.11.6`). Vollständige Doku: [iii.dev/docs](https://iii.dev/docs).
 
 ### Windows
 
@@ -738,9 +738,7 @@ agentmemory läuft auf Windows 10/11, aber das Node.js-Paket allein genügt nich
 **Option A: vorgebautes Windows-Binary (empfohlen)**
 
 ```powershell
-# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5 in your browser
-#    (we pin to v0.11.5 until agentmemory refactors for the new sandbox
-#     model that engine v0.11.6+ requires)
+# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6 in your browser
 # 2. Download iii-x86_64-pc-windows-msvc.zip
 #    (or iii-aarch64-pc-windows-msvc.zip if you're on an ARM machine)
 # 3. Extract iii.exe somewhere on PATH, or place it at:
@@ -748,7 +746,7 @@ agentmemory läuft auf Windows 10/11, aber das Node.js-Paket allein genügt nich
 #    (agentmemory checks that location automatically)
 # 4. Verify:
 iii --version
-# Should print: 0.11.5
+# Should print: 0.11.6
 
 # 5. Then run agentmemory as usual:
 bunx --bun @agentmemory/agentmemory
@@ -780,7 +778,7 @@ bunx --bun @agentmemory/mcp
 | Port-Konflikt | `netstat -ano \| findstr :3111`, um zu sehen, was gebunden ist, dann beenden oder `--port <N>` verwenden |
 | Docker-Fallback wird übersprungen, obwohl Docker installiert ist | Stellen Sie sicher, dass Docker Desktop tatsächlich läuft (Taskleisten-Icon) |
 
-> Hinweis: Die iii-**Engine** ist ein vorgebautes Binary, kein Cargo-Crate, versuche also nicht, sie per `cargo install` zu installieren. (Die iii-**SDKs** sind auf crates.io, npm und PyPI veröffentlicht, aber agentmemory benötigt sie nicht.) Unterstützte Engine-Installationsmethoden, alle auf v0.11.5 gepinnt: das vorgebaute v0.11.5-Binary oben, das Upstream-`sh`-Installationsskript **mit dem Versions-Pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux) und das Docker-Image `iiidev/iii:0.11.5`. Ein bloßes `install.sh | sh` installiert die **neueste** Engine, die agentmemory nicht unterstützt; übergib immer `VERSION=0.11.5`. Am einfachsten von allen: Führe einfach `bunx --bun @agentmemory/agentmemory` aus, das die gepinnte Engine für dich nach `~/.agentmemory/bin` holt.
+> Hinweis: Die iii-**Engine** ist ein vorgebautes Binary, kein Cargo-Crate, versuche also nicht, sie per `cargo install` zu installieren. (Die iii-**SDKs** sind auf crates.io, npm und PyPI veröffentlicht, aber agentmemory benötigt sie nicht.) Unterstützte Engine-Installationsmethoden, alle auf v0.11.6 gepinnt: das vorgebaute v0.11.6-Binary oben, das Upstream-`sh`-Installationsskript **mit dem Versions-Pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.6 sh` (macOS/Linux) und das Docker-Image `iiidev/iii:0.11.6`. Ein bloßes `install.sh | sh` installiert die **neueste** Engine, die agentmemory nicht unterstützt; übergib immer `VERSION=0.11.6`. Am einfachsten von allen: Führe einfach `bunx --bun @agentmemory/agentmemory` aus, das die gepinnte Engine für dich nach `~/.agentmemory/bin` holt.
 
 ---
 

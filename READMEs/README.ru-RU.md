@@ -124,7 +124,7 @@ npx кеширует пакеты по версиям. Принудительн�
 <details>
 <summary><strong>Уже запущен собственный движок iii</strong></summary>
 
-agentmemory закреплён на iii-engine v0.11.5 и не подключится к другой версии (воркер не умеет говорить на протоколе другого движка). Остановите другой движок и запустите `bunx --bun @agentmemory/agentmemory@latest` — он установит и запустит закреплённый v0.11.5 в `~/.agentmemory/bin`, не трогая ваш собственный `iii`.
+agentmemory закреплён на iii-engine v0.11.6 и не подключится к другой версии (воркер не умеет говорить на протоколе другого движка). Остановите другой движок и запустите `bunx --bun @agentmemory/agentmemory@latest` — он установит и запустит закреплённый v0.11.6 в `~/.agentmemory/bin`, не трогая ваш собственный `iii`.
 
 </details>
 
@@ -463,7 +463,7 @@ bunx --bun @agentmemory/agentmemory
 
 <h2 id="quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="../assets/tags/light/section-quickstart.svg"><img src="../assets/tags/section-quickstart.svg" alt="Быстрый старт" height="32" /></picture></h2>
 
-Совместимость: этот релиз нацелен на стабильный `iii-sdk` `^0.11.0` и iii-engine v0.11.x.
+Совместимость: этот релиз нацелен на стабильный `iii-sdk` `^0.11.0` и iii-engine v0.11.6.
 
 ### Попробуйте за 30 секунд
 
@@ -517,7 +517,7 @@ bunx --bun @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/
 bunx --bun @agentmemory/agentmemory upgrade
 ```
 
-Внимание: команда меняет текущее рабочее окружение / runtime. Она может обновлять JavaScript-зависимости и стянуть закреплённый Docker-образ `iiidev/iii:0.11.5`. Она никогда не устанавливает незакреплённый или более новый движок iii.
+Внимание: команда меняет текущее рабочее окружение / runtime. Она может обновлять JavaScript-зависимости и стянуть закреплённый Docker-образ `iiidev/iii:0.11.6`. Она никогда не устанавливает незакреплённый или более новый движок iii.
 
 Детали реализации — в `src/cli.ts` (см. `runUpgrade` в районе `src/cli.ts:544-595`).
 
@@ -693,9 +693,9 @@ bunx --bun skills add rohitg00/agentmemory -y -a '*'   # install to every instal
 agentmemory регистрирует свои основные операции как iii-функции (`mem::remember`, `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Любой язык с SDK для iii может вызывать их напрямую через `ws://localhost:49134` — отдельный REST-клиент на каждый язык не требуется.
 
 ```bash
-pip install iii-sdk         # Python
-cargo add iii-sdk           # Rust
-npm  install iii-sdk        # Node
+pip install iii-sdk==0.11.6         # Python
+cargo add iii-sdk@0.11.6           # Rust
+npm install iii-sdk@0.11.6        # Node
 ```
 
 ```python
@@ -721,15 +721,15 @@ bun install --frozen-lockfile && bun run build && bun run start
 
 Это поднимает agentmemory с локальным `iii-engine`, если `iii` уже установлен, либо откатывается к Docker Compose, если есть Docker. REST, стримы и просмотрщик по умолчанию слушают на `127.0.0.1`.
 
-Установите `iii-engine` вручную. **agentmemory сейчас зафиксирован на `iii-engine` `v0.11.5`** — `v0.11.6` вводит новую модель «всё через `iii worker add` в sandbox», под которую agentmemory ещё не отрефакторен. Закрепление снимется, как только рефакторинг будет завершён. Переопределите через `AGENTMEMORY_III_VERSION=<version>`, если вы вручную перешли на sandbox-модель.
+Установите `iii-engine` вручную. **agentmemory фиксирует `iii-engine` и `iii-sdk` на совпадающей версии `0.11.6`**. Worker по-прежнему регистрируется напрямую через SDK; переход на `iii worker add` не требуется. Переопределяйте `AGENTMEMORY_III_VERSION=<version>` только при намеренном управлении другим движком.
 
-- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.5/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
+- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.6/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
 - **macOS x64:** замените `aarch64-apple-darwin` на `x86_64-apple-darwin`
 - **Linux x64:** замените на `x86_64-unknown-linux-gnu`
 - **Linux arm64:** замените на `aarch64-unknown-linux-gnu`
-- **Windows:** скачайте `iii-x86_64-pc-windows-msvc.zip` из [iii-hq/iii releases v0.11.5](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5), распакуйте `iii.exe`, добавьте в PATH
+- **Windows:** скачайте `iii-x86_64-pc-windows-msvc.zip` из [iii-hq/iii releases v0.11.6](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6), распакуйте `iii.exe`, добавьте в PATH
 
-Либо используйте Docker (входящий в комплект `docker-compose.yml` тянет `iiidev/iii:0.11.5`). Полная документация: [iii.dev/docs](https://iii.dev/docs).
+Либо используйте Docker (входящий в комплект `docker-compose.yml` тянет `iiidev/iii:0.11.6`). Полная документация: [iii.dev/docs](https://iii.dev/docs).
 
 ### Windows
 
@@ -738,9 +738,7 @@ agentmemory работает на Windows 10/11, но одного Node.js-па�
 **Вариант A: готовый Windows-бинарь (рекомендуется)**
 
 ```powershell
-# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5 in your browser
-#    (we pin to v0.11.5 until agentmemory refactors for the new sandbox
-#     model that engine v0.11.6+ requires)
+# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6 in your browser
 # 2. Download iii-x86_64-pc-windows-msvc.zip
 #    (or iii-aarch64-pc-windows-msvc.zip if you're on an ARM machine)
 # 3. Extract iii.exe somewhere on PATH, or place it at:
@@ -748,7 +746,7 @@ agentmemory работает на Windows 10/11, но одного Node.js-па�
 #    (agentmemory checks that location automatically)
 # 4. Verify:
 iii --version
-# Should print: 0.11.5
+# Should print: 0.11.6
 
 # 5. Then run agentmemory as usual:
 bunx --bun @agentmemory/agentmemory
@@ -780,7 +778,7 @@ bunx --bun @agentmemory/mcp
 | Конфликт порта | `netstat -ano \| findstr :3111`, чтобы понять, что занимает порт, затем убить процесс или использовать `--port <N>` |
 | Откат на Docker пропускается, хотя Docker установлен | Убедитесь, что Docker Desktop действительно запущен (иконка в трее) |
 
-> Примечание: **движок** iii — это готовый бинарь, а не cargo-крейт, не пытайтесь установить его через `cargo install`. (**SDK** iii опубликованы на crates.io, npm и PyPI, но agentmemory они не нужны.) Поддерживаемые способы установки движка, все закреплены на v0.11.5: готовый бинарь v0.11.5 выше, upstream-`sh`-скрипт **с закреплением версии** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux) и Docker-образ `iiidev/iii:0.11.5`. Простой `install.sh | sh` устанавливает **последний** движок, который agentmemory не поддерживает, — всегда передавайте `VERSION=0.11.5`. Самый простой вариант: просто запустите `bunx --bun @agentmemory/agentmemory`, который сам загрузит закреплённый движок в `~/.agentmemory/bin`.
+> Примечание: **движок** iii — это готовый бинарь, а не cargo-крейт, не пытайтесь установить его через `cargo install`. (**SDK** iii опубликованы на crates.io, npm и PyPI, но agentmemory они не нужны.) Поддерживаемые способы установки движка, все закреплены на v0.11.6: готовый бинарь v0.11.6 выше, upstream-`sh`-скрипт **с закреплением версии** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.6 sh` (macOS/Linux) и Docker-образ `iiidev/iii:0.11.6`. Простой `install.sh | sh` устанавливает **последний** движок, который agentmemory не поддерживает, — всегда передавайте `VERSION=0.11.6`. Самый простой вариант: просто запустите `bunx --bun @agentmemory/agentmemory`, который сам загрузит закреплённый движок в `~/.agentmemory/bin`.
 
 ---
 
