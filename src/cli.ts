@@ -118,12 +118,12 @@ if (args.includes("--version") || args.includes("-V")) {
 // `iii worker add` worker model that agentmemory hasn't been refactored
 // for yet (the CLI still registers its worker directly through the SDK). The
 // architectural mismatch surfaces as EPIPE reconnect loops and empty
-// search results after save. Pin to v0.11.2 — the last engine that runs
+// search results after save. Pin to v0.11.5 — the last engine that runs
 // agentmemory's current worker model cleanly — until the refactor lands.
 // Override env var AGENTMEMORY_III_VERSION lets users on the sandbox
 // model already point at a newer engine without us cutting a release.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.11.2";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.11.5";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -150,7 +150,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.11.2`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.11.5`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -525,7 +525,7 @@ function whichBinary(name: string): string | null {
 // isolated from a user-managed iii on PATH or in ~/.local/bin. A
 // fresh box with iii 0.16.1 already on PATH refused to boot because the
 // hard-pin enforcer told users to overwrite their global install with
-// v0.11.2. Private install resolves the conflict without touching their
+// v0.11.5. Private install resolves the conflict without touching their
 // existing iii.
 function agentmemoryBinDir(): string {
   if (IS_WINDOWS) {
@@ -1965,7 +1965,7 @@ function printReadyHint(consoleState: IiiConsoleState): void {
 async function main() {
   await assertRuntimePortOwnership();
   // Booting a second instance next to a live daemon registers a duplicate
-  // worker on the running engine, and on iii 0.11.2 the second instance's
+  // worker on the running engine, and on iii 0.11.5 the second instance's
   // shutdown tears down the daemon's HTTP trigger routing (every
   // /agentmemory/* route 404s until a full engine restart). Refuse instead.
   // A different --instance resolves to a different port, so multi-instance
@@ -3177,8 +3177,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (pnpm install)",
       });
       requireSuccess(installOk, "pnpm install");
-      runCommand(pnpmBin, ["up", "iii-sdk@0.11.2"], {
-        label: "Pinning iii-sdk@0.11.2",
+      runCommand(pnpmBin, ["up", "iii-sdk@0.11.5"], {
+        label: "Pinning iii-sdk@0.11.5",
         optional: true,
       });
     } else if (npmBin) {
@@ -3186,8 +3186,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (npm install)",
       });
       requireSuccess(installOk, "npm install");
-      runCommand(npmBin, ["install", "iii-sdk@0.11.2"], {
-        label: "Pinning iii-sdk@0.11.2",
+      runCommand(npmBin, ["install", "iii-sdk@0.11.5"], {
+        label: "Pinning iii-sdk@0.11.5",
         optional: true,
       });
     } else {

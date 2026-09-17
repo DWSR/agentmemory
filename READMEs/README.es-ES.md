@@ -124,7 +124,7 @@ npx cachea por versión. Fuerza la última con `npx -y @agentmemory/agentmemory@
 <details>
 <summary><strong>Ya ejecutas tu propio engine iii</strong></summary>
 
-agentmemory fija iii-engine a v0.11.2 y no se conectará a una versión distinta (el worker no puede hablar el protocolo de otro engine). Detén el otro engine y ejecuta `npx -y @agentmemory/agentmemory@latest`. Instala y ejecuta la v0.11.2 fijada en `~/.agentmemory/bin`, dejando tu propio `iii` intacto.
+agentmemory fija iii-engine a v0.11.5 y no se conectará a una versión distinta (el worker no puede hablar el protocolo de otro engine). Detén el otro engine y ejecuta `npx -y @agentmemory/agentmemory@latest`. Instala y ejecuta la v0.11.5 fijada en `~/.agentmemory/bin`, dejando tu propio `iii` intacto.
 
 </details>
 
@@ -517,7 +517,7 @@ Usa el comando de mantenimiento cuando intencionadamente quieras actualizar tu r
 npx @agentmemory/agentmemory upgrade
 ```
 
-Aviso: este comando muta el workspace/runtime actual. Puede actualizar dependencias de JavaScript y traer la imagen Docker fijada `iiidev/iii:0.11.2`. Nunca instala un motor iii sin fijar ni más nuevo.
+Aviso: este comando muta el workspace/runtime actual. Puede actualizar dependencias de JavaScript y traer la imagen Docker fijada `iiidev/iii:0.11.5`. Nunca instala un motor iii sin fijar ni más nuevo.
 
 Los detalles de implementación están en `src/cli.ts` (ver `runUpgrade` en torno a la región `src/cli.ts:544-595`).
 
@@ -721,15 +721,15 @@ npm install && npm run build && npm start
 
 Esto arranca agentmemory con un `iii-engine` local si `iii` ya está instalado, o cae a Docker Compose si hay Docker disponible. REST, streams y el visor se enlazan a `127.0.0.1` por defecto.
 
-Instala `iii-engine` manualmente. **agentmemory actualmente fija `iii-engine` a `v0.11.2`**. `v0.11.6` introduce un nuevo modelo que sandboxea todo vía `iii worker add`, y agentmemory aún no se ha refactorizado para él. La fijación se levantará cuando aterrice el refactor. Sobrescribe con `AGENTMEMORY_III_VERSION=<version>` si has migrado al modelo sandbox manualmente.
+Instala `iii-engine` manualmente. **agentmemory actualmente fija `iii-engine` a `v0.11.5`**. `v0.11.6` introduce un nuevo modelo que sandboxea todo vía `iii worker add`, y agentmemory aún no se ha refactorizado para él. La fijación se levantará cuando aterrice el refactor. Sobrescribe con `AGENTMEMORY_III_VERSION=<version>` si has migrado al modelo sandbox manualmente.
 
-- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.2/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
+- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.5/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
 - **macOS x64:** cambia `aarch64-apple-darwin` por `x86_64-apple-darwin`
 - **Linux x64:** cambia por `x86_64-unknown-linux-gnu`
 - **Linux arm64:** cambia por `aarch64-unknown-linux-gnu`
-- **Windows:** descarga `iii-x86_64-pc-windows-msvc.zip` desde [iii-hq/iii releases v0.11.2](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.2), extrae `iii.exe`, añádelo al PATH
+- **Windows:** descarga `iii-x86_64-pc-windows-msvc.zip` desde [iii-hq/iii releases v0.11.5](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5), extrae `iii.exe`, añádelo al PATH
 
-O usa Docker (el `docker-compose.yml` empaquetado descarga `iiidev/iii:0.11.2`). Documentación completa: [iii.dev/docs](https://iii.dev/docs).
+O usa Docker (el `docker-compose.yml` empaquetado descarga `iiidev/iii:0.11.5`). Documentación completa: [iii.dev/docs](https://iii.dev/docs).
 
 ### Windows
 
@@ -738,8 +738,8 @@ agentmemory funciona en Windows 10/11, pero el paquete de Node.js por sí solo n
 **Opción A: binario Windows preconstruido (recomendado)**
 
 ```powershell
-# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.2 in your browser
-#    (we pin to v0.11.2 until agentmemory refactors for the new sandbox
+# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5 in your browser
+#    (we pin to v0.11.5 until agentmemory refactors for the new sandbox
 #     model that engine v0.11.6+ requires)
 # 2. Download iii-x86_64-pc-windows-msvc.zip
 #    (or iii-aarch64-pc-windows-msvc.zip if you're on an ARM machine)
@@ -748,7 +748,7 @@ agentmemory funciona en Windows 10/11, pero el paquete de Node.js por sí solo n
 #    (agentmemory checks that location automatically)
 # 4. Verify:
 iii --version
-# Should print: 0.11.2
+# Should print: 0.11.5
 
 # 5. Then run agentmemory as usual:
 npx -y @agentmemory/agentmemory
@@ -780,7 +780,7 @@ npx -y @agentmemory/mcp
 | Conflicto de puerto | `netstat -ano \| findstr :3111` para ver qué está vinculado, mátalo o usa `--port <N>` |
 | Se omite el fallback a Docker aunque Docker esté instalado | Asegúrate de que Docker Desktop esté efectivamente en ejecución (icono en la bandeja del sistema) |
 
-> Nota: el **motor** iii es un binario preconstruido, no un crate de cargo, así que no intentes instalarlo con `cargo install`. (Los **SDK** de iii sí están publicados en crates.io, npm y PyPI, pero agentmemory no los necesita.) Métodos de instalación del motor soportados, todos fijados a v0.11.2: el binario preconstruido v0.11.2 de arriba, el script de instalación `sh` upstream **con el pin de versión** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.2 sh` (macOS/Linux) y la imagen Docker `iiidev/iii:0.11.2`. Un simple `install.sh | sh` instala el motor **más reciente**, que agentmemory no soporta; pasa siempre `VERSION=0.11.2`. Lo más fácil de todo: simplemente ejecuta `npx @agentmemory/agentmemory`, que obtiene el motor fijado en `~/.agentmemory/bin` por ti.
+> Nota: el **motor** iii es un binario preconstruido, no un crate de cargo, así que no intentes instalarlo con `cargo install`. (Los **SDK** de iii sí están publicados en crates.io, npm y PyPI, pero agentmemory no los necesita.) Métodos de instalación del motor soportados, todos fijados a v0.11.5: el binario preconstruido v0.11.5 de arriba, el script de instalación `sh` upstream **con el pin de versión** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.5 sh` (macOS/Linux) y la imagen Docker `iiidev/iii:0.11.5`. Un simple `install.sh | sh` instala el motor **más reciente**, que agentmemory no soporta; pasa siempre `VERSION=0.11.5`. Lo más fácil de todo: simplemente ejecuta `npx @agentmemory/agentmemory`, que obtiene el motor fijado en `~/.agentmemory/bin` por ti.
 
 ---
 
