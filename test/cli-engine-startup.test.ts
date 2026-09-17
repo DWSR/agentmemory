@@ -146,4 +146,13 @@ describe("fresh native engine startup", () => {
     expect(spawnBody).toContain("clearEngineState()");
     expect(spawnBody).not.toContain("if (!isDocker) clearEnginePidfile();\n      clearEngineState();");
   });
+
+  it("stops owned engines before replacing them during upgrade", () => {
+    expect(source).toContain("async function prepareOwnedEngineForUpgrade");
+    expect(source).toContain("stopNativeEngineForRemoval()");
+    expect(source).toContain("stopDockerEngine(state, getRestPort(), true)");
+    expect(source).toContain('"--force-recreate"');
+    expect(source).toContain("engineVersion: IIPINNED_VERSION");
+    expect(source).toContain("recreateOwnedDockerEngine");
+  });
 });

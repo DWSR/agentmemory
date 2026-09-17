@@ -622,6 +622,7 @@ type NativeEngineState = {
   configPath: string;
   attached?: boolean;
   binPath?: string;
+  engineVersion?: string;
   restPort?: number;
 };
 
@@ -1356,6 +1357,7 @@ function adoptRunningEngine(): void {
         kind: "native",
         configPath: findIiiConfig() || "",
         attached: true,
+        engineVersion: IIPINNED_VERSION,
       });
     }
     if (enginePid && !existingPid) {
@@ -1589,6 +1591,7 @@ function startIiiBin(iiiBin: string, configPath: string): boolean {
     kind: "native",
     configPath: launch.configPath,
     binPath: iiiBin,
+    engineVersion: IIPINNED_VERSION,
   });
   spawnEngineBackground(iiiBin, ["--config", launch.configPath], "iii-engine", launch.cwd);
   s.stop(c.ok("iii-engine process started"));
@@ -3151,6 +3154,70 @@ function runCommand(
   return false;
 }
 
+type UpgradeEnginePreparation =
+  | { kind: "none" }
+  | { kind: "native" }
+  | { kind: "docker"; state: DockerEngineState }
+  | { kind: "failed"; reason: string };
+
+async function prepareOwnedEngineForUpgrade(): Promise<UpgradeEnginePreparation> {
+  const state = readEngineState();
+  if (!state) return { kind: "none" };
+
+  if (state.kind === "docker") {
+    await stopDockerEngine(state, getRestPort(), true);
+    return { kind: "docker", state };
+  }
+
+  const result = await stopNativeEngineForRemoval();
+  if (!result.ok) return { kind: "failed", reason: result.reason };
+  return { kind: "native" };
+}
+
+function recreateOwnedDockerEngine(
+  state: DockerEngineState,
+  dockerBin: string,
+): boolean {
+  const composeFile = existsSync(state.composeFile)
+    ? state.composeFile
+    : discoverComposeFile();
+  const projectName = state.projectName;
+  if (!composeFile || !projectName) {
+    p.log.error("Cannot recreate the owned Docker engine without verified Compose state.");
+    return false;
+  }
+
+  const ok = runCommand(
+    dockerBin,
+    dockerComposeArgs(composeFile, projectName, [
+      "up",
+      "-d",
+      "--force-recreate",
+    ]),
+    { label: `Recreating owned Docker engine at v${IIPINNED_VERSION}` },
+  );
+  if (!ok) return false;
+
+  const targetState: DockerEngineState = {
+    ...state,
+    composeFile,
+    engineVersion: IIPINNED_VERSION,
+    containerId: undefined,
+  };
+  const inspection = inspectOwnedDockerEngine(targetState);
+  if (inspection.status !== "running" && inspection.status !== "stopped") {
+    const detail = inspection.status === "unavailable"
+      ? inspection.reason
+      : "container is missing";
+    p.log.error(
+      `Docker engine recreation completed, but the new v${IIPINNED_VERSION} container could not be verified: ${detail}`,
+    );
+    return false;
+  }
+  persistDockerInspection(targetState, inspection);
+  return true;
+}
+
 async function runUpgrade() {
   p.intro("agentmemory upgrade");
 
@@ -3193,6 +3260,21 @@ async function runUpgrade() {
     p.cancel("Cancelled.");
     return process.exit(0);
   }
+
+  const persistedEngine = readEngineState();
+  const shouldRefreshDocker = persistedEngine?.kind === "docker" && dockerBin !== null;
+  const shouldStopOwnedEngine =
+    (persistedEngine?.kind === "native" && upgradeEngine === true) ||
+    shouldRefreshDocker;
+  let preparedEngine: UpgradeEnginePreparation = { kind: "none" };
+  if (shouldStopOwnedEngine) {
+    preparedEngine = await prepareOwnedEngineForUpgrade();
+    if (preparedEngine.kind === "failed") {
+      p.log.error(`Upgrade aborted: ${preparedEngine.reason}.`);
+      process.exit(1);
+    }
+  }
+
   if (upgradeEngine === true) {
     await runIiiInstaller();
   } else {
@@ -3204,6 +3286,12 @@ async function runUpgrade() {
       label: `Pulling iii Docker image v${IIPINNED_VERSION} (pinned)`,
       optional: true,
     });
+    if (preparedEngine.kind === "docker") {
+      requireSuccess(
+        recreateOwnedDockerEngine(preparedEngine.state, dockerBin),
+        "recreating the owned Docker engine",
+      );
+    }
   } else {
     p.log.info("Docker not found. Skipping Docker image refresh.");
   }
