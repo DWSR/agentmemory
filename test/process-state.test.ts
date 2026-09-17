@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { processStatIsRunning } from "../src/cli/process-state.js";
 
 describe("processStatIsRunning", () => {

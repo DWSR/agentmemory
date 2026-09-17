@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -9,7 +9,6 @@ const ORIGINAL_USERPROFILE = process.env["USERPROFILE"];
 let sandboxHome: string;
 
 async function freshPrefs() {
-  vi.resetModules();
   return await import("../src/cli/preferences.js");
 }
 

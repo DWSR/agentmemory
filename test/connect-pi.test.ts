@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, afterAll, beforeAll } from "bun:test";
 import {
   mkdtempSync,
   mkdirSync,
@@ -24,13 +24,16 @@ describe("connect: pi", () => {
   const ORIG_HOME = process.env["HOME"];
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
 
-  beforeEach(() => {
+  beforeAll(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     process.env["USERPROFILE"] = home;
   });
-  afterEach(() => {
+  beforeEach(() => {
+    rmSync(home, { recursive: true, force: true });
+    mkdirSync(home, { recursive: true });
+  });
+  afterAll(() => {
     if (ORIG_HOME === undefined) delete process.env["HOME"];
     else process.env["HOME"] = ORIG_HOME;
     if (ORIG_USERPROFILE === undefined) delete process.env["USERPROFILE"];

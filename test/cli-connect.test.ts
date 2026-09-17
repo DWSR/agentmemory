@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import { mkdtempSync, rmSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -92,6 +92,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
   let tmpHome: string;
   let originalHome: string | undefined;
   let originalUserprofile: string | undefined;
+  let importCounter = 0;
 
   beforeEach(() => {
     tmpHome = mkdtempSync(join(tmpdir(), "am-connect-"));
@@ -99,7 +100,6 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     originalUserprofile = process.env["USERPROFILE"];
     process.env["HOME"] = tmpHome;
     process.env["USERPROFILE"] = tmpHome;
-    vi.resetModules();
   });
 
   afterEach(() => {
@@ -109,11 +109,12 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
       process.env["USERPROFILE"] = originalUserprofile;
     else delete process.env["USERPROFILE"];
     rmSync(tmpHome, { recursive: true, force: true });
-    vi.resetModules();
   });
 
   async function loadAdapter(): Promise<ConnectAdapter> {
-    const mod = await import("../src/cli/connect/claude-code.js?t=" + Date.now());
+    const mod = await import(
+      "../src/cli/connect/claude-code.js?t=" + Date.now() + "-" + importCounter++,
+    );
     return (mod as { adapter: ConnectAdapter }).adapter;
   }
 
@@ -231,7 +232,6 @@ describe("agentmemory connect — opencode adapter (#872)", () => {
     originalUserprofile = process.env["USERPROFILE"];
     process.env["HOME"] = tmpHome;
     process.env["USERPROFILE"] = tmpHome;
-    vi.resetModules();
   });
 
   afterEach(() => {
@@ -241,7 +241,6 @@ describe("agentmemory connect — opencode adapter (#872)", () => {
       process.env["USERPROFILE"] = originalUserprofile;
     else delete process.env["USERPROFILE"];
     rmSync(tmpHome, { recursive: true, force: true });
-    vi.resetModules();
   });
 
   const cfgPath = () =>
@@ -309,7 +308,6 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     process.env["HOME"] = tmpHome;
     process.env["USERPROFILE"] = tmpHome;
     delete process.env["COPILOT_HOME"];
-    vi.resetModules();
   });
 
   afterEach(() => {
@@ -322,7 +320,6 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
       process.env["COPILOT_HOME"] = originalCopilotHome;
     else delete process.env["COPILOT_HOME"];
     rmSync(tmpHome, { recursive: true, force: true });
-    vi.resetModules();
   });
 
   async function loadAdapter(): Promise<ConnectAdapter> {

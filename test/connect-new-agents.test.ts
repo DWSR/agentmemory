@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { mkdtempSync, mkdirSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir, platform } from "node:os";
 import { join } from "node:path";
@@ -7,8 +7,10 @@ import { join } from "node:path";
 // the canonical MCP block (bunx --bun @agentmemory/mcp + env defaults) into
 // the agent's documented config path.
 
+let sharedHome: string | undefined;
+
 function freshHome(): string {
-  return mkdtempSync(join(tmpdir(), "am-connect-"));
+  return (sharedHome ??= mkdtempSync(join(tmpdir(), "am-connect-")));
 }
 
 describe("connect: Qwen Code", () => {
@@ -17,7 +19,6 @@ describe("connect: Qwen Code", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -62,7 +63,6 @@ describe("connect: Antigravity", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -102,7 +102,6 @@ describe("connect: Kiro", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -141,7 +140,6 @@ describe("connect: Warp", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -183,7 +181,6 @@ describe("connect: Cline", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -222,7 +219,6 @@ describe("connect: Droid (Factory.ai)", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -306,7 +302,6 @@ describe("connect: Zed", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -346,7 +341,6 @@ describe("connect: Continue.dev", () => {
   const ORIG_USERPROFILE = process.env["USERPROFILE"];
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     // os.homedir() on win32 reads USERPROFILE, not HOME — without this,
     // adapter.detect()/install() resolve the real user's home directory
@@ -424,7 +418,6 @@ describe("connect: Continue.dev", () => {
 
 describe("connect: all eight new agents registered in ADAPTERS", () => {
   beforeEach(() => {
-    vi.resetModules();
   });
 
   it("knownAgents includes qwen, antigravity, kiro, warp, cline, continue, zed, droid", async () => {

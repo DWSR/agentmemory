@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, beforeEach } from "vitest";
+import { describe, it, expect, afterEach, beforeEach } from "bun:test";
 import { resolveEnvOrEmpty } from "../src/mcp/rest-proxy.js";
 
 const VAR = "AGENTMEMORY_TEST_URL";

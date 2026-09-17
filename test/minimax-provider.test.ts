@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it, afterEach } from "bun:test";
 import { MinimaxProvider } from "../src/providers/minimax.js";
 
 describe("MinimaxProvider — base URL resolution (#285)", () => {

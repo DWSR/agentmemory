@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -9,7 +9,6 @@ vi.mock("../src/logger.js", () => ({
 describe("loadAgentScope (#554)", () => {
   const ORIG = process.env["AGENT_ID"];
   beforeEach(() => {
-    vi.resetModules();
     delete process.env["AGENT_ID"];
   });
   afterEach(() => {
@@ -46,7 +45,6 @@ describe("loadAgentScope (#554)", () => {
 describe("mem::remember stamps agentId on the Memory (#554)", () => {
   const ORIG = process.env["AGENT_ID"];
   beforeEach(() => {
-    vi.resetModules();
     delete process.env["AGENT_ID"];
   });
   afterEach(() => {
@@ -218,7 +216,6 @@ describe("AGENTMEMORY_AGENT_SCOPE mode (#554)", () => {
   const ORIG_ID = process.env["AGENT_ID"];
   const ORIG_MODE = process.env["AGENTMEMORY_AGENT_SCOPE"];
   beforeEach(() => {
-    vi.resetModules();
     delete process.env["AGENT_ID"];
     delete process.env["AGENTMEMORY_AGENT_SCOPE"];
   });

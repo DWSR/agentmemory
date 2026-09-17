@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -25,7 +25,6 @@ import {
   V040_TOOLS,
 } from "../src/mcp/tools-registry.js";
 import { InMemoryKV } from "../src/mcp/in-memory-kv.js";
-import { handleToolCall } from "../src/mcp/standalone.js";
 import { createStdioTransport } from "../src/mcp/transport.js";
 import {
   resetHandleForTests,
@@ -33,8 +32,10 @@ import {
 } from "../src/mcp/rest-proxy.js";
 import { writeFileSync } from "node:fs";
 
+const { handleToolCall } = await import("../src/mcp/standalone.js");
+
 // Issue #449: hard-coded fetch() against :3111 in the livez probe was racing
-// with vitest's mock setup, making this file the "10-11 pre-existing failures"
+// with the runner's mock setup, making this file the "10-11 pre-existing failures"
 // referenced in the last 5 release notes. Stub the probe with an instant
 // ok:false response so the shim takes the deterministic InMemoryKV fallback
 // path on every test. Guard the real network with a fetch trap so any

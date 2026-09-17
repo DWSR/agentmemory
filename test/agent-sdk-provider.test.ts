@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 
 // #781: concurrent siblings on the agent-sdk provider used to bail out
 // empty because the recursion guard mutated process.env synchronously

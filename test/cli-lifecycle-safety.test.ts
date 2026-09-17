@@ -10,7 +10,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "bun:test";
 
 const sandboxes: string[] = [];
 const FULL_CONTAINER_ID =
@@ -113,8 +113,6 @@ function runDockerStop(
   const result = spawnSync(
     process.execPath,
     [
-      "--import",
-      "tsx",
       "src/cli.ts",
       command,
       ...(command === "remove" ? ["--force", "--keep-data"] : []),
@@ -157,8 +155,6 @@ function runInstanceRemove(instanceArgs = ["--instance", "1"]) {
   const result = spawnSync(
     process.execPath,
     [
-      "--import",
-      "tsx",
       "src/cli.ts",
       "remove",
       ...instanceArgs,
@@ -224,8 +220,6 @@ process.kill = (pid, signal) => {
     [
       "--import",
       preload,
-      "--import",
-      "tsx",
       "src/cli.ts",
       "remove",
       "--force",

@@ -1,9 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { LocalEmbeddingProvider } from "../src/providers/embedding/local.js";
 
 const run = process.env.RUN_HF_SMOKE === "1";
+const describeIf = run ? describe : describe.skip;
 
-describe.runIf(run)("LocalEmbeddingProvider v4 smoke (real model)", () => {
+describeIf("LocalEmbeddingProvider v4 smoke (real model)", () => {
   it("embeds via Xenova/all-MiniLM-L6-v2 -> 384 finite dims", async () => {
     const vec = await new LocalEmbeddingProvider().embed("hello world");
     expect(vec.length).toBe(384);

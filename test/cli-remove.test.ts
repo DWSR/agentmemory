@@ -4,7 +4,7 @@
 // a fake $HOME under tmpdir() and assert which plan items come back. The
 // actual file deletion is wrapped in src/cli.ts.
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import {
   buildRemovePlan,
   formatPlan,

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { SearchIndex } from "../src/state/search-index.js";
 import type { CompressedObservation, Memory } from "../src/types.js";
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { extractGraphHeuristics } from "../src/functions/graph.js";
 import type { CompressedObservation } from "../src/types.js";

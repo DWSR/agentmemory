@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { createStartupStderrCapture } from "../src/cli/startup-stderr.js";
 
 describe("startup stderr capture", () => {

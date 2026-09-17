@@ -1,15 +1,13 @@
-import { describe, it, expect, vi, afterAll, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterAll, beforeEach } from "bun:test";
 import { existsSync, rmSync } from "node:fs";
+import * as actualIiiSdk from "iii-sdk";
 
-vi.mock("iii-sdk", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("iii-sdk")>();
-  return {
-    ...actual,
+vi.mock("iii-sdk", () => ({
+    ...actualIiiSdk,
     getContext: () => ({
       logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
     }),
-  };
-});
+}));
 
 vi.mock("../src/functions/search.js", () => ({
   getSearchIndex: () => ({

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "bun:test";
 import { SearchIndex } from "../src/state/search-index.js";
 import { segmentCjk } from "../src/state/cjk-segmenter.js";
 import type { CompressedObservation } from "../src/types.js";

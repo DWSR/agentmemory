@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -58,7 +58,6 @@ function mockSdk() {
 
 describe("observe implicit session create (#638)", () => {
   beforeEach(() => {
-    vi.resetModules();
   });
 
   it("creates the session on first observe when project+cwd present and session record missing", async () => {

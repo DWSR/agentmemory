@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,6 +23,7 @@ const prompts = vi.hoisted(() => ({
 
 vi.mock("@clack/prompts", () => prompts);
 vi.mock("../src/cli/connect/index.js", () => ({
+  ADAPTERS: [],
   resolveAdapter: vi.fn(),
   runAdapter: vi.fn(),
 }));
@@ -47,7 +48,6 @@ function restoreTTY(): void {
 }
 
 async function freshOnboarding() {
-  vi.resetModules();
   return await import("../src/cli/onboarding.js");
 }
 

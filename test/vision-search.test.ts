@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { registerVisionSearchFunctions } from "../src/functions/vision-search.js";

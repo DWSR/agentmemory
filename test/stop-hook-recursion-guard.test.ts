@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { isSdkChildContext } from "../src/hooks/sdk-guard.js";
 import { NoopProvider } from "../src/providers/noop.js";
 

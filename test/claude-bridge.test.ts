@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -9,11 +9,6 @@ vi.mock("node:fs", () => ({
   readFileSync: vi.fn(),
   writeFileSync: vi.fn(),
   mkdirSync: vi.fn(),
-}));
-
-vi.mock("node:path", async () => ({
-  ...(await vi.importActual("node:path")),
-  dirname: vi.fn().mockReturnValue("/tmp"),
 }));
 
 import { registerClaudeBridgeFunction } from "../src/functions/claude-bridge.js";

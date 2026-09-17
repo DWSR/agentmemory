@@ -5,7 +5,7 @@
 // formatting. The full interactive prompt loop lives in src/cli.ts and is
 // driven by clack — exercising it would require a TTY and is out of scope.
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import {
   buildDiagnostics,
   DIAGNOSTIC_IDS,

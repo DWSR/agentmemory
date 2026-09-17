@@ -1,5 +1,5 @@
 import * as vm from "node:vm";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { renderViewerDocument } from "../src/viewer/document.js";
 
 function htmlEscape(value: string): string {
@@ -145,7 +145,7 @@ function loadViewerSandbox() {
     })(),
     fetch: async () => ({ ok: true, json: async () => ({}) }),
     WebSocket: function WebSocket() {},
-    navigator: { userAgent: "vitest" },
+    navigator: { userAgent: "bun:test" },
     Element: function Element() {},
     alert: () => {},
     setInterval: () => 0,

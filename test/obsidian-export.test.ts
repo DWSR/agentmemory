@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -6,9 +6,11 @@ vi.mock("../src/logger.js", () => ({
 
 const writtenFiles = new Map<string, string>();
 const createdDirs = new Set<string>();
+let mkdirError: Error | null = null;
 
 vi.mock("node:fs/promises", () => ({
   mkdir: vi.fn(async (dir: string) => {
+    if (mkdirError) throw mkdirError;
     createdDirs.add(dir);
   }),
   writeFile: vi.fn(async (path: string, content: string) => {
@@ -412,12 +414,7 @@ describe("Obsidian Export", () => {
   it("never throws out to the engine — returns {success: false, error: <string>} on internal failure", async () => {
     // Force mkdir to throw to simulate an unexpected runtime error so we
     // can assert the outer try/catch turns it into a serializable error.
-    const fsModule = await import("node:fs/promises");
-    const original = fsModule.mkdir;
-    (fsModule.mkdir as any) = vi.fn(async () => {
-      throw new TypeError("simulated disk failure");
-    });
-
+    mkdirError = new TypeError("simulated disk failure");
     try {
       const result = (await sdk.trigger("mem::obsidian-export", {})) as {
         success: boolean;
@@ -427,7 +424,7 @@ describe("Obsidian Export", () => {
       expect(typeof result.error).toBe("string");
       expect(result.error).toContain("simulated disk failure");
     } finally {
-      (fsModule.mkdir as any) = original;
+      mkdirError = null;
     }
   });
 });

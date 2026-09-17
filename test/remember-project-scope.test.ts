@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -8,18 +8,17 @@ vi.mock("../src/state/keyed-mutex.js", () => ({
   withKeyedLock: <T>(_key: string, fn: () => Promise<T>) => fn(),
 }));
 
-vi.mock("iii-sdk", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("iii-sdk")>();
-  return {
-    ...actual,
-    TriggerAction: {
-      ...actual.TriggerAction,
-      Void: vi.fn(() => ({ type: "void" })),
-    },
-  };
-});
+import * as actualIiiSdk from "iii-sdk";
 
-import { vi } from "vitest";
+vi.mock("iii-sdk", () => ({
+  ...actualIiiSdk,
+  TriggerAction: {
+    ...actualIiiSdk.TriggerAction,
+    Void: vi.fn(() => ({ type: "void" })),
+  },
+}));
+
+import { vi } from "bun:test";
 import { registerRememberFunction } from "../src/functions/remember.js";
 import { getSearchIndex, setIndexPersistence } from "../src/functions/search.js";
 

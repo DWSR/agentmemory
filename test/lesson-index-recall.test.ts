@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "bun:test";
 import { mockKV, mockSdk } from "./helpers/mocks.js";
 
 vi.mock("../src/logger.js", () => ({
@@ -6,11 +6,11 @@ vi.mock("../src/logger.js", () => ({
 }));
 
 async function setup() {
-  vi.resetModules();
-  const { registerLessonsFunctions, resetLessonIndex } = await import(
-    "../src/functions/lessons.js"
-  );
-  const sdk = mockSdk({ looseTrigger: true });
+    const { registerLessonsFunctions, resetLessonIndex } = await import(
+      "../src/functions/lessons.js"
+    );
+    resetLessonIndex();
+    const sdk = mockSdk({ looseTrigger: true });
   const kv = mockKV();
   registerLessonsFunctions(sdk as never, kv as never);
   return { sdk, kv, resetLessonIndex };
@@ -34,10 +34,6 @@ function gateFirstLessonList(kv: { list: (scope: string) => Promise<unknown[]> }
 }
 
 describe("lesson recall through the lesson index", () => {
-  beforeEach(() => {
-    vi.resetModules();
-  });
-
   it("recalls a saved lesson by keyword and preserves confidence ordering", async () => {
     const { sdk } = await setup();
     await sdk.trigger("mem::lesson-save", {

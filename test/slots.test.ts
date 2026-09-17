@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 import { registerSlotsFunctions, DEFAULT_SLOTS, listPinnedSlots, renderPinnedContext } from "../src/functions/slots.js";
 import { KV } from "../src/state/schema.js";
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import { spawn } from "node:child_process";
 import { createServer, type Server } from "node:http";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";

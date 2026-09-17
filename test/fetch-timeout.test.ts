@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "bun:test";
 import { fetchWithTimeout } from "../src/providers/_fetch.js";
 import { MinimaxProvider } from "../src/providers/minimax.js";
 import { OpenRouterProvider } from "../src/providers/openrouter.js";
@@ -472,7 +472,7 @@ describe("OpenAIProvider timeout env precedence (#446)", () => {
     process.env["OPENAI_TIMEOUT_MS"] = "30";
     // Set the global to a much larger value — if precedence is wrong,
     // we'd time out at 5000ms and the test would hang past the 5s
-    // vitest default. We assert the message ms to lock the precedence.
+    // test timeout default. We assert the message ms to lock the precedence.
     process.env["AGENTMEMORY_LLM_TIMEOUT_MS"] = "5000";
     const provider = new OpenAIProvider("test-key", "gpt-5.6-luna", 1024);
     await expect(provider.compress("system", "user")).rejects.toThrow(
@@ -578,4 +578,3 @@ describe("OpenAIProvider thinking-model fallback (#627)", () => {
     expect(out).toBe("real content");
   });
 });
-

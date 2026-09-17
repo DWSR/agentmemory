@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "bun:test";
 import { mockKV, mockSdk } from "./helpers/mocks.js";
 
 vi.mock("../src/logger.js", () => ({
@@ -18,7 +18,6 @@ function observePayload(hookType: string, data: unknown) {
 
 describe("observe dedup for hooks without tool_input (#1173)", () => {
   beforeEach(() => {
-    vi.resetModules();
   });
 
   it("records consecutive prompt_submit observations with different prompts", async () => {
