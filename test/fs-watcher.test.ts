@@ -91,6 +91,7 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
     });
     w.start();
     try {
+      await wait(100);
       unlinkSync(join(root, "old.md"));
       await waitFor(() =>
         captured.some(
