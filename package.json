@@ -26,6 +26,9 @@
     "test:watch": "bun vitest --exclude test/integration.test.ts",
     "test:integration": "bun vitest run test/integration.test.ts",
     "test:all": "bun vitest run",
+    "test:bun": "bun test --isolate --timeout 10000 --path-ignore-patterns='**/integration.test.ts'",
+    "test:bun:watch": "bun test --watch --isolate --timeout 10000 --path-ignore-patterns='**/integration.test.ts'",
+    "test:bun:integration": "bun test --isolate --timeout 10000 ./test/integration.test.ts",
     "skills:gen": "bun scripts/skills/generate.ts",
     "skills:check": "bun scripts/skills/generate.ts --check && bun scripts/skills/check.ts",
     "bench:load": "bun benchmark/load-100k.ts",
@@ -77,7 +80,9 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
+    "bun-types": "^1.3.13",
     "tsdown": "^0.21.10",
+    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
   },
