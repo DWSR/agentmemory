@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "bun:test";
 import type {
   CompressedObservation,
   RawObservation,
@@ -13,8 +13,7 @@ vi.mock("../src/logger.js", () => ({
 
 // The recovered-session consolidation pass is gated on isConsolidationEnabled
 // (keyless installs skip it); force it on so these tests exercise the pass.
-vi.mock("../src/config.js", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../src/config.js")>()),
+vi.mock("../src/config.js", () => ({
   isConsolidationEnabled: () => true,
 }));
 

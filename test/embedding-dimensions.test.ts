@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { resolveDimensions } from "../src/providers/embedding/_dimensions.js";
 import { OpenRouterEmbeddingProvider } from "../src/providers/embedding/openrouter.js";
 import { OpenAIEmbeddingProvider } from "../src/providers/embedding/openai.js";

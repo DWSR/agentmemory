@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 
 // Viewer Memories tab used to render in KV-insertion order, hiding new

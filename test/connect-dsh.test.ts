@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import {
   mkdtempSync,
   mkdirSync,
@@ -26,7 +26,6 @@ describe("connect: DeepSeek Harness", () => {
 
   beforeEach(() => {
     home = freshHome();
-    vi.resetModules();
     process.env["HOME"] = home;
     process.env["USERPROFILE"] = home;
     delete process.env["DSH_HOME"];

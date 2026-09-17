@@ -1,17 +1,18 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import * as actualFs from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const readFileSyncCalls: unknown[][] = [];
+const originalReadFileSync = actualFs.readFileSync;
 
-vi.mock("node:fs", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("node:fs")>();
+vi.mock("node:fs", () => {
   return {
-    ...actual,
+    ...actualFs,
     readFileSync: (...args: unknown[]) => {
       readFileSyncCalls.push(args);
-      return (actual.readFileSync as (...a: unknown[]) => unknown)(...args);
+      return (originalReadFileSync as (...a: unknown[]) => unknown)(...args);
     },
   };
 });
@@ -22,7 +23,6 @@ const ORIGINAL_USERPROFILE = process.env["USERPROFILE"];
 let sandboxHome: string;
 
 async function freshConfig() {
-  vi.resetModules();
   return await import("../src/config.js");
 }
 
@@ -184,12 +184,13 @@ describe("loadEnvFile cache", () => {
     expect(cfg.getEnvVar("CACHED_VAR")).toBe("cached");
   });
 
-  it("sees updated .env content after vi.resetModules reloads the module", async () => {
+  it("sees updated .env content after the cache is reset", async () => {
     writeEnv("CACHED_VAR=first");
     const first = await freshConfig();
     expect(first.getEnvVar("CACHED_VAR")).toBe("first");
 
     writeEnv("CACHED_VAR=second");
+    first.__resetEnvFileCache();
     const second = await freshConfig();
     expect(second.getEnvVar("CACHED_VAR")).toBe("second");
   });

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
 import type { RawObservation } from "../src/types.js";
 
 vi.mock("../src/logger.js", () => ({
@@ -74,11 +74,8 @@ function validPayload(overrides: Partial<Record<string, unknown>> = {}) {
 
 describe("mem::observe auto-compress gate (#138)", () => {
   beforeEach(() => {
-    // Reset module cache so observe.js re-imports config.js with the
-    // fresh AGENTMEMORY_AUTO_COMPRESS env state. Without this, a later
-    // test that sets the env var can be undermined by cached module
-    // state from an earlier test (and vice versa).
-    vi.resetModules();
+    // The configuration getter reads the current merged environment on each
+    // call, so each test can change this flag without reloading modules.
     delete process.env["AGENTMEMORY_AUTO_COMPRESS"];
   });
   afterEach(() => {

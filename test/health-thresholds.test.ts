@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { evaluateHealth } from "../src/health/thresholds.js";
 import type { HealthSnapshot } from "../src/types.js";
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 
 // A second full instance next to a live daemon registers a duplicate worker

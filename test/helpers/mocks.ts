@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi } from "bun:test";
 
 type Handler = (data: unknown) => Promise<unknown>;
 

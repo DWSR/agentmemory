@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,7 +23,6 @@ const ORIGINAL: Record<string, string | undefined> = {};
 let sandboxHome: string;
 
 async function freshConfig() {
-  vi.resetModules();
   return await import("../src/config.js");
 }
 

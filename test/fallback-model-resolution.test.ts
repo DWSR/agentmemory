@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 
 // #778: fallback providers used to inherit the primary provider's
 // model name and 404 on every call. Each fallback must resolve its

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from "bun:test";
 import type { MemoryProvider } from "../src/types.js";
 
 vi.mock("../src/logger.js", () => ({

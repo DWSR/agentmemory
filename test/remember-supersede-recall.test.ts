@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "bun:test";
 import { mockKV, mockSdk } from "./helpers/mocks.js";
 
 vi.mock("../src/logger.js", () => ({
@@ -6,7 +6,6 @@ vi.mock("../src/logger.js", () => ({
 }));
 
 async function setup() {
-  vi.resetModules();
   const search = await import("../src/functions/search.js");
   const { registerRememberFunction } = await import("../src/functions/remember.js");
   const sdk = mockSdk({ looseTrigger: true });
@@ -17,7 +16,6 @@ async function setup() {
 
 describe("mem::remember supersession and recall hygiene", () => {
   beforeEach(() => {
-    vi.resetModules();
   });
 
   it("removes the superseded version from the search index", async () => {

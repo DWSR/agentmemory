@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { stripPrivateData } from "../src/functions/privacy.js";
 
 describe("stripPrivateData", () => {

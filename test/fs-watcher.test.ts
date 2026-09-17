@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync, mkdirSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -10,6 +10,11 @@ function tempDir(): string {
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+async function waitFor(predicate: () => boolean, timeoutMs = 5000): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate() && Date.now() < deadline) await wait(100);
 }
 
 describe("FilesystemWatcher", { retry: 2 }, () => {
@@ -49,7 +54,7 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
     w.start();
     try {
       writeFileSync(join(root, "notes.md"), "hello world\n");
-      await wait(1500);
+      await waitFor(() => captured.length >= 1);
       expect(captured.length).toBeGreaterThanOrEqual(1);
       const obs = captured[captured.length - 1];
       expect(obs.url).toBe("http://localhost:3111/agentmemory/observe");
@@ -87,7 +92,11 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
     w.start();
     try {
       unlinkSync(join(root, "old.md"));
-      await wait(1500);
+      await waitFor(() =>
+        captured.some(
+          (c) => (c.body as { data: { changeKind: string } }).data?.changeKind === "file_delete",
+        ),
+      );
       const deletes = captured.filter(
         (c) => (c.body as { data: { changeKind: string } }).data?.changeKind === "file_delete",
       );
@@ -151,7 +160,7 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
     w.start();
     try {
       writeFileSync(join(root, "secret.md"), "bearer test\n");
-      await wait(1500);
+      await waitFor(() => captured.length >= 1);
       expect(captured.length).toBeGreaterThanOrEqual(1);
       const headers = captured[captured.length - 1].headers as Record<string, string>;
       expect(headers.authorization).toBe("Bearer shhh");

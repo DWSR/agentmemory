@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 
 vi.mock("../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -12,16 +12,9 @@ vi.mock("node:child_process", () => ({
   ),
 }));
 
-vi.mock("node:util", async () => {
-  const actual = (await vi.importActual("node:util")) as Record<
-    string,
-    unknown
-  >;
-  return {
-    ...actual,
-    promisify: () => async () => ({ stdout: "abc1234\n", stderr: "" }),
-  };
-});
+vi.mock("node:util", () => ({
+  promisify: () => async () => ({ stdout: "abc1234\n", stderr: "" }),
+}));
 
 vi.mock("node:fs", () => ({
   existsSync: vi.fn().mockReturnValue(true),
@@ -32,8 +25,9 @@ vi.mock("node:fs", () => ({
     .mockReturnValue('{"version":"0.4.0","sessions":[],"memories":[]}'),
 }));
 
-import { registerSnapshotFunction } from "../src/functions/snapshot.js";
 import type { Session, Memory, SnapshotMeta } from "../src/types.js";
+
+const { registerSnapshotFunction } = await import("../src/functions/snapshot.js");
 
 function mockKV() {
   const store = new Map<string, Map<string, unknown>>();

@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll } from "vitest";
+import { describe, it, expect, afterAll } from "bun:test";
 import type { AddressInfo } from "node:net";
 import { request as httpRequest } from "node:http";
 import { renderViewerDocument } from "../src/viewer/document.js";

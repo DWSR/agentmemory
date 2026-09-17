@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { FallbackChainProvider } from "../src/providers/fallback-chain.js";
 import type { MemoryProvider } from "../src/types.js";
 

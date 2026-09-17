@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { registerContextFunction } from "../src/functions/context.js";
 import { KV } from "../src/state/schema.js";
 

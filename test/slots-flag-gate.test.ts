@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -22,7 +22,6 @@ describe("isSlotsEnabled — reads merged env (#678)", () => {
     ORIG_FLAG = process.env["AGENTMEMORY_SLOTS"];
     process.env["HOME"] = home;
     delete process.env["AGENTMEMORY_SLOTS"];
-    vi.resetModules();
   });
 
   afterEach(() => {
@@ -69,7 +68,6 @@ describe("isReflectEnabled — reads merged env (#678)", () => {
     ORIG_FLAG = process.env["AGENTMEMORY_REFLECT"];
     process.env["HOME"] = home;
     delete process.env["AGENTMEMORY_REFLECT"];
-    vi.resetModules();
   });
 
   afterEach(() => {

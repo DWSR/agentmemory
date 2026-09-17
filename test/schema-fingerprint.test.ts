@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { fingerprintId, KV } from "../src/state/schema.js";
 
 describe("fingerprintId", () => {

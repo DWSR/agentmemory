@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 
 // #666: api::session::end must publish the session-stopped lifecycle so

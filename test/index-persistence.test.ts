@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "bun:test";
 import { IndexPersistence } from "../src/state/index-persistence.js";
 import { SearchIndex } from "../src/state/search-index.js";
 import { VectorIndex } from "../src/state/vector-index.js";

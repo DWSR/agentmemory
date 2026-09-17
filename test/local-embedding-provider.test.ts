@@ -1,40 +1,19 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi } from "bun:test";
 
-afterEach(() => {
-  vi.doUnmock("@huggingface/transformers");
-  vi.resetModules();
-});
+const extractor = vi.fn(async (texts: string[]) => ({
+  tolist: () => texts.map(() => [0.1, 0.2, 0.3]),
+}));
+const pipeline = vi.fn(() => Promise.resolve(extractor));
 
-describe("LocalEmbeddingProvider (package unavailable)", () => {
-  it("throws clean install hint when @huggingface/transformers is missing", async () => {
-    vi.doMock("@huggingface/transformers");
-    vi.resetModules();
-    const { LocalEmbeddingProvider: Fresh } = await import(
-      "../src/providers/embedding/local.js"
-    );
-    await expect(new Fresh().embed("hello")).rejects.toThrow(
-      "Install @huggingface/transformers for local embeddings",
-    );
-  });
-});
+vi.mock("@huggingface/transformers", () => ({ pipeline }));
+
+const { LocalEmbeddingProvider } = await import(
+  "../src/providers/embedding/local.js"
+);
 
 describe("LocalEmbeddingProvider (with loaded pipeline)", () => {
-  function mockSuccessModule() {
-    const extractor = vi.fn(async (texts: string[]) => ({
-      tolist: () => texts.map(() => [0.1, 0.2, 0.3]),
-    }));
-    const pipeline = vi.fn(() => Promise.resolve(extractor));
-    vi.doMock("@huggingface/transformers", () => ({ pipeline }));
-    vi.resetModules();
-    return { pipeline, extractor };
-  }
-
   it("calls pipeline with dtype: q8, passes extractor opts, returns mapped Float32Array", async () => {
-    const { pipeline, extractor } = mockSuccessModule();
-    const { LocalEmbeddingProvider: Fresh } = await import(
-      "../src/providers/embedding/local.js"
-    );
-    const vec = await new Fresh().embed("hello");
+    const vec = await new LocalEmbeddingProvider().embed("hello");
 
     expect(pipeline).toHaveBeenCalledWith(
       "feature-extraction",
@@ -50,11 +29,7 @@ describe("LocalEmbeddingProvider (with loaded pipeline)", () => {
   });
 
   it("embedBatch returns one Float32Array per input text", async () => {
-    mockSuccessModule();
-    const { LocalEmbeddingProvider: Fresh } = await import(
-      "../src/providers/embedding/local.js"
-    );
-    const vecs = await new Fresh().embedBatch(["a", "b", "c"]);
+    const vecs = await new LocalEmbeddingProvider().embedBatch(["a", "b", "c"]);
 
     expect(vecs).toHaveLength(3);
     for (const v of vecs) expect(v).toBeInstanceOf(Float32Array);

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "bun:test";
 import { HybridSearch } from "../src/state/hybrid-search.js";
 import { SearchIndex } from "../src/state/search-index.js";
 import type { CompressedObservation, EmbeddingProvider } from "../src/types.js";

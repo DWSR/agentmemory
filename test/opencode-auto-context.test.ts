@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
 import { readFileSync } from "node:fs";
 
 // OpenCode plugin needs zero-config memory injection. Plugin
@@ -43,7 +43,6 @@ describe("OpenCode plugin project name resolution", () => {
   beforeEach(() => {
     fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
     vi.stubGlobal("fetch", fetchMock);
-    vi.resetModules();
     delete process.env.AGENTMEMORY_PROJECT_NAME;
   });
 

@@ -17,26 +17,24 @@ function safeParseInt(value: string | undefined, fallback: number): number {
   return Number.isNaN(parsed) ? fallback : parsed;
 }
 
-const DATA_DIR = join(homedir(), ".agentmemory");
-const ENV_FILE = join(DATA_DIR, ".env");
-
 let warnPremiumModelShown = false;
 
-// Parsed ~/.agentmemory/.env, memoized for the process lifetime. getMergedEnv()
-// runs on every config getter (~20 of them), so without this cache a single
-// request would readFileSync + reparse the file dozens of times. The file is
-// boot-static, so read it from disk once and reuse the result. Tests that
-// mutate the file between cases reset the module (clearing this via reload) or
-// call __resetEnvFileCache().
-let envFileCache: Record<string, string> | undefined;
+// Parsed ~/.agentmemory/.env, memoized per path. getMergedEnv() runs on every
+// config getter (~20 of them), so without this cache a single request would
+// readFileSync + reparse the file dozens of times. The path is resolved when
+// read so isolated test homes and runtime HOME overrides remain observable.
+let envFileCache:
+  | { path: string; values: Record<string, string> }
+  | undefined;
 
 function loadEnvFile(): Record<string, string> {
-  if (envFileCache) return envFileCache;
-  if (!existsSync(ENV_FILE)) {
-    envFileCache = {};
-    return envFileCache;
+  const envFile = join(homedir(), ".agentmemory", ".env");
+  if (envFileCache?.path === envFile) return envFileCache.values;
+  if (!existsSync(envFile)) {
+    envFileCache = { path: envFile, values: {} };
+    return envFileCache.values;
   }
-  const content = readFileSync(ENV_FILE, "utf-8");
+  const content = readFileSync(envFile, "utf-8");
   const vars: Record<string, string> = {};
   for (const line of content.split("\n")) {
     const trimmed = line.trim();
@@ -55,8 +53,8 @@ function loadEnvFile(): Record<string, string> {
     }
     vars[key] = val;
   }
-  envFileCache = vars;
-  return envFileCache;
+  envFileCache = { path: envFile, values: vars };
+  return envFileCache.values;
 }
 
 // Test hook: clears the memoized .env so the next loadEnvFile() re-reads disk
@@ -216,7 +214,7 @@ export function loadConfig(): AgentMemoryConfig {
     tokenBudget: safeParseInt(env["TOKEN_BUDGET"], 2000),
     maxObservationsPerSession: safeParseInt(env["MAX_OBS_PER_SESSION"], 500),
     compressionModel: provider.model,
-    dataDir: DATA_DIR,
+    dataDir: join(homedir(), ".agentmemory"),
   };
 }
 

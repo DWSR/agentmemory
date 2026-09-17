@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "bun:test";
 import type { CompressedObservation, MemoryProvider } from "../src/types.js";
 
 function makeObs(

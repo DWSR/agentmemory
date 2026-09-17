@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
+import { describe, expect, it, beforeEach, afterEach, vi } from "bun:test";
 import { handleToolCall } from "../src/mcp/standalone.js";
 import { resetHandleForTests } from "../src/mcp/rest-proxy.js";
 import { InMemoryKV } from "../src/mcp/in-memory-kv.js";
