@@ -52,21 +52,13 @@ jobs:
         # src/functions/obsidian-export.ts needs os.tmpdir() + path.join
         # rework before Windows can be added back. Tracked as follow-up.
         os: [ubuntu-latest, macos-latest]
-        node-version: [20, 22, 24, 26]
     steps:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-      # Lockfiles are gitignored, so `npm ci` (which strictly re-validates a
-      # committed lockfile) buys no reproducibility here — and Node 24+'s
-      # stricter npm rejects rolldown's optional platform bindings that a
-      # `--package-lock-only` pass doesn't fully enumerate, failing the matrix
-      # on 24/26 only. A single lenient `npm install` resolves and installs
-      # in one pass.
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run build
-      - run: npm run skills:check
-      - run: npm test
+      - uses: DeterminateSystems/nix-installer-action@v23
+      # Lockfiles are gitignored, so install dependencies fresh for each job.
+      - run: nix develop --command npm install --legacy-peer-deps --no-audit --no-fund
+      - run: nix develop --command npm run build
+      - run: nix develop --command npm run skills:check
+      - run: nix develop --command npm test
