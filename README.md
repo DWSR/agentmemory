@@ -1651,7 +1651,7 @@ Full endpoint list: [`src/triggers/api.ts`](src/triggers/api.ts)
 ```bash
 bun run dev               # Hot reload
 bun run build             # Production build
-bun run test                  # 1,674 tests
+bun run test                  # 1,711 tests
 bun run test:integration  # API tests (requires running services)
 ```
 

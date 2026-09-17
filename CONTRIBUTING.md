@@ -29,7 +29,7 @@ If it's a feature: describe the user problem before the implementation. "I could
 2. Enter the Nix development environment with `nix develop`. With direnv and nix-direnv installed, run `direnv allow` once for automatic loading. Otherwise, install Bun >=1.3.13 yourself.
 3. Run `bun install --frozen-lockfile` to install dependencies.
 4. `bun run build` — TypeScript must compile clean.
-5. `bun run test` — the full test suite must pass. The one integration test under `test/integration.test.ts` needs a live server on `:3111` and is fine to skip locally.
+5. `bun run test` — the full Bun test suite must pass. The one integration test under `test/integration.test.ts` needs a live server on `:3111` and is fine to skip locally.
 6. Commit with sign-off. Rebase over tiny fixup commits so the history stays readable.
 
 ## Pull request flow
