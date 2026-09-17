@@ -13,7 +13,7 @@ import { timingSafeCompare } from "../auth.js";
 // Self-host the viewer favicon at /favicon.svg instead of an inline
 // data: URI so the viewer CSP can stay tight at `img-src 'self'`.
 // Mirrors loadViewerTemplate() in document.ts — same candidate paths so
-// it resolves both from source (vitest) and from dist/ (npm run start).
+// it resolves both from source tests and from dist/ (npm run start).
 function loadViewerFavicon(): Buffer | null {
   const base = dirname(fileURLToPath(import.meta.url));
   const candidates = [

@@ -11,8 +11,8 @@ The user wants a lesson recorded from the text they passed with the command.
 
 ```json
 memory_lesson_save {
-  "content": "Run vitest with --run in CI contexts; bare vitest enters watch mode and hangs the pipeline.",
-  "context": "any script or CI step that invokes vitest",
+  "content": "Run Bun's test runner without --watch in CI contexts; watch mode hangs the pipeline.",
+  "context": "any script or CI step that invokes Bun's test runner",
   "confidence": 0.7,
   "project": "myrepo"
 }
@@ -43,7 +43,7 @@ Recall side: before work of the same type, `memory_lesson_recall` with the task 
 
 WRONG: `content: "Be more careful with tests"` (no trigger, no action, nothing a future session can apply).
 
-RIGHT: `content: "Run vitest with --run in CI; watch mode hangs the pipeline."` (trigger, action, consequence).
+RIGHT: `content: "Run Bun's test runner without --watch in CI; watch mode hangs the pipeline."` (trigger, action, consequence).
 
 ## Checklist
 
