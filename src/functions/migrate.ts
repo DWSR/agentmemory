@@ -120,7 +120,7 @@ export function registerMigrateFunction(sdk: ISdk, kv: StateKV): void {
         return {
           success: false,
           error:
-            "better-sqlite3 not installed. Run: npm install better-sqlite3",
+            "better-sqlite3 not installed. Run: bun add better-sqlite3",
         };
       }
 

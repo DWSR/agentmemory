@@ -210,7 +210,7 @@ async function main() {
     // and grouping in the engine's metrics + traces output.
     telemetry: {
       project_name: "agentmemory",
-      language: "node",
+      language: "bun",
       framework: "iii-sdk",
     },
   });
@@ -539,7 +539,7 @@ async function main() {
     `REST API: 130 endpoints at http://localhost:${config.restPort}/agentmemory/*`,
   );
   bootLog(
-    `MCP surface (opt-in via \`npx @agentmemory/mcp\`): ${getAllTools().length} tools · 6 resources · 3 prompts`,
+    `MCP surface (opt-in via \`bunx --bun @agentmemory/mcp\`): ${getAllTools().length} tools · 6 resources · 3 prompts`,
   );
 
   const viewerServer = startViewerServer(

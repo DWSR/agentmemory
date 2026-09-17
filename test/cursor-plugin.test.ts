@@ -93,7 +93,7 @@ describe("Cursor plugin MCP config", () => {
 
   it("wires the standalone MCP shim over stdio", () => {
     const server = mcp.mcpServers.agentmemory;
-    expect(server.command).toBe("npx");
+    expect(server.command).toBe("bunx");
     expect(server.args).toContain("@agentmemory/mcp");
   });
 });

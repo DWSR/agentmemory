@@ -33,7 +33,7 @@ const MCP_BLOCK = `- insert:
       config:
         transport: stdio
         serverName: agentmemory
-        command: npx
+        command: bunx
         args: ['-y', '@agentmemory/mcp']
         env:
           AGENTMEMORY_URL: http://localhost:3111

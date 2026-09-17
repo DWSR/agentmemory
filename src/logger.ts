@@ -21,7 +21,7 @@
 // See rohitg00/agentmemory#143 follow-up — the #116 migration updated
 // test mocks but left the real `getContext()` imports in place, which
 // passed `npm test` (tests mock iii-sdk) and `npm run build` (tsdown
-// doesn't type-check) but crashed `node dist/index.mjs` on first
+// doesn't type-check) but crashed `bun dist/index.mjs` on first
 // import.
 
 type Fields = Record<string, unknown> | undefined;

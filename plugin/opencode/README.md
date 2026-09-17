@@ -22,7 +22,7 @@
 ### 1. Start the agentmemory server
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 The server starts on `http://localhost:3111`.
@@ -36,7 +36,7 @@ Add to `~/.config/opencode/opencode.json` or your project's `.opencode/opencode.
   "mcp": {
     "agentmemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["bunx", "--bun", "@agentmemory/mcp"],
       "enabled": true
     }
   }

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { FilesystemWatcher, configFromEnv } from "./watcher.mjs";
 
 const cliArgs = process.argv.slice(2);

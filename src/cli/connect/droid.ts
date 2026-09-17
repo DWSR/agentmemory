@@ -36,7 +36,7 @@ export const adapter = createJsonMcpAdapter({
   docs: "https://github.com/rohitg00/agentmemory#other-agents",
   protocolNote:
     "→ Using MCP via ~/.factory/mcp.json. The `/mcp` slash command inside droid lists configured servers. Pass --with-hooks to also install the native ~/.factory/hooks.json auto-capture hooks.",
-  // Droid requires `type` per the documented schema. stdio for npx-spawned shim.
+  // Droid requires `type` per the documented schema. stdio for bunx-spawned shim.
   extraEntryFields: { type: "stdio" },
   installHooks: installDroidHooks,
 });

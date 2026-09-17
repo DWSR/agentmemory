@@ -27,15 +27,15 @@
 **Paste this prompt into OpenClaw** and it does the whole setup for you:
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111.
+Install agentmemory for OpenClaw. Run `bunx --bun @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111.
 
 For zero-code setup, add this MCP server so OpenClaw gets all 43 memory tools:
 
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"]
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"]
     }
   }
 }
@@ -72,7 +72,7 @@ That's it. OpenClaw handles the rest.
 Start the agentmemory server in a separate terminal:
 
 ```bash
-npx @agentmemory/agentmemory
+bunx --bun @agentmemory/agentmemory
 ```
 
 Then add to your OpenClaw MCP config:
@@ -81,8 +81,8 @@ Then add to your OpenClaw MCP config:
 {
   "mcpServers": {
     "agentmemory": {
-      "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"]
+      "command": "bunx",
+      "args": ["--bun", "@agentmemory/mcp"]
     }
   }
 }
@@ -151,7 +151,7 @@ The plugin currently registers a `promptBuilder` only — not a full `MemoryPlug
 
 **`plugins.slots.memory = "agentmemory"` reports `unavailable`** — upgrade to v0.9.11+. Older versions of this plugin registered hooks but never called `api.registerMemoryCapability(...)`, so the memory-slot machinery did not consider the slot claimed. The current plugin registers a memory capability (prompt builder) at startup, which is the documented OpenClaw API for occupying the slot.
 
-**Connection refused on port 3111** — the agentmemory server is not running. Start it with `npx @agentmemory/agentmemory`.
+**Connection refused on port 3111** — the agentmemory server is not running. Start it with `bunx --bun @agentmemory/agentmemory`.
 
 **No memories returned** — open `http://localhost:3113` and verify observations are being captured.
 

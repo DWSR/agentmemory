@@ -58,6 +58,6 @@ jobs:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@v23
       - run: nix develop --command bun install --frozen-lockfile
-      - run: nix develop --command npm run build
-      - run: nix develop --command npm run skills:check
-      - run: nix develop --command npm test
+      - run: nix develop --command bun run build
+      - run: nix develop --command bun run skills:check
+      - run: nix develop --command bun run test

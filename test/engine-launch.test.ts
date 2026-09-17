@@ -93,7 +93,7 @@ describe("rewriteBundledConfig", () => {
     "      watch:",
     "        - src/**/*.ts",
     "      exec:",
-    "        - node dist/index.mjs",
+    "        - bun dist/index.mjs",
   ].join("\n");
 
   it("substitutes data paths and removes bundled worker supervision", () => {
@@ -115,7 +115,7 @@ describe("rewriteBundledConfig", () => {
       "  - name: iii-exec",
       "    config:",
       "      exec:",
-      "        - node dist/index.mjs",
+      "        - bun dist/index.mjs",
       "        - node scripts/other-worker.mjs",
     ].join("\n");
 
@@ -127,6 +127,7 @@ describe("rewriteBundledConfig", () => {
     );
     expect(out).toContain("- name: iii-exec");
     expect(out).toContain("- node scripts/other-worker.mjs");
+    expect(out).not.toContain("- bun dist/index.mjs");
     expect(out).not.toContain("- node dist/index.mjs");
   });
 
@@ -145,6 +146,7 @@ describe("rewriteBundledConfig", () => {
     const out = rewriteBundledConfig(raw, HOME, process.execPath, "/opt/pkg/dist/index.mjs");
     expect(out).not.toContain("./data/");
     expect(out).not.toContain("src/**/*.ts");
+    expect(out).not.toContain("- bun dist/index.mjs");
     expect(out).not.toContain("- node dist/index.mjs");
     expect(out).not.toContain("- name: iii-exec");
     expect(out).toContain(join(HOME, ".agentmemory", "data", "state_store.db"));

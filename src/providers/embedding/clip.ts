@@ -62,7 +62,7 @@ async function loadTransformers(): Promise<TransformersModule> {
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
       throw new Error(
-        "Install @huggingface/transformers for CLIP embeddings: npm install @huggingface/transformers",
+        "Install @huggingface/transformers for CLIP embeddings: bun add @huggingface/transformers",
       );
     }
     throw err;

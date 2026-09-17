@@ -7,13 +7,13 @@ Part of the data-source-connectors effort tracked in issue #62.
 ## Install
 
 ```bash
-npm install -g @agentmemory/fs-watcher
+bun add --global @agentmemory/fs-watcher
 ```
 
 Or run without installing:
 
 ```bash
-npx @agentmemory/fs-watcher ~/work/my-repo
+bunx --bun @agentmemory/fs-watcher ~/work/my-repo
 ```
 
 ## Usage
@@ -33,7 +33,7 @@ Every file change inside the watched roots becomes a `post_tool_use` observation
 
 Session id and project are required by the observe endpoint — set them via env, or the watcher generates a per-process `fs-watcher-<ts>-<rand>` session id and uses the first root's directory name as the project.
 
-Requires Node.js **>=26 LTS**. Recursive `fs.watch` needs Node 19.1.0+ on Linux; Node 26 is the minimum supported LTS line.
+Requires Bun **>=1.3.13**. Recursive `fs.watch` is provided by Bun's Node-compatible `fs.watch` implementation.
 
 ## Configuration
 

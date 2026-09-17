@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { readFileSync } from "node:fs";
 import { resolveProject, hookCwd } from "./_project.js";
 

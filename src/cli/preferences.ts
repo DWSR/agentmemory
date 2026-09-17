@@ -41,12 +41,12 @@ export interface Prefs {
   // The first onboarding sets this to true so the second invocation
   // skips the banner.
   skipSplash: boolean;
-  // Reserved for a later "do not nag me about the npx vs install
+  // Reserved for a later "do not nag me about the bunx vs install
   // tradeoff" toggle. Kept on the schema so we don't have to bump
   // schemaVersion when we ship the flag.
   skipNpxHint: boolean;
   // Set to true when the user declines the "install agentmemory
-  // globally?" prompt on first npx run. We never ask again on this
+  // globally?" prompt on first bunx run. We never ask again on this
   // machine so the prompt stays a one-time DX nudge, not a nag.
   skipGlobalInstall: boolean;
   // Set to true when the user declines the "install iii console?"

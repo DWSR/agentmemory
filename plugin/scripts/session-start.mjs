@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { execSync } from "node:child_process";
 import { basename } from "node:path";
 //#region src/hooks/_project.ts

@@ -76,8 +76,8 @@ function isAgentmemoryExecCommand(
   const explicitCommand = `${nodeBin} ${workerEntry}`.replaceAll("\\", "/");
   return (
     command === explicitCommand ||
-    /^(?:node|node\.exe)\s+\.\/dist\/index\.mjs$/.test(command) ||
-    /^(?:node|node\.exe)\s+dist\/index\.mjs$/.test(command)
+    /^(?:bun|bun\.exe|node|node\.exe)\s+\.\/dist\/index\.mjs$/.test(command) ||
+    /^(?:bun|bun\.exe|node|node\.exe)\s+dist\/index\.mjs$/.test(command)
   );
 }
 

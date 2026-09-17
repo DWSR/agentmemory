@@ -2,7 +2,7 @@ ARG III_VERSION=0.11.5
 
 FROM iiidev/iii:${III_VERSION} AS iii-image
 
-FROM node:26-slim
+FROM oven/bun:1.3.13-slim
 
 ARG AGENTMEMORY_VERSION=0.9.29
 ARG III_VERSION=0.11.5
@@ -18,11 +18,11 @@ COPY --from=iii-image /app/iii /usr/local/bin/iii
 # `overrides` field pins iii-sdk down to match the engine (agentmemory's
 # caret range `^0.11.5` otherwise resolves to 0.11.6, the version that
 # requires the new sandbox-everything worker model the agentmemory CLI
-# is not refactored for yet). `npm install -g` ignores overrides, hence
+# is not refactored for yet). Global Bun installs ignore overrides, hence
 # the local prefix.
 WORKDIR /opt/agentmemory
 RUN printf '{"name":"agentmemory-deploy","version":"1.0.0","private":true,"overrides":{"iii-sdk":"%s"}}\n' "${III_SDK_VERSION}" > package.json \
- && npm install "@agentmemory/agentmemory@${AGENTMEMORY_VERSION}" --omit=optional --no-fund --no-audit \
+  && bun add --no-save --production "@agentmemory/agentmemory@${AGENTMEMORY_VERSION}" \
  && ln -s /opt/agentmemory/node_modules/.bin/agentmemory /usr/local/bin/agentmemory
 
 ENV AGENTMEMORY_III_VERSION=${III_VERSION} \
