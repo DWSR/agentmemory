@@ -92,6 +92,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
   let tmpHome: string;
   let originalHome: string | undefined;
   let originalUserprofile: string | undefined;
+  let importCounter = 0;
 
   beforeEach(() => {
     tmpHome = mkdtempSync(join(tmpdir(), "am-connect-"));
@@ -111,7 +112,9 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
   });
 
   async function loadAdapter(): Promise<ConnectAdapter> {
-    const mod = await import("../src/cli/connect/claude-code.js?t=" + Date.now());
+    const mod = await import(
+      "../src/cli/connect/claude-code.js?t=" + Date.now() + "-" + importCounter++,
+    );
     return (mod as { adapter: ConnectAdapter }).adapter;
   }
 
