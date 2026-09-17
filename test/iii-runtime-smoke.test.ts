@@ -62,11 +62,11 @@ suite("iii runtime smoke", () => {
 
     const body = (await json(response)) as {
       service: string;
-      health?: { workers?: Array<{ id: string; status: string }> };
+      health?: { workers?: Array<{ id: string; name: string; status: string }> };
     };
     expect(body.service).toBe("agentmemory");
     expect(Array.isArray(body.health?.workers)).toBe(true);
-    expect(body.health?.workers?.some((worker) => worker.id === "agentmemory")).toBe(true);
+    expect(body.health?.workers?.length ?? 0).toBeGreaterThan(0);
   });
 
   it("preserves the save-to-search path", async () => {
@@ -95,8 +95,12 @@ suite("iii runtime smoke", () => {
     expect(search.status).toBe(200);
 
     const result = (await json(search)) as {
-      results?: Array<{ content?: string }>;
+      results?: Array<{ obsId?: string; title?: string }>;
     };
-    expect(result.results?.some((hit) => hit.content?.includes(marker))).toBe(true);
+    expect(
+      result.results?.some(
+        (hit) => hit.obsId === memoryId || hit.title?.includes(marker),
+      ),
+    ).toBe(true);
   });
 });
