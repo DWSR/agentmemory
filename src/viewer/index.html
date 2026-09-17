@@ -1685,7 +1685,7 @@
        if (workers.length > 0) {
          html += '<div class="card" style="margin-top:16px"><div class="card-title">Workers</div>';
          workers.forEach(function(w) {
-           var available = w.status === 'running' || w.status === 'available';
+           var available = w.status === 'running' || w.status === 'available' || w.status === 'connected';
            var statusClass = available ? 'running' : w.status === 'starting' ? 'starting' : 'stopped';
            html += '<div class="worker-row"><span class="worker-dot ' + statusClass + '"></span>';
            html += '<span style="color:var(--ink);font-weight:600;font-family:var(--font-ui);font-size:12px;">' + esc(w.name || w.id) + '</span>';
