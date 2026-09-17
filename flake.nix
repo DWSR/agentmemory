@@ -74,6 +74,7 @@
           default = pkgs.mkShell {
             packages = with pkgs; [
               nodejs_26
+              bun
               curl
               gnutar
             ];

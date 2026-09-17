@@ -24,6 +24,8 @@ agentmemory-debug/
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+bun.lockb
+!bun.lock
 integrations/hermes/__pycache__/
 
 # Eval reports (transient; published scorecards live in docs/benchmarks/)
