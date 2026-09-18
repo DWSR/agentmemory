@@ -79,7 +79,7 @@ Requirements:
 
 - Bun 1.3.13 or newer (`bun --version` and `bunx --version`).
 - macOS/Linux automatic iii-engine installation also needs `curl`, a POSIX `sh`, and `tar`. Minimal images such as `oven/bun:1.3.13-slim` may not include them.
-- Native Windows requires the pinned iii-engine v0.11.5 `iii.exe` to be installed manually. WSL2 or Docker Desktop are the other supported paths.
+- Native Windows requires the pinned iii-engine v0.11.6 `iii.exe` to be installed manually. WSL2 or Docker Desktop are the other supported paths.
 
 ### Nix
 
@@ -119,7 +119,7 @@ Wire more agents any time with `agentmemory connect <agent>` — 20 adapters lis
 <details>
 <summary><strong>Windows</strong></summary>
 
-The fast path is WSL2. Native Windows engine setup requires the pinned v0.11.5 ZIP to be downloaded and `iii.exe` extracted manually; the CLI does not auto-extract it. Docker Desktop is also supported. See the [Windows notes](#windows) for the step-by-step.
+The fast path is WSL2. Native Windows engine setup requires the pinned v0.11.6 ZIP to be downloaded and `iii.exe` extracted manually; the CLI does not auto-extract it. Docker Desktop is also supported. See the [Windows notes](#windows) for the step-by-step.
 
 </details>
 
@@ -144,7 +144,7 @@ Bun caches packages. Force the latest with `bunx --bun @agentmemory/agentmemory@
 <details>
 <summary><strong>Already running your own iii engine</strong></summary>
 
-agentmemory pins iii-engine v0.11.5 and won't attach to a different version (the worker can't speak another engine's protocol). Stop the other engine, then run `bunx --bun @agentmemory/agentmemory@latest`. It installs and runs the pinned v0.11.5 in `~/.agentmemory/bin`, leaving your own `iii` untouched.
+agentmemory pins iii-engine v0.11.6 and won't attach to a different version (the worker can't speak another engine's protocol). Stop the other engine, then run `bunx --bun @agentmemory/agentmemory@latest`. It installs and runs the pinned v0.11.6 in `~/.agentmemory/bin`, leaving your own `iii` untouched.
 
 </details>
 
@@ -504,7 +504,7 @@ None of these auto-capture from coding-agent hooks, ship a local-first viewer, o
 
 <h2 id="quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-quickstart.svg"><img src="assets/tags/section-quickstart.svg" alt="Quick Start" height="32" /></picture></h2>
 
-Compatibility: this release targets `iii-sdk` 0.11.5 and pins iii-engine v0.11.5.
+Compatibility: this release targets `iii-sdk` 0.11.6 and pins iii-engine v0.11.6.
 
 ### Try it in 30 seconds
 
@@ -583,7 +583,7 @@ Use the maintenance command when you intentionally want to update your local run
 bunx --bun @agentmemory/agentmemory@latest upgrade
 ```
 
-Warning: this command mutates the current workspace/runtime. It can update JavaScript dependencies and pull the pinned `iiidev/iii:0.11.5` Docker image. It never installs an unpinned or newer iii engine.
+Warning: this command mutates the current workspace/runtime. It can update JavaScript dependencies and pull the pinned `iiidev/iii:0.11.6` Docker image. It stops owned runtimes before replacement and recreates Docker containers without removing their data mount.
 
 Implementation details live in `src/cli.ts` (see `runUpgrade` around the `src/cli.ts:544-595` region).
 
@@ -773,9 +773,9 @@ The agentmemory entry is the **same MCP server block** across every host that us
 agentmemory registers its core operations as iii functions (`mem::remember`, `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Any language with an iii SDK can call them directly over `ws://localhost:49134`, with no separate REST client per language.
 
 ```bash
-pip install iii-sdk         # Python
-cargo add iii-sdk           # Rust
-npm  install iii-sdk        # Node
+pip install iii-sdk==0.11.6       # Python
+cargo add iii-sdk@0.11.6          # Rust
+npm  install iii-sdk@0.11.6       # Node
 ```
 
 ```python
@@ -801,28 +801,26 @@ bun install --frozen-lockfile && bun run build && bun run start
 
 This starts agentmemory with a local `iii-engine` if the pinned binary is already installed, or uses Docker Compose when selected. REST, streams, and the viewer bind to `127.0.0.1` by default. The automatic macOS/Linux binary path requires `curl`, a POSIX `sh`, and `tar`.
 
-Install `iii-engine` manually. **agentmemory currently pins `iii-engine` to `v0.11.5`**. `v0.11.6` introduces a new sandbox-everything-via-`iii worker add` model that agentmemory hasn't been refactored for yet. Pin lifts once the refactor lands. Override with `AGENTMEMORY_III_VERSION=<version>` if you've migrated to the sandbox model manually.
+Install `iii-engine` manually. **agentmemory currently pins `iii-engine` to `v0.11.6`**, matched with `iii-sdk` 0.11.6. The worker still registers directly through the SDK; no `iii worker add` migration is required. Override with `AGENTMEMORY_III_VERSION=<version>` only when you intentionally manage a different engine.
 
-- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.5/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
+- **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.6/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
 - **macOS x64:** swap `aarch64-apple-darwin` for `x86_64-apple-darwin`
 - **Linux x64:** swap for `x86_64-unknown-linux-gnu`
 - **Linux arm64:** swap for `aarch64-unknown-linux-gnu`
-- **Windows:** download `iii-x86_64-pc-windows-msvc.zip` from [iii-hq/iii releases v0.11.5](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5) and extract `iii.exe` to `%USERPROFILE%\.agentmemory\bin\iii.exe`
+- **Windows:** download `iii-x86_64-pc-windows-msvc.zip` from [iii-hq/iii releases v0.11.6](https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6) and extract `iii.exe` to `%USERPROFILE%\.agentmemory\bin\iii.exe`
 
-Or use Docker (the bundled `docker-compose.yml` pulls `iiidev/iii:0.11.5`). Full docs: [iii.dev/docs](https://iii.dev/docs).
+Or use Docker (the bundled `docker-compose.yml` pulls `iiidev/iii:0.11.6`). Full docs: [iii.dev/docs](https://iii.dev/docs).
 
 ### Windows
 
-agentmemory runs on Windows 10/11, but the Bun package alone isn't enough; you also need the pinned iii-engine v0.11.5 runtime as a background process. The CLI does not auto-extract the Windows ZIP, so native Windows users must install `iii.exe` manually, use WSL2, or choose Docker Desktop.
+agentmemory runs on Windows 10/11, but the Bun package alone isn't enough; you also need the pinned iii-engine v0.11.6 runtime as a background process. The CLI does not auto-extract the Windows ZIP, so native Windows users must install `iii.exe` manually, use WSL2, or choose Docker Desktop.
 
 Native Windows automated MCP wiring supports only `agentmemory connect copilot-cli`. For Claude Code, Codex, Cursor, and every other native Windows agent, copy the manual MCP block from [Other agents](#other-agents) into that agent's Windows config. Running `connect` in WSL is appropriate only when the target agent is also installed in the same WSL environment; it does not edit a Windows-host agent's configuration.
 
 **Option A: prebuilt Windows binary (recommended)**
 
 ```powershell
-# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.5 in your browser
-#    (we pin to v0.11.5 until agentmemory refactors for the new sandbox
-#     model that engine v0.11.6+ requires)
+# 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.6 in your browser
 # 2. Download iii-x86_64-pc-windows-msvc.zip
 #    (or iii-aarch64-pc-windows-msvc.zip if you're on an ARM machine)
 # 3. Extract iii.exe to agentmemory's private engine directory:
@@ -830,7 +828,7 @@ New-Item -ItemType Directory -Force "$HOME\.agentmemory\bin"
 # Copy iii.exe to $HOME\.agentmemory\bin\iii.exe
 # 4. Verify:
 & "$HOME\.agentmemory\bin\iii.exe" --version
-# Should print: 0.11.5
+# Should print: 0.11.6
 
 # 5. Then run agentmemory as usual:
 bunx --bun @agentmemory/agentmemory@latest
@@ -863,7 +861,7 @@ bunx --bun @agentmemory/mcp
 | Port conflict | `netstat -ano \| findstr :3111` to see what's bound, then kill it or use `--port <N>` |
 | Docker fallback skipped even though Docker is installed | Make sure Docker Desktop is actually running (system tray icon) |
 
-> Note: the iii **engine** is a prebuilt binary, not a cargo crate, so don't try to `cargo install` it. (The iii **SDKs** are published on crates.io, npm, and PyPI, but agentmemory doesn't need them.) Supported engine install methods are all pinned to v0.11.5: the prebuilt binary above, agentmemory's macOS/Linux auto-install path (`curl`, POSIX `sh`, and `tar` required), and the Docker image `iiidev/iii:0.11.5`. A bare upstream `install.sh | sh` installs the latest engine, which agentmemory does not support. Use `bunx --bun @agentmemory/agentmemory@latest`; on macOS/Linux it fetches the pinned engine into `~/.agentmemory/bin`.
+> Note: the iii **engine** is a prebuilt binary, not a cargo crate, so don't try to `cargo install` it. (The iii **SDKs** are published on crates.io, npm, and PyPI, but agentmemory doesn't need them.) Supported engine install methods are all pinned to v0.11.6: the prebuilt binary above, agentmemory's macOS/Linux auto-install path (`curl`, POSIX `sh`, and `tar` required), and the Docker image `iiidev/iii:0.11.6`. A bare upstream `install.sh | sh` installs the latest engine, which agentmemory does not support. Use `bunx --bun @agentmemory/agentmemory@latest`; on macOS/Linux it fetches the pinned engine into `~/.agentmemory/bin`.
 
 ---
 
@@ -1655,7 +1653,7 @@ bun run test                  # 1,711 tests
 bun run test:integration  # API tests (requires running services)
 ```
 
-**Prerequisites:** Bun >= 1.3.13 with `bunx`; [iii-engine](https://iii.dev/docs) v0.11.5 or Docker. The macOS/Linux automatic engine install also requires `curl`, a POSIX `sh`, and `tar`; native Windows uses the manual pinned `iii.exe`, WSL2, or Docker Desktop.
+**Prerequisites:** Bun >= 1.3.13 with `bunx`; [iii-engine](https://iii.dev/docs) v0.11.6 or Docker. The macOS/Linux automatic engine install also requires `curl`, a POSIX `sh`, and `tar`; native Windows uses the manual pinned `iii.exe`, WSL2, or Docker Desktop.
 
 <h2 id="license"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-license.svg"><img src="assets/tags/section-license.svg" alt="License" height="32" /></picture></h2>
 

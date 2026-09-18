@@ -4,6 +4,18 @@ All notable changes to agentmemory will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Upgrade the matched iii engine and `iii-sdk` pins to `0.11.6`. Direct SDK worker registration remains supported; 0.11.6 does not require an `iii worker add` migration.
+- Make managed engine upgrades stop owned runtimes before replacement and recreate stale Docker containers without removing their data mounts.
+- Normalize 0.11.6 engine worker-list metadata so `available` workers appear healthy while internal workers stay out of the application health view.
+
+### Verification
+
+- Add an opt-in single-version runtime smoke test covering route registration, worker discovery, save-to-search, and cleanup.
+
 ## [0.9.29] — 2026-08-16
 
 Release wave in two parts. Recall quality: hybrid ranking reaches the primary recall path, lessons get a real index, every record learns where it came from, the knowledge graph populates keyless, and agent scoping threads through all save paths — plus connector parity for pi and Codex, a new DeepSeek Harness connector, current provider model defaults, and a viewer clarity pass. Foundation: the `.env` file now applies everywhere, imports become searchable, consolidation runs on session stop, twelve MCP-only agents get activated on connect, and every capture surface agrees on what "project" means. No breaking changes; read the upgrade notes for behavior changes you will notice.
