@@ -38,7 +38,7 @@ export type DoctorContext = {
   pidfilePath: string;
   /** Path to ~/.agentmemory/engine-state.json */
   enginePath: string;
-  /** Pinned engine version (e.g. "0.16.1"). */
+  /** Pinned engine version (e.g. "0.17.0"). */
   pinnedVersion: string;
 };
 
