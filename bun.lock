@@ -9,7 +9,7 @@
         "@anthropic-ai/sdk": "^0.100.1",
         "@clack/prompts": "^1.2.0",
         "dotenv": "^17.4.2",
-        "iii-sdk": "0.12.0",
+        "iii-sdk": "0.13.0",
         "picocolors": "^1.1.1",
         "zod": "^4.0.0",
       },
@@ -338,7 +338,7 @@
 
     "hookable": ["hookable@6.1.1", "", {}, "sha512-U9LYDy1CwhMCnprUfeAZWZGByVbhd54hwepegYTK7Pi5NvqEj63ifz5z+xukznehT7i6NIZRu89Ay1AZmRsLEQ=="],
 
-    "iii-sdk": ["iii-sdk@0.12.0", "", { "dependencies": { "@opentelemetry/api": "^1.9.0", "@opentelemetry/api-logs": "^0.57.0", "@opentelemetry/core": "^1.30.0", "@opentelemetry/instrumentation": "^0.57.0", "@opentelemetry/otlp-transformer": "^0.57.0", "@opentelemetry/resources": "^1.30.0", "@opentelemetry/sdk-logs": "^0.57.0", "@opentelemetry/sdk-metrics": "^1.30.0", "@opentelemetry/sdk-trace-base": "^1.30.0", "@opentelemetry/sdk-trace-node": "^1.30.0", "@opentelemetry/semantic-conventions": "^1.28.0", "ws": "^8.18.3" } }, "sha512-Y638PCUeJVGkYjpIvkBgVFXB9WmmbGHsRiRo02E+oph1ShOwmTDJ1LlSFn2h/dZC6cxgOOFwsMTltpGM6j1A+w=="],
+    "iii-sdk": ["iii-sdk@0.13.0", "", { "dependencies": { "@opentelemetry/api": "^1.9.0", "@opentelemetry/api-logs": "^0.57.0", "@opentelemetry/core": "^1.30.0", "@opentelemetry/instrumentation": "^0.57.0", "@opentelemetry/otlp-transformer": "^0.57.0", "@opentelemetry/resources": "^1.30.0", "@opentelemetry/sdk-logs": "^0.57.0", "@opentelemetry/sdk-metrics": "^1.30.0", "@opentelemetry/sdk-trace-base": "^1.30.0", "@opentelemetry/sdk-trace-node": "^1.30.0", "@opentelemetry/semantic-conventions": "^1.28.0", "ws": "^8.18.3" } }, "sha512-wWDCNRiEa6qzYteOx/xcNtIYIZy7l/850XTscm72ChCpvfuqVJ3dz4BMuOuSfAIaCbguwApGNpdQ6pZxbbw0LQ=="],
 
     "import-in-the-middle": ["import-in-the-middle@1.15.0", "", { "dependencies": { "acorn": "^8.14.0", "acorn-import-attributes": "^1.9.5", "cjs-module-lexer": "^1.2.2", "module-details-from-path": "^1.0.3" } }, "sha512-bpQy+CrsRmYmoPMAE/0G33iwRqwW4ouqdRg8jgbH3aKuCtOc8lxgmYXg2dMM92CRiGP660EtBcymH/eVUpCSaA=="],
 

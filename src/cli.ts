@@ -116,7 +116,7 @@ if (args.includes("--version") || args.includes("-V")) {
 // fresh installs and managed Docker deployments speak the same protocol.
 // Override env var AGENTMEMORY_III_VERSION for an explicitly managed runtime.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.12.0";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.13.0";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -143,7 +143,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.12.0`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.13.0`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -3269,8 +3269,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (bun install)",
       });
       requireSuccess(installOk, "bun install");
-      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.12.0"], {
-        label: "Pinning iii-sdk@0.12.0",
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.13.0"], {
+        label: "Pinning iii-sdk@0.13.0",
         optional: true,
       });
     } else {
