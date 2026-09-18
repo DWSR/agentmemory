@@ -1,4 +1,4 @@
-import type { ISdk } from "iii-sdk";
+import type { IIIClient as ISdk } from "iii-sdk";
 import type { Memory, GovernanceFilter, AuditEntry } from "../types.js";
 import { KV } from "../state/schema.js";
 import type { StateKV } from "../state/kv.js";

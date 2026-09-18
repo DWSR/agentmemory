@@ -116,7 +116,7 @@ if (args.includes("--version") || args.includes("-V")) {
 // fresh installs and managed Docker deployments speak the same protocol.
 // Override env var AGENTMEMORY_III_VERSION for an explicitly managed runtime.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.19.7";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.22.1";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -143,7 +143,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.19.7`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.22.1`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -726,7 +726,7 @@ function engineStateRestPort(state: EngineState): number {
   try {
     const raw = readFileSync(state.configPath, "utf-8");
     const httpBlock = raw.match(
-      /- name:\s*iii-http([\s\S]*?)(?=\n\s*- name:|$)/,
+      /- name:\s*http([\s\S]*?)(?=\n\s*- name:|$)/,
     )?.[1];
     const configuredPort = httpBlock?.match(/\n\s*port:\s*(\d+)/)?.[1];
     if (configuredPort) return parseInt(configuredPort, 10);
@@ -3269,8 +3269,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (bun install)",
       });
       requireSuccess(installOk, "bun install");
-      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.19.7"], {
-        label: "Pinning iii-sdk@0.19.7",
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.22.1"], {
+        label: "Pinning iii-sdk@0.22.1",
         optional: true,
       });
     } else {

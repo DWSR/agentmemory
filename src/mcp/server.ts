@@ -1,4 +1,5 @@
-import type { ISdk, ApiRequest } from "iii-sdk";
+import type { IIIClient as ISdk } from "iii-sdk";
+import type { HttpRequest as ApiRequest } from "@iii-dev/helpers/http";
 import type { StateKV } from "../state/kv.js";
 import { KV } from "../state/schema.js";
 import type {

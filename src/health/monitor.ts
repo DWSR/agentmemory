@@ -1,24 +1,31 @@
-import type { ISdk } from "iii-sdk";
+import type { IIIClient as ISdk } from "iii-sdk";
 import type { HealthSnapshot } from "../types.js";
 import type { StateKV } from "../state/kv.js";
 import { KV } from "../state/schema.js";
 import { evaluateHealth } from "./thresholds.js";
 
+function readConnectionState(sdk: unknown): string {
+  if (
+    typeof sdk === "object" &&
+    sdk !== null &&
+    "getConnectionState" in sdk &&
+    typeof (sdk as { getConnectionState?: unknown }).getConnectionState === "function"
+  ) {
+    return String((sdk as { getConnectionState: () => unknown }).getConnectionState());
+  }
+  return "connected";
+}
+
 export function registerHealthMonitor(
   sdk: ISdk,
   kv: StateKV,
 ): { stop: () => void } {
-  let connectionState = "connected";
+  let connectionState = readConnectionState(sdk);
   let prevCpuUsage = process.cpuUsage();
   let prevCpuTime = Date.now();
 
-  if (typeof sdk.on === "function") {
-    sdk.on("connection_state", (state?: unknown) => {
-      connectionState = state as string;
-    });
-  }
-
   async function collectHealth(): Promise<HealthSnapshot> {
+    connectionState = readConnectionState(sdk);
     const mem = process.memoryUsage();
     const currentCpu = process.cpuUsage();
     const now = Date.now();

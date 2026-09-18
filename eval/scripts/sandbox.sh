@@ -14,13 +14,13 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 if ! command -v iii >/dev/null 2>&1; then
   echo "iii binary not on PATH. Install pinned version:"
-  echo "  curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.19.7/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin"
+  echo "  curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.22.1/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin"
   exit 1
 fi
 
 iii_ver=$(iii --version 2>&1 | head -1)
-if [[ "$iii_ver" != "0.19.7" ]]; then
-  echo "warning: iii version on PATH is $iii_ver; agentmemory pins 0.19.7"
+if [[ "$iii_ver" != "0.22.1" ]]; then
+  echo "warning: iii version on PATH is $iii_ver; agentmemory pins 0.22.1"
 fi
 
 if [[ ! -f "$REPO_ROOT/dist/index.mjs" ]]; then
@@ -37,7 +37,7 @@ mkdir -p "$SANDBOX_ROOT/data" "$SANDBOX_ROOT/.agentmemory"
 
 cat > "$SANDBOX_ROOT/iii-config.yaml" <<EOF
 workers:
-  - name: iii-http
+  - name: http
     config:
       port: $SANDBOX_PORT
       host: 127.0.0.1
@@ -45,22 +45,22 @@ workers:
       cors:
         allowed_origins: ["http://localhost:$SANDBOX_PORT", "http://127.0.0.1:$SANDBOX_PORT"]
         allowed_methods: [GET, POST, PUT, DELETE, OPTIONS]
-  - name: iii-state
+  - name: state
     config:
       adapter:
         name: kv
         config:
           store_method: file_based
           file_path: $SANDBOX_ROOT/data/state_store.db
-  - name: iii-queue
+  - name: queue
     config:
       adapter:
         name: builtin
-  - name: iii-pubsub
+  - name: pubsub
     config:
       adapter:
         name: local
-  - name: iii-cron
+  - name: cron
     config:
       adapter:
         name: kv
@@ -73,15 +73,6 @@ workers:
         config:
           store_method: file_based
           file_path: $SANDBOX_ROOT/data/stream_store
-  - name: iii-observability
-    config:
-      enabled: true
-      service_name: agentmemory-eval
-      exporter: memory
-      sampling_ratio: 1.0
-      metrics_enabled: true
-      logs_enabled: false
-      logs_console_output: false
   - name: iii-exec
     config:
       exec:

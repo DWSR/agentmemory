@@ -1,4 +1,5 @@
-import { TriggerAction, type ISdk, type ApiRequest } from "iii-sdk";
+import { TriggerAction, type IIIClient as ISdk } from "iii-sdk";
+import type { HttpRequest as ApiRequest } from "@iii-dev/helpers/http";
 import type { Session, CompressedObservation, HookPayload, CommitLink, SessionSummary } from "../types.js";
 import { withKeyedLock } from "../state/keyed-mutex.js";
 import { KV } from "../state/schema.js";
