@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
 
 const root = join(import.meta.dirname, "..");
-const expectedVersion = "0.20.0";
+const expectedVersion = "0.21.8";
 const operationalPins = [
   "bun.lock",
   "src/cli.ts",

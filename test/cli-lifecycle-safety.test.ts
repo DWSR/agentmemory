@@ -50,7 +50,7 @@ if (args[0] === "inspect") {
       Id: process.env.FULL_CONTAINER_ID,
       State: { Running: false },
       Config: {
-        Image: "iiidev/iii:0.20.0",
+        Image: "iiidev/iii:0.21.8",
         Labels: {
           "com.docker.compose.project": "agentmemory-3111",
           "com.docker.compose.service": "iii-engine"
@@ -90,7 +90,7 @@ function runDockerStop(
   installFakeDocker(binDir);
   writeFileSync(
     composeFile,
-     "services:\n  iii-engine:\n    image: iiidev/iii:0.20.0\n  iii-init:\n    image: busybox\n",
+     "services:\n  iii-engine:\n    image: iiidev/iii:0.21.8\n  iii-init:\n    image: busybox\n",
   );
   const statePath = join(runtimeDir, "engine-state.json");
   writeFileSync(
@@ -100,7 +100,7 @@ function runDockerStop(
       schemaVersion: 2,
       composeFile,
       projectName: "agentmemory-3111",
-        engineVersion: "0.20.0",
+        engineVersion: "0.21.8",
       restPort: 3111,
       dataDir,
       ...(failureMode === "inspect" ? { containerId: "candidate-id" } : {}),
