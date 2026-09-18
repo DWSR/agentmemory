@@ -22,18 +22,25 @@
         pkgs.buildNpmPackage {
           pname = "agentmemory";
           version = packageJson.version;
-          src = pkgs.lib.cleanSource ./.;
-          nodejs = pkgs.nodejs_26;
-          nativeBuildInputs = [ pkgs.bun ];
+           src = pkgs.lib.cleanSource ./.;
+           nodejs = pkgs.nodejs_26;
+           nativeBuildInputs = [ pkgs.bun ];
+           postPatch = ''
+             export HOME="$TMPDIR/npm-home"
+             mkdir -p "$HOME"
+             npm install --package-lock-only --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+           '';
 
-          npmDeps = pkgs.fetchNpmDeps {
+           npmDeps = pkgs.fetchNpmDeps {
             name = "agentmemory-npm-deps";
-            src = pkgs.lib.cleanSource ./.;
-            nativeBuildInputs = [ pkgs.nodejs_26 ];
-            postPatch = ''
-              npm install --package-lock-only --legacy-peer-deps --ignore-scripts --no-audit --no-fund
-            '';
-            hash = "sha256-BIPusiFBm2ibNZbPE+dQj1oDauvY2zsI69YzO2YzoC8=";
+             src = pkgs.lib.cleanSource ./.;
+             nativeBuildInputs = [ pkgs.nodejs_26 ];
+             postPatch = ''
+               export HOME="$TMPDIR/npm-home"
+               mkdir -p "$HOME"
+               npm install --package-lock-only --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+             '';
+             hash = "sha256-mnRpoxLIiMnDir3OG3awWWyxr2M5X5frecOJlo8c6gA=";
           };
 
           npmFlags = [
