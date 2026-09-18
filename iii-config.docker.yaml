@@ -1,35 +1,16 @@
 workers:
-  - name: http
+  - name: configuration
     config:
-      port: ${III_REST_PORT:3111}
-      host: 0.0.0.0
-      default_timeout: 180000
-      cors:
-        allowed_origins: ["http://localhost:${III_REST_PORT:3111}", "http://localhost:${III_VIEWER_PORT:3113}", "http://127.0.0.1:${III_REST_PORT:3111}", "http://127.0.0.1:${III_VIEWER_PORT:3113}"]
-        allowed_methods: [GET, POST, PUT, DELETE, OPTIONS]
+      adapter:
+        name: fs
+        config:
+          directory: /data/config
   - name: iii-worker-manager
     config:
       port: ${III_ENGINE_PORT:49134}
       host: 0.0.0.0
-  - name: state
-    config:
-      adapter:
-        name: kv
-        config:
-          store_method: file_based
-          file_path: /data/state_store.db
-  - name: queue
-    config:
-      adapter:
-        name: builtin
-  - name: pubsub
-    config:
-      adapter:
-        name: local
-  - name: cron
-    config:
-      adapter:
-        name: kv
+  - name: iii-http-functions
+    config: {}
   - name: iii-stream
     config:
       port: ${III_STREAM_PORT:3112}

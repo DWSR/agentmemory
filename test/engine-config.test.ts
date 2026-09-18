@@ -14,7 +14,7 @@ describe("renderEngineConfig", () => {
     const rendered = renderEngineConfig(source, { dataDir });
 
     expect(rendered).toContain(
-      `file_path: '${join(dataDir, "state_store.db")}'`,
+      `directory: '${join(dataDir, "config")}'`,
     );
     expect(rendered).toContain(
       `file_path: '${join(dataDir, "stream_store")}'`,
@@ -39,16 +39,11 @@ describe("renderEngineConfig", () => {
     });
 
     expect(rendered).toMatch(
-      /- name: http\n\s+config:\n\s+port: 3211/,
-    );
-    expect(rendered).toMatch(
       /- name: iii-stream\n\s+config:\n\s+port: 3212/,
-    );
-    expect(rendered).toContain(
-      'allowed_origins: ["http://localhost:3211", "http://localhost:3213", "http://127.0.0.1:3211", "http://127.0.0.1:3213"]',
     );
     expect(rendered).toMatch(
       /- name: iii-worker-manager\n\s+config:\n\s+port: 49234\n\s+host: 127\.0\.0\.1/,
     );
+    expect(rendered).not.toContain("- name: http");
   });
 });

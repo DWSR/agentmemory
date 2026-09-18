@@ -1,0 +1,39 @@
+namespace: default
+containers:
+  state:
+    worker: package://api.workers.iii.dev/state
+    version: "0.22.2"
+    config_name: state
+    config_override:
+      adapter:
+        name: kv
+        config:
+          store_method: file_based
+          file_path: __AGENTMEMORY_STATE_PATH__
+  http:
+    worker: package://api.workers.iii.dev/http
+    version: "0.21.3"
+    config_name: http
+    config_override:
+      host: __AGENTMEMORY_HTTP_HOST__
+      port: __AGENTMEMORY_REST_PORT__
+      default_timeout: 180000
+      cors:
+        allowed_origins:
+          - http://localhost:__AGENTMEMORY_REST_PORT__
+          - http://localhost:3113
+          - http://127.0.0.1:__AGENTMEMORY_REST_PORT__
+          - http://127.0.0.1:3113
+        allowed_methods: [GET, POST, PUT, DELETE, OPTIONS]
+  queue:
+    worker: package://api.workers.iii.dev/queue
+    version: "0.21.11"
+    config_name: queue
+  pubsub:
+    worker: package://api.workers.iii.dev/pubsub
+    version: "0.21.2"
+    config_name: pubsub
+  cron:
+    worker: package://api.workers.iii.dev/cron
+    version: "0.21.9"
+    config_name: cron

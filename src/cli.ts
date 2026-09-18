@@ -6,6 +6,7 @@ import {
   spawnSync,
   type ChildProcess,
 } from "node:child_process";
+import { createConnection } from "node:net";
 import {
   cpSync,
   existsSync,
@@ -67,6 +68,10 @@ import {
 import { runtimeMetadataPath } from "./runtime-paths.js";
 import { createStartupStderrCapture } from "./cli/startup-stderr.js";
 import { renderEngineConfig } from "./cli/engine-config.js";
+import {
+  renderWorkerCompose,
+  workerComposeRuntimePath,
+} from "./cli/worker-compose.js";
 import { processStatIsRunning } from "./cli/process-state.js";
 import { renderSplash } from "./cli/splash.js";
 import { isFirstRun, readPrefs, resetPrefs, writePrefs } from "./cli/preferences.js";
@@ -116,7 +121,7 @@ if (args.includes("--version") || args.includes("-V")) {
 // fresh installs and managed Docker deployments speak the same protocol.
 // Override env var AGENTMEMORY_III_VERSION for an explicitly managed runtime.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.22.1";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.23.0";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -143,7 +148,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.22.1`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.23.0`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -425,6 +430,33 @@ function getEnginePort(): number {
   return getRestPort() + 46023;
 }
 
+async function isEnginePortOpen(): Promise<boolean> {
+  const configuredUrl = process.env["III_ENGINE_URL"];
+  let host = "127.0.0.1";
+  if (configuredUrl) {
+    try {
+      const parsed = new URL(configuredUrl);
+      if (parsed.hostname !== "localhost" && parsed.hostname !== "127.0.0.1") {
+        return false;
+      }
+      host = parsed.hostname;
+    } catch {
+      return false;
+    }
+  }
+
+  return await new Promise((resolve) => {
+    const socket = createConnection({ host, port: getEnginePort() });
+    const finish = (open: boolean) => {
+      socket.destroy();
+      resolve(open);
+    };
+    socket.once("connect", () => finish(true));
+    socket.once("error", () => finish(false));
+    socket.setTimeout(1000, () => finish(false));
+  });
+}
+
 async function isEngineRunning(): Promise<boolean> {
   try {
     await fetch(`${getBaseUrl()}/`, {
@@ -432,7 +464,7 @@ async function isEngineRunning(): Promise<boolean> {
     });
     return true;
   } catch {
-    return false;
+    return isEnginePortOpen();
   }
 }
 
@@ -680,6 +712,35 @@ function clearWorkerPidfile(): void {
   } catch {}
 }
 
+function composePidfilePath(): string {
+  return runtimeMetadataPath("compose.pid");
+}
+
+function readComposePidfile(): number | null {
+  try {
+    const pid = parseInt(readFileSync(composePidfilePath(), "utf-8").trim(), 10);
+    return Number.isFinite(pid) && pid > 0 ? pid : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeComposePidfile(pid: number): void {
+  try {
+    const path = composePidfilePath();
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, `${pid}\n`, { encoding: "utf-8" });
+  } catch (err) {
+    vlog(`writeComposePidfile: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
+function clearComposePidfile(): void {
+  try {
+    unlinkSync(composePidfilePath());
+  } catch {}
+}
+
 function writeEngineState(state: EngineState): void {
   try {
     const statePath = engineStatePath();
@@ -737,6 +798,7 @@ function engineStateRestPort(state: EngineState): number {
 async function startWorkerForEngineState(): Promise<void> {
   const workerPid = readWorkerPidfile();
   if (workerPid && pidAlive(workerPid)) return;
+  await startProjectWorkers();
   if (configuredEngineMayStartWorker() && await waitForConfiguredWorker(5000)) {
     return;
   }
@@ -763,6 +825,75 @@ async function waitForConfiguredWorker(timeoutMs: number): Promise<boolean> {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   return false;
+}
+
+function findWorkerComposeTemplate(): string | null {
+  const candidates = [
+    join(__dirname, "worker-compose.yaml"),
+    join(__dirname, "..", "worker-compose.yaml"),
+    join(process.cwd(), "worker-compose.yaml"),
+  ];
+  return candidates.find((candidate) => existsSync(candidate)) ?? null;
+}
+
+function prepareWorkerComposeRuntime(httpHost: string): string | null {
+  const templatePath = findWorkerComposeTemplate();
+  if (!templatePath) return null;
+
+  const runtimePath = workerComposeRuntimePath(dataDirResolution.dataDir);
+  const composeDataDir = httpHost === "0.0.0.0" ? "/data" : dataDirResolution.dataDir;
+  const rendered = renderWorkerCompose(readFileSync(templatePath, "utf-8"), {
+    dataDir: composeDataDir,
+    httpHost,
+    restPort: getRestPort(),
+  });
+  mkdirSync(dirname(runtimePath), { recursive: true });
+  writeFileSync(runtimePath, rendered, "utf-8");
+  return runtimePath;
+}
+
+async function startProjectWorkers(): Promise<void> {
+  const state = readEngineState();
+  if (state?.kind === "docker") return;
+
+  const existingPid = readComposePidfile();
+  if (existingPid && pidAlive(existingPid)) return;
+  if (existingPid) clearComposePidfile();
+
+  const iiiBin =
+    state?.kind === "native" && state.binPath && existsSync(state.binPath)
+      ? state.binPath
+      : whichBinary("iii");
+  const runtimePath = prepareWorkerComposeRuntime("127.0.0.1");
+  if (!iiiBin || !runtimePath) {
+    p.log.warn("Could not start iii project workers: iii or worker-compose.yaml is unavailable.");
+    return;
+  }
+
+  const child = spawn(
+    iiiBin,
+    [
+      "compose",
+      "--engine",
+      `ws://127.0.0.1:${getEnginePort()}`,
+      "--namespace",
+      "default",
+      "--up",
+      "--file",
+      runtimePath,
+    ],
+    {
+      detached: true,
+      cwd: dataDirResolution.dataDir,
+      stdio: "ignore",
+      windowsHide: true,
+    },
+  );
+  if (typeof child.pid === "number") writeComposePidfile(child.pid);
+  child.on("exit", () => {
+    if (readComposePidfile() === child.pid) clearComposePidfile();
+  });
+  child.unref();
 }
 
 function discoverComposeFile(): string | null {
@@ -1756,6 +1887,11 @@ async function startEngine(): Promise<boolean> {
     const s = p.spinner();
     s.start("Starting iii-engine via Docker...");
     configureDockerHostUser();
+    if (!prepareWorkerComposeRuntime("0.0.0.0")) {
+      s.stop("Docker compose configuration is incomplete");
+      startupFailure = { kind: "no-docker-compose" };
+      return false;
+    }
     const projectName = dockerProjectName(getRestPort());
     writeEngineState({
       kind: "docker",
@@ -2197,7 +2333,6 @@ async function apiFetch<T = unknown>(base: string, path: string, timeoutMs = 500
 }
 
 async function runStatus() {
-  const port = getRestPort();
   const base = getBaseUrl();
   p.intro("agentmemory status");
 
@@ -3269,8 +3404,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (bun install)",
       });
       requireSuccess(installOk, "bun install");
-      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.22.1"], {
-        label: "Pinning iii-sdk@0.22.1",
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.23.0"], {
+        label: "Pinning iii-sdk@0.23.0",
         optional: true,
       });
     } else {
@@ -3422,6 +3557,15 @@ async function stopNativeEngineForRemoval(): Promise<NativeRemovalStopResult> {
     };
   }
 
+  const composePid = readComposePidfile();
+  if (composePid && !(await signalAndWait(composePid, "SIGTERM", 5000))) {
+    return {
+      ok: false,
+      reason: `iii compose pid ${composePid} could not be stopped; no engine or files were removed`,
+    };
+  }
+  clearComposePidfile();
+
   if (workerPid) {
     if (!(await stopWorkerPid(workerPid, 5000))) {
       return {
@@ -3522,6 +3666,16 @@ async function stopDockerEngine(
   const resolvedState = persistDockerInspection(state, inspection);
 
   const workerPid = readWorkerPidfile();
+  const composeConfigText = existsSync(resolvedState.composeFile)
+    ? readFileSync(resolvedState.composeFile, "utf-8")
+    : "";
+  if (/^\s+iii-compose:/m.test(composeConfigText)) {
+    runCommand(
+      dockerBin,
+      dockerComposeArgs(resolvedState.composeFile, resolvedState.projectName, ["stop", "iii-compose"]),
+      { label: "Stopping iii project workers" },
+    );
+  }
   if (workerPid && !(await stopWorkerPid(workerPid, 5000))) {
     p.log.error("The agentmemory worker could not be stopped; Docker ownership state was preserved.");
     process.exit(1);
@@ -3563,7 +3717,7 @@ async function stopDockerEngine(
     process.exit(1);
   }
   const composeText = readFileSync(effectiveComposeFile, "utf-8");
-  const ownServices = ["iii-engine", "iii-init"].filter((service) =>
+  const ownServices = ["iii-engine", "iii-init", "iii-compose"].filter((service) =>
     new RegExp(`^\\s+${service}:`, "m").test(composeText),
   );
   if (ownServices.length === 0) {
