@@ -16,6 +16,7 @@ const operationalPins = [
   "deploy/coolify/Dockerfile",
   "deploy/coolify/docker-compose.yml",
   "eval/scripts/sandbox.sh",
+  ".env.example",
 ];
 
 describe("iii version pins", () => {
