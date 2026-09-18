@@ -18,12 +18,12 @@ services:
     restart: "no"
 
   iii-engine:
-    # Pinned to v0.11.6 to match the exact iii-sdk dependency used by
+    # Pinned to v0.12.0 to match the exact iii-sdk dependency used by
     # agentmemory's direct-registration worker.
     #
     # Override per-shell or via .env file:
-    #   AGENTMEMORY_III_VERSION=0.11.6 docker compose up
-    image: iiidev/iii:${AGENTMEMORY_III_VERSION:-0.11.6}
+    #   AGENTMEMORY_III_VERSION=0.12.0 docker compose up
+    image: iiidev/iii:${AGENTMEMORY_III_VERSION:-0.12.0}
     user: "${AGENTMEMORY_DOCKER_UID:-65532}:${AGENTMEMORY_DOCKER_GID:-65532}"
     depends_on:
       iii-init:
