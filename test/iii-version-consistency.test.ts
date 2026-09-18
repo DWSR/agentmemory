@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
 
 const root = join(import.meta.dirname, "..");
-const expectedVersion = "0.11.6";
+const expectedVersion = "0.19.7";
 const operationalPins = [
   "bun.lock",
   "src/cli.ts",
@@ -16,6 +16,7 @@ const operationalPins = [
   "deploy/coolify/Dockerfile",
   "deploy/coolify/docker-compose.yml",
   "eval/scripts/sandbox.sh",
+  ".env.example",
 ];
 
 describe("iii version pins", () => {
