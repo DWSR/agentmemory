@@ -903,7 +903,9 @@ async function startProjectWorkers(): Promise<void> {
     state?.kind === "native" && state.binPath && existsSync(state.binPath)
       ? state.binPath
       : whichBinary("iii");
-  const runtimePath = prepareWorkerComposeRuntime("127.0.0.1");
+  const runtimePath = prepareWorkerComposeRuntime(
+    process.env["AGENTMEMORY_COMPOSE_HTTP_HOST"] || "127.0.0.1",
+  );
   if (!iiiBin || !runtimePath) {
     p.log.warn("Could not start iii project workers: iii or worker-compose.yaml is unavailable.");
     return;

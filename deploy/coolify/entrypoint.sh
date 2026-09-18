@@ -66,5 +66,6 @@ fi
 
 AGENTMEMORY_SECRET="$(cat "$HMAC_FILE")"
 export AGENTMEMORY_SECRET
+export AGENTMEMORY_COMPOSE_HTTP_HOST=0.0.0.0
 
 exec gosu "$RUN_AS" agentmemory "$@"
