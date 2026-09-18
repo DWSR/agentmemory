@@ -66,6 +66,7 @@ fi
 
 AGENTMEMORY_SECRET="$(cat "$HMAC_FILE")"
 export AGENTMEMORY_SECRET
+export AGENTMEMORY_COMPOSE_HTTP_HOST=0.0.0.0
 
 # The viewer's default 127.0.0.1 bind is unreachable through fly proxy,
 # which enters the machine via fly-local-6pn (IPv6). Opt into a

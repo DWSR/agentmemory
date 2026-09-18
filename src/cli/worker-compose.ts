@@ -14,6 +14,10 @@ export function workerComposeRuntimePath(dataDir: string): string {
   return join(dataDir, "worker-compose.runtime.yaml");
 }
 
+export function workerComposeLockPath(dataDir: string): string {
+  return join(dataDir, "worker-compose.lock");
+}
+
 export function renderWorkerCompose(
   template: string,
   options: WorkerComposeOptions,

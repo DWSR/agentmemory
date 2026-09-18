@@ -70,6 +70,7 @@ import { createStartupStderrCapture } from "./cli/startup-stderr.js";
 import { renderEngineConfig } from "./cli/engine-config.js";
 import {
   renderWorkerCompose,
+  workerComposeLockPath,
   workerComposeRuntimePath,
 } from "./cli/worker-compose.js";
 import { processStatIsRunning } from "./cli/process-state.js";
@@ -121,7 +122,7 @@ if (args.includes("--version") || args.includes("-V")) {
 // fresh installs and managed Docker deployments speak the same protocol.
 // Override env var AGENTMEMORY_III_VERSION for an explicitly managed runtime.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.23.0";
+  process.env["AGENTMEMORY_III_VERSION"] || "0.24.0";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -148,7 +149,7 @@ function iiiReleaseAsset(): string | null {
 function iiiReleaseUrl(): string | null {
   const asset = iiiReleaseAsset();
   if (!asset) return null;
-  // Tag name is monorepo-prefixed: `iii/v0.23.0`. Slash is URL-encoded
+  // Tag name is monorepo-prefixed: `iii/v0.24.0`. Slash is URL-encoded
   // by GitHub when serving the download path, hence `iii/v...` not `iii%2Fv...`.
   return `https://github.com/iii-hq/iii/releases/download/iii/v${IIPINNED_VERSION}/${asset}`;
 }
@@ -852,6 +853,44 @@ function prepareWorkerComposeRuntime(httpHost: string): string | null {
   return runtimePath;
 }
 
+function buildWorkerCompose(runtimePath: string, iiiBin: string | null): boolean {
+  const dataDir = dataDirResolution.dataDir;
+  const lockPath = workerComposeLockPath(dataDir);
+  if (iiiBin) {
+    const frozenArgs = ["compose", "build", "--file", runtimePath, "--frozen"];
+    if (existsSync(lockPath) && runCommand(iiiBin, frozenArgs, { label: "Validating iii worker lock" })) {
+      return true;
+    }
+    return runCommand(iiiBin, ["compose", "build", "--file", runtimePath], {
+      label: "Resolving iii worker packages",
+    });
+  }
+
+  const dockerBin = whichBinary("docker");
+  if (!dockerBin) return false;
+  const user = `${process.env["AGENTMEMORY_DOCKER_UID"] || "65532"}:${process.env["AGENTMEMORY_DOCKER_GID"] || "65532"}`;
+  const baseArgs = [
+    "run",
+    "--rm",
+    "--user",
+    user,
+    "-e",
+    "III_COMPOSE_STATE_DIR=/data/compose",
+    "-v",
+    `${dataDir}:/data`,
+    `iiidev/iii:${IIPINNED_VERSION}`,
+    "/app/iii",
+    "compose",
+    "build",
+    "--file",
+    "/data/worker-compose.runtime.yaml",
+  ];
+  if (existsSync(lockPath) && runCommand(dockerBin, [...baseArgs, "--frozen"], { label: "Validating iii worker lock" })) {
+    return true;
+  }
+  return runCommand(dockerBin, baseArgs, { label: "Resolving iii worker packages" });
+}
+
 async function startProjectWorkers(): Promise<void> {
   const state = readEngineState();
   if (state?.kind === "docker") return;
@@ -864,9 +903,15 @@ async function startProjectWorkers(): Promise<void> {
     state?.kind === "native" && state.binPath && existsSync(state.binPath)
       ? state.binPath
       : whichBinary("iii");
-  const runtimePath = prepareWorkerComposeRuntime("127.0.0.1");
+  const runtimePath = prepareWorkerComposeRuntime(
+    process.env["AGENTMEMORY_COMPOSE_HTTP_HOST"] || "127.0.0.1",
+  );
   if (!iiiBin || !runtimePath) {
     p.log.warn("Could not start iii project workers: iii or worker-compose.yaml is unavailable.");
+    return;
+  }
+  if (!buildWorkerCompose(runtimePath, iiiBin)) {
+    p.log.warn("Could not resolve the iii worker package lock.");
     return;
   }
 
@@ -879,6 +924,7 @@ async function startProjectWorkers(): Promise<void> {
       "--namespace",
       "default",
       "--up",
+      "--frozen",
       "--file",
       runtimePath,
     ],
@@ -1887,7 +1933,8 @@ async function startEngine(): Promise<boolean> {
     const s = p.spinner();
     s.start("Starting iii-engine via Docker...");
     configureDockerHostUser();
-    if (!prepareWorkerComposeRuntime("0.0.0.0")) {
+    const workerComposeRuntime = prepareWorkerComposeRuntime("0.0.0.0");
+    if (!workerComposeRuntime || !buildWorkerCompose(workerComposeRuntime, null)) {
       s.stop("Docker compose configuration is incomplete");
       startupFailure = { kind: "no-docker-compose" };
       return false;
@@ -3404,8 +3451,8 @@ async function runUpgrade() {
         label: "Refreshing dependencies (bun install)",
       });
       requireSuccess(installOk, "bun install");
-      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.23.0"], {
-        label: "Pinning iii-sdk@0.23.0",
+      runCommand(bunBin, ["add", "--exact", "iii-sdk@0.24.0"], {
+        label: "Pinning iii-sdk@0.24.0",
         optional: true,
       });
     } else {

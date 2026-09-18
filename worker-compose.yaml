@@ -1,4 +1,5 @@
 namespace: default
+required_default: true
 containers:
   state:
     worker: package://api.workers.iii.dev/state
