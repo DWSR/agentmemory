@@ -149,7 +149,7 @@ describe("rewriteBundledConfig", () => {
     expect(out).not.toContain("- bun dist/index.mjs");
     expect(out).not.toContain("- node dist/index.mjs");
     expect(out).not.toContain("- name: iii-exec");
-    expect(out).toContain(join(HOME, ".agentmemory", "data", "state_store.db"));
+    expect(out).toContain(join(HOME, ".agentmemory", "data", "config"));
     expect(out).toContain(join(HOME, ".agentmemory", "data", "stream_store"));
   });
 
@@ -172,8 +172,8 @@ describe("rewriteBundledConfig", () => {
       },
     );
 
-    expect(out).toContain(join(dataDir, "state_store.db"));
-    expect(out).toContain("port: 3211");
+    expect(out).toContain(join(dataDir, "config"));
+    expect(out).toContain("port: 3212");
     expect(out).toContain("port: 3212");
     expect(out).toContain("port: 49234");
   });

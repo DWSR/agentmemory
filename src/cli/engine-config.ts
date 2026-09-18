@@ -110,9 +110,14 @@ export function renderEngineConfig(
       "file_path: ./data/stream_store",
       `file_path: ${yamlSingleQuote(join(options.dataDir, "stream_store"))}`,
     );
-  if (!options.ports) return rendered;
+  const configDirectory = `${yamlSingleQuote(join(options.dataDir, "config"))}`;
+  const renderedWithConfigDirectory = rendered.replace(
+    "directory: ./config",
+    `directory: ${configDirectory}`,
+  );
+  if (!options.ports) return renderedWithConfigDirectory;
 
-  const lines = rendered.split("\n");
+  const lines = renderedWithConfigDirectory.split("\n");
   setWorkerPort(lines, "http", options.ports.restPort);
   setWorkerPort(lines, "iii-stream", options.ports.streamPort);
   setWorkerPort(lines, "iii-worker-manager", options.ports.enginePort);

@@ -5,6 +5,7 @@ import { describe, expect, it } from "bun:test";
 const root = join(import.meta.dirname, "..");
 const compose = readFileSync(join(root, "docker-compose.yml"), "utf8");
 const engineConfig = readFileSync(join(root, "iii-config.docker.yaml"), "utf8");
+const workerCompose = readFileSync(join(root, "worker-compose.yaml"), "utf8");
 
 function workerBlock(name: string): string {
   const start = engineConfig.indexOf(`  - name: ${name}`);
@@ -44,12 +45,12 @@ describe("Docker engine port configuration", () => {
   });
 
   it("configures every iii listener from the same environment", () => {
-    expect(workerBlock("http")).toContain("port: ${III_REST_PORT:3111}");
     expect(workerBlock("iii-stream")).toContain("port: ${III_STREAM_PORT:3112}");
 
     const manager = workerBlock("iii-worker-manager");
     expect(manager).toContain("port: ${III_ENGINE_PORT:49134}");
     expect(manager).toContain("host: 0.0.0.0");
+    expect(engineConfig).not.toContain("- name: http");
   });
 
   it("leaves worker ownership to the host CLI", () => {
@@ -58,10 +59,9 @@ describe("Docker engine port configuration", () => {
   });
 
   it("keeps REST and viewer CORS aligned with overridden ports", () => {
-    const http = workerBlock("http");
-    expect(http).toContain("http://localhost:${III_REST_PORT:3111}");
-    expect(http).toContain("http://127.0.0.1:${III_REST_PORT:3111}");
-    expect(http).toContain("http://localhost:${III_VIEWER_PORT:3113}");
-    expect(http).toContain("http://127.0.0.1:${III_VIEWER_PORT:3113}");
+    expect(workerCompose).toContain("http://localhost:__AGENTMEMORY_REST_PORT__");
+    expect(workerCompose).toContain("http://127.0.0.1:__AGENTMEMORY_REST_PORT__");
+    expect(workerCompose).toContain("http://localhost:3113");
+    expect(workerCompose).toContain("http://127.0.0.1:3113");
   });
 });

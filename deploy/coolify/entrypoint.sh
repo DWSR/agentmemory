@@ -25,37 +25,18 @@ chown -R "$RUN_AS" "$DATA_DIR"
 
 cat > "$III_CONFIG" <<'EOF'
 workers:
-  - name: http
-    config:
-      port: 3111
-      host: 0.0.0.0
-      default_timeout: 180000
-      cors:
-        allowed_origins:
-          - "http://localhost:3111"
-          - "http://localhost:3113"
-          - "http://127.0.0.1:3111"
-          - "http://127.0.0.1:3113"
-        allowed_methods: [GET, POST, PUT, DELETE, OPTIONS]
-  - name: state
+  - name: configuration
     config:
       adapter:
-        name: kv
+        name: fs
         config:
-          store_method: file_based
-          file_path: /data/state_store.db
-  - name: queue
+          directory: /data/config
+  - name: iii-worker-manager
     config:
-      adapter:
-        name: builtin
-  - name: pubsub
-    config:
-      adapter:
-        name: local
-  - name: cron
-    config:
-      adapter:
-        name: kv
+      port: 49134
+      host: 0.0.0.0
+  - name: iii-http-functions
+    config: {}
   - name: iii-stream
     config:
       port: 3112
