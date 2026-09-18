@@ -726,7 +726,7 @@ function engineStateRestPort(state: EngineState): number {
   try {
     const raw = readFileSync(state.configPath, "utf-8");
     const httpBlock = raw.match(
-      /- name:\s*iii-http([\s\S]*?)(?=\n\s*- name:|$)/,
+      /- name:\s*http([\s\S]*?)(?=\n\s*- name:|$)/,
     )?.[1];
     const configuredPort = httpBlock?.match(/\n\s*port:\s*(\d+)/)?.[1];
     if (configuredPort) return parseInt(configuredPort, 10);

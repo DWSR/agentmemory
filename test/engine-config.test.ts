@@ -39,7 +39,7 @@ describe("renderEngineConfig", () => {
     });
 
     expect(rendered).toMatch(
-      /- name: iii-http\n\s+config:\n\s+port: 3211/,
+      /- name: http\n\s+config:\n\s+port: 3211/,
     );
     expect(rendered).toMatch(
       /- name: iii-stream\n\s+config:\n\s+port: 3212/,

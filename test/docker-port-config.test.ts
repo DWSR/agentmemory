@@ -44,7 +44,7 @@ describe("Docker engine port configuration", () => {
   });
 
   it("configures every iii listener from the same environment", () => {
-    expect(workerBlock("iii-http")).toContain("port: ${III_REST_PORT:3111}");
+    expect(workerBlock("http")).toContain("port: ${III_REST_PORT:3111}");
     expect(workerBlock("iii-stream")).toContain("port: ${III_STREAM_PORT:3112}");
 
     const manager = workerBlock("iii-worker-manager");
@@ -58,7 +58,7 @@ describe("Docker engine port configuration", () => {
   });
 
   it("keeps REST and viewer CORS aligned with overridden ports", () => {
-    const http = workerBlock("iii-http");
+    const http = workerBlock("http");
     expect(http).toContain("http://localhost:${III_REST_PORT:3111}");
     expect(http).toContain("http://127.0.0.1:${III_REST_PORT:3111}");
     expect(http).toContain("http://localhost:${III_VIEWER_PORT:3113}");

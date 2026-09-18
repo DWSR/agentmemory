@@ -79,7 +79,7 @@ function setManagedCorsOrigins(
   restPort: number,
   viewerPort: number,
 ): void {
-  const block = workerBlock(lines, "iii-http");
+  const block = workerBlock(lines, "http");
   if (!block) return;
   const originsIndex = lines.findIndex(
     (line, index) =>
@@ -113,7 +113,7 @@ export function renderEngineConfig(
   if (!options.ports) return rendered;
 
   const lines = rendered.split("\n");
-  setWorkerPort(lines, "iii-http", options.ports.restPort);
+  setWorkerPort(lines, "http", options.ports.restPort);
   setWorkerPort(lines, "iii-stream", options.ports.streamPort);
   setWorkerPort(lines, "iii-worker-manager", options.ports.enginePort);
   setManagedCorsOrigins(lines, options.ports.restPort, options.ports.viewerPort);
