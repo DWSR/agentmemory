@@ -138,6 +138,15 @@ suite("iii runtime smoke", () => {
     });
 
     try {
+      const missing = await worker.trigger({
+        function_id: "state::get",
+        payload: {
+          scope: `iii-runtime-smoke:${process.pid}`,
+          key: `missing-${Date.now()}`,
+        },
+      });
+      expect(missing).toBeNull();
+
       await worker.trigger({
         function_id: "iii::durable::publish",
         payload: { topic, data: payload },

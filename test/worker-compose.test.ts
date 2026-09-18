@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   renderWorkerCompose,
+  workerComposeLockPath,
   workerComposeRuntimePath,
 } from "../src/cli/worker-compose.js";
 
@@ -27,6 +28,9 @@ describe("worker compose rendering", () => {
   it("keeps runtime compose state beside the data directory", () => {
     expect(workerComposeRuntimePath("/var/lib/agentmemory")).toBe(
       "/var/lib/agentmemory/worker-compose.runtime.yaml",
+    );
+    expect(workerComposeLockPath("/var/lib/agentmemory")).toBe(
+      "/var/lib/agentmemory/worker-compose.lock",
     );
   });
 });
