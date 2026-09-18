@@ -1,4 +1,4 @@
-import type { ISdk } from "iii-sdk";
+import type { IIIClient as ISdk } from "iii-sdk";
 
 const PRIVATE_TAG_RE = /<private>[\s\S]*?<\/private>/gi;
 

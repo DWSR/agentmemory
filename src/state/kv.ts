@@ -1,4 +1,4 @@
-import type { ISdk } from 'iii-sdk'
+import type { IIIClient as ISdk } from 'iii-sdk'
 
 export class StateKV {
   constructor(private sdk: ISdk) {}
